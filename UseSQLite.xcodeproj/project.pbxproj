@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		C3999BF41C57AA5E004C285B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3999BF31C57AA5E004C285B /* main.m */; };
+		C3999BFC1C57AE67004C285B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C3999BFB1C57AE67004C285B /* libsqlite3.tbd */; };
+		C3999BFF1C57AE85004C285B /* USQLConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3999BFD1C57AE85004C285B /* USQLConnection.cpp */; };
+		C3999C0B1C57B88E004C285B /* USQLSatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3999C091C57B88E004C285B /* USQLSatement.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +28,14 @@
 /* Begin PBXFileReference section */
 		C3999BF01C57AA5E004C285B /* UseSQLite */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UseSQLite; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3999BF31C57AA5E004C285B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C3999BFB1C57AE67004C285B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		C3999BFD1C57AE85004C285B /* USQLConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLConnection.cpp; sourceTree = "<group>"; };
+		C3999BFE1C57AE85004C285B /* USQLConnection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLConnection.hpp; sourceTree = "<group>"; };
+		C3999C011C57AF1B004C285B /* USQLNoCopyable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLNoCopyable.hpp; sourceTree = "<group>"; };
+		C3999C041C57B3D9004C285B /* USQLDefs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLDefs.hpp; sourceTree = "<group>"; };
+		C3999C071C57B62C004C285B /* USQLShareObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLShareObject.hpp; sourceTree = "<group>"; };
+		C3999C091C57B88E004C285B /* USQLSatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLSatement.cpp; sourceTree = "<group>"; };
+		C3999C0A1C57B88E004C285B /* USQLSatement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLSatement.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3999BFC1C57AE67004C285B /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +53,8 @@
 		C3999BE71C57AA5E004C285B = {
 			isa = PBXGroup;
 			children = (
+				C3999BFB1C57AE67004C285B /* libsqlite3.tbd */,
+				C3999BFA1C57AE59004C285B /* Classes */,
 				C3999BF21C57AA5E004C285B /* UseSQLite */,
 				C3999BF11C57AA5E004C285B /* Products */,
 			);
@@ -60,6 +74,20 @@
 				C3999BF31C57AA5E004C285B /* main.m */,
 			);
 			path = UseSQLite;
+			sourceTree = "<group>";
+		};
+		C3999BFA1C57AE59004C285B /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C3999BFD1C57AE85004C285B /* USQLConnection.cpp */,
+				C3999BFE1C57AE85004C285B /* USQLConnection.hpp */,
+				C3999C011C57AF1B004C285B /* USQLNoCopyable.hpp */,
+				C3999C041C57B3D9004C285B /* USQLDefs.hpp */,
+				C3999C071C57B62C004C285B /* USQLShareObject.hpp */,
+				C3999C091C57B88E004C285B /* USQLSatement.cpp */,
+				C3999C0A1C57B88E004C285B /* USQLSatement.hpp */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +146,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3999BFF1C57AE85004C285B /* USQLConnection.cpp in Sources */,
+				C3999C0B1C57B88E004C285B /* USQLSatement.cpp in Sources */,
 				C3999BF41C57AA5E004C285B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
