@@ -24,60 +24,20 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLConnection_hpp
-#define USQLConnection_hpp
-
-#include <string>
-#include <sqlite3.h>
-#include <list>
-#include "USQLNoCopyable.hpp"
+#include "USQLCommand.hpp"
+#include "USQLSatement.hpp"
 
 namespace usqlite {
-    class USQLSatement;
+    USQLCommand::USQLCommand(const std::string &cmd, USQLConnection &connection) {
+        _statement = USQLSatement::create(cmd, connection);
+    }
     
-    class USQLConnection : public USQLNoCopyable
-    {
-    public:
-        USQLConnection(const std::string &filename);
-        ~USQLConnection();
-        
-        bool open();
-        bool open(int flags);
-        
-        void close();
-        bool closeSync();
-        
-        void setLastErrorCode(int code) {
-            _errorCode = code;
-        }
-        
-        int lastErrorCode() const {
-            return _errorCode;
-        }
-        
-        std::string lastErrorMessage() {
-            return _db ? sqlite3_errmsg(_db) : sqlite3_errstr(lastErrorCode());
-        }
-        
-        sqlite3 *db() {
-            return _db;
-        }
-        
-        void registerStatement(USQLSatement *stmt);
-        void unregisterStatement(USQLSatement *stmt);
-        
-    private:
-        void finilizeAllStatements();
-        
-    public:
-        const std::string filename;
-        
-    private:
-        sqlite3 *_db;
-        int _errorCode;
-        
-        std::list<USQLSatement *> _statements;
-    };
+    USQLCommand::~USQLCommand() {
+        _statement->finilize();
+        _statement->release();
+    }
+    
+    bool USQLCommand::exeNoQuery() {
+        return _statement->step();
+    }
 }
-
-#endif /* USQLConnection_hpp */

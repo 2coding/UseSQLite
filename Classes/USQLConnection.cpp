@@ -26,6 +26,8 @@
 
 #include "USQLConnection.hpp"
 #include "USQLDefs.hpp"
+#include "USQLSatement.hpp"
+#include <algorithm>
 
 namespace usqlite {
     USQLConnection::USQLConnection(const std::string &fn)
@@ -59,6 +61,13 @@ namespace usqlite {
         int code = sqlite3_close(_db);
         if (code == SQLITE_BUSY) {
             //busy
+            finilizeAllStatements();
+            
+            code = sqlite3_close(_db);
+        }
+        
+        if (USQL_OK(code)) {
+            _db = nullptr;
         }
         
         _errorCode = code;
@@ -66,9 +75,49 @@ namespace usqlite {
     }
     
     void USQLConnection::close() {
-        if (_db) {
-            sqlite3_close_v2(_db);
-            _db = nullptr;
+        if (!_db) {
+            return;
         }
+        
+        finilizeAllStatements();
+        
+        sqlite3_close_v2(_db);
+        _db = nullptr;
+    }
+    
+    void USQLConnection::registerStatement(USQLSatement *stmt) {
+        if (!stmt) {
+            return;
+        }
+        
+        auto ret = std::find(_statements.begin(), _statements.end(), stmt);
+        if (ret != _statements.end()) {
+            return;
+        }
+        
+        _statements.push_back(stmt);
+        stmt->retain();
+    }
+    
+    void USQLConnection::unregisterStatement(USQLSatement *stmt) {
+        if (!stmt) {
+            return;
+        }
+        
+        auto ret = std::find(_statements.begin(), _statements.end(), stmt);
+        if (ret != _statements.end()) {
+            _statements.remove(stmt);
+            stmt->release();
+        }
+    }
+    
+    void USQLConnection::finilizeAllStatements() {
+        for (auto iter = _statements.begin(); iter != _statements.end(); ++iter) {
+            USQLSatement *stmt = *iter;
+            stmt->finilize();
+            stmt->release();
+        }
+        
+        _statements.clear();
     }
 }

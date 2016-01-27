@@ -30,5 +30,6 @@
 #include <sqlite3.h>
 
 #define USQL_OK(code) ((code) == SQLITE_OK)
+#define USQL_STEP_OK(code) ((code) == SQLITE_DONE || (code) == SQLITE_ROW)
 
 #endif /* USQLDefs_hpp */

@@ -25,26 +25,73 @@
  **/
 
 #include "USQLSatement.hpp"
+#include "USQLConnection.hpp"
+#include "USQLDefs.hpp"
 
 namespace usqlite {
-    USQLSatement::USQLSatement()
-    : _stmt(nullptr) {
-        
+    USQLSatement::USQLSatement(const std::string &cmd, USQLConnection &connection)
+    : _stmt(nullptr)
+    , _command(cmd)
+    , _connection(connection){
     }
     
     USQLSatement::~USQLSatement() {
         finilize();
     }
     
-    USQLSatement * USQLSatement::create() {
-        USQLSatement *stmt = new USQLSatement();
+    USQLSatement * USQLSatement::create(const std::string &cmd, USQLConnection &connection) {
+        USQLSatement *stmt = new USQLSatement(cmd, connection);
         return stmt;
     }
     
     void USQLSatement::finilize() {
-        if (_stmt) {
-            sqlite3_finalize(_stmt);
-            _stmt = nullptr;
+        if (!_stmt) {
+            return;
         }
+        
+        sqlite3_finalize(_stmt);
+        _stmt = nullptr;
+        
+        _connection.unregisterStatement(this);
+    }
+    
+    bool USQLSatement::prepare() {
+        if (_stmt) {
+            return true;
+        }
+        
+        sqlite3 *db = _connection.db();
+        int code = sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr);
+        if (!USQL_OK(code)) {
+            _connection.setLastErrorCode(code);
+        }
+        else {
+            _connection.registerStatement(this);
+        }
+        
+        return USQL_OK(code);
+    }
+    
+    bool USQLSatement::reset() {
+        if (_stmt) {
+            sqlite3_reset(_stmt);
+            return true;
+        }
+        else {
+            return prepare();
+        }
+    }
+    
+    bool USQLSatement::step() {
+        if (!prepare()) {
+            return false;
+        }
+        
+        int code = sqlite3_step(_stmt);
+        if (!USQL_STEP_OK(code)) {
+            _connection.setLastErrorCode(code);
+        }
+        
+        return USQL_STEP_OK(code);
     }
 }

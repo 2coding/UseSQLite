@@ -27,23 +27,33 @@
 #ifndef USQLSatement_hpp
 #define USQLSatement_hpp
 
+#include <string>
 #include <sqlite3.h>
 #include "USQLShareObject.hpp"
 
 namespace usqlite {
+    class USQLConnection;
+    
     class USQLSatement : public USQLShareObject
     {
     public:
-        static USQLSatement *create();
+        static USQLSatement *create(const std::string &cmd, USQLConnection &connction);
+        
+        bool prepare();
+        bool reset();
+        
+        bool step();
         
         void finilize();
         
     private:
-        USQLSatement();
+        USQLSatement(const std::string &cmd, USQLConnection &connection);
         ~USQLSatement();
         
     private:
+        const std::string _command;
         sqlite3_stmt *_stmt;
+        USQLConnection &_connection;
     };
 }
 
