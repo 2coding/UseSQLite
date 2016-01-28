@@ -32,7 +32,8 @@
 namespace usqlite {
     USQLConnection::USQLConnection(const std::string &fn)
     : filename(fn.empty() ? ":memory" : fn)
-    , _errorCode(SQLITE_OK) {
+    , _errorCode(SQLITE_OK)
+    , _db(nullptr) {
         
     }
     
@@ -61,7 +62,7 @@ namespace usqlite {
         int code = sqlite3_close(_db);
         if (code == SQLITE_BUSY) {
             //busy
-            finilizeAllStatements();
+            finilizeAllStatements(true);
             
             code = sqlite3_close(_db);
         }
@@ -79,9 +80,9 @@ namespace usqlite {
             return;
         }
         
-        finilizeAllStatements();
+        finilizeAllStatements(false);
         
-        sqlite3_close_v2(_db);
+        _errorCode = sqlite3_close_v2(_db);
         _db = nullptr;
     }
     
@@ -111,13 +112,20 @@ namespace usqlite {
         }
     }
     
-    void USQLConnection::finilizeAllStatements() {
-        for (auto iter = _statements.begin(); iter != _statements.end(); ++iter) {
-            USQLSatement *stmt = *iter;
-            stmt->finilize();
-            stmt->release();
+    void USQLConnection::finilizeAllStatements(bool finilized) {
+        if (_statements.size() == 0) {
+            return;
         }
         
+        auto list = _statements;
         _statements.clear();
+        
+        for (auto iter = list.begin(); iter != list.end(); ++iter) {
+            USQLSatement *stmt = *iter;
+            if (finilized) {
+                stmt->finilize();
+            }
+            stmt->release();
+        }
     }
 }

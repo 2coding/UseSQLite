@@ -67,7 +67,7 @@ namespace usqlite {
         void unregisterStatement(USQLSatement *stmt);
         
     private:
-        void finilizeAllStatements();
+        void finilizeAllStatements(bool finilized);
         
     public:
         const std::string filename;

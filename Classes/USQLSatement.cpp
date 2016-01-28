@@ -51,7 +51,6 @@ namespace usqlite {
         
         sqlite3_finalize(_stmt);
         _stmt = nullptr;
-        
         _connection.unregisterStatement(this);
     }
     
@@ -83,7 +82,7 @@ namespace usqlite {
     }
     
     bool USQLSatement::step() {
-        if (!prepare()) {
+        if (!reset()) {
             return false;
         }
         

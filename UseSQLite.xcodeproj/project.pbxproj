@@ -7,15 +7,76 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C337E00E1C58AF5B001A349D /* USQLCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E00C1C58AF5B001A349D /* USQLCommand.cpp */; };
-		C3999BF41C57AA5E004C285B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3999BF31C57AA5E004C285B /* main.m */; };
-		C3999BFC1C57AE67004C285B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C3999BFB1C57AE67004C285B /* libsqlite3.tbd */; };
-		C3999BFF1C57AE85004C285B /* USQLConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3999BFD1C57AE85004C285B /* USQLConnection.cpp */; };
-		C3999C0B1C57B88E004C285B /* USQLSatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3999C091C57B88E004C285B /* USQLSatement.cpp */; };
+		C337E0371C59ED3F001A349D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0361C59ED3F001A349D /* main.cpp */; };
+		C337E0801C59F711001A349D /* USQLCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0721C59F711001A349D /* USQLCommand.cpp */; };
+		C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0741C59F711001A349D /* USQLConnection.cpp */; };
+		C337E0821C59F711001A349D /* USQLSatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0781C59F711001A349D /* USQLSatement.cpp */; };
+		C337E0841C59F711001A349D /* USQLTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E07E1C59F711001A349D /* USQLTests.cpp */; };
+		C337E0851C59F764001A349D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C3999BFB1C57AE67004C285B /* libsqlite3.tbd */; };
+		C337E0A01C5A0717001A349D /* gtest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C337E0931C5A070F001A349D /* gtest.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		C337E0921C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4539C8FF0EC27F6400A70F4C;
+			remoteInfo = "gtest-framework";
+		};
+		C337E0941C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 40C848FA101A209C0083642A;
+			remoteInfo = "gtest-static";
+		};
+		C337E0961C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 40C8490B101A217E0083642A;
+			remoteInfo = "gtest_main-static";
+		};
+		C337E0981C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 40899F430FFA7184000B29AE;
+			remoteInfo = "gtest_unittest-framework";
+		};
+		C337E09A1C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 40C84987101A36850083642A;
+			remoteInfo = "gtest_unittest-static";
+		};
+		C337E09C1C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4089A0130FFACEFC000B29AE;
+			remoteInfo = "sample1_unittest-framework";
+		};
+		C337E09E1C5A070F001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 40C84997101A36A60083642A;
+			remoteInfo = "sample1_unittest-static";
+		};
+		C337E0A11C5A073C001A349D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D07F2BC0486CC7A007CD1D0;
+			remoteInfo = "gtest-framework";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
-		C3999BEE1C57AA5E004C285B /* CopyFiles */ = {
+		C337E0321C59ED3F001A349D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -27,38 +88,93 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C337E00C1C58AF5B001A349D /* USQLCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLCommand.cpp; sourceTree = "<group>"; };
-		C337E00D1C58AF5B001A349D /* USQLCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLCommand.hpp; sourceTree = "<group>"; };
-		C3999BF01C57AA5E004C285B /* UseSQLite */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UseSQLite; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3999BF31C57AA5E004C285B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C337E0341C59ED3F001A349D /* USQLTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = USQLTests; sourceTree = BUILT_PRODUCTS_DIR; };
+		C337E0361C59ED3F001A349D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		C337E0711C59F711001A349D /* USQL.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQL.hpp; sourceTree = "<group>"; };
+		C337E0721C59F711001A349D /* USQLCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLCommand.cpp; sourceTree = "<group>"; };
+		C337E0731C59F711001A349D /* USQLCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLCommand.hpp; sourceTree = "<group>"; };
+		C337E0741C59F711001A349D /* USQLConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLConnection.cpp; sourceTree = "<group>"; };
+		C337E0751C59F711001A349D /* USQLConnection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLConnection.hpp; sourceTree = "<group>"; };
+		C337E0761C59F711001A349D /* USQLDefs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLDefs.hpp; sourceTree = "<group>"; };
+		C337E0771C59F711001A349D /* USQLNoCopyable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLNoCopyable.hpp; sourceTree = "<group>"; };
+		C337E0781C59F711001A349D /* USQLSatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLSatement.cpp; sourceTree = "<group>"; };
+		C337E0791C59F711001A349D /* USQLSatement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLSatement.hpp; sourceTree = "<group>"; };
+		C337E07A1C59F711001A349D /* USQLShareObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLShareObject.hpp; sourceTree = "<group>"; };
+		C337E07E1C59F711001A349D /* USQLTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLTests.cpp; sourceTree = "<group>"; };
+		C337E07F1C59F711001A349D /* USQLTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLTests.hpp; sourceTree = "<group>"; };
+		C337E0861C5A070F001A349D /* gtest.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = gtest.xcodeproj; path = "Thirdparty/gtest-1.6.0/xcode/gtest.xcodeproj"; sourceTree = "<group>"; };
 		C3999BFB1C57AE67004C285B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
-		C3999BFD1C57AE85004C285B /* USQLConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLConnection.cpp; sourceTree = "<group>"; };
-		C3999BFE1C57AE85004C285B /* USQLConnection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLConnection.hpp; sourceTree = "<group>"; };
-		C3999C011C57AF1B004C285B /* USQLNoCopyable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLNoCopyable.hpp; sourceTree = "<group>"; };
-		C3999C041C57B3D9004C285B /* USQLDefs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLDefs.hpp; sourceTree = "<group>"; };
-		C3999C071C57B62C004C285B /* USQLShareObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLShareObject.hpp; sourceTree = "<group>"; };
-		C3999C091C57B88E004C285B /* USQLSatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLSatement.cpp; sourceTree = "<group>"; };
-		C3999C0A1C57B88E004C285B /* USQLSatement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLSatement.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C3999BED1C57AA5E004C285B /* Frameworks */ = {
+		C337E0311C59ED3F001A349D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3999BFC1C57AE67004C285B /* libsqlite3.tbd in Frameworks */,
+				C337E0A01C5A0717001A349D /* gtest.framework in Frameworks */,
+				C337E0851C59F764001A349D /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C337E0351C59ED3F001A349D /* USQLTests */ = {
+			isa = PBXGroup;
+			children = (
+				C337E0361C59ED3F001A349D /* main.cpp */,
+			);
+			path = USQLTests;
+			sourceTree = "<group>";
+		};
+		C337E0701C59F711001A349D /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C337E0711C59F711001A349D /* USQL.hpp */,
+				C337E0721C59F711001A349D /* USQLCommand.cpp */,
+				C337E0731C59F711001A349D /* USQLCommand.hpp */,
+				C337E0741C59F711001A349D /* USQLConnection.cpp */,
+				C337E0751C59F711001A349D /* USQLConnection.hpp */,
+				C337E0761C59F711001A349D /* USQLDefs.hpp */,
+				C337E0771C59F711001A349D /* USQLNoCopyable.hpp */,
+				C337E0781C59F711001A349D /* USQLSatement.cpp */,
+				C337E0791C59F711001A349D /* USQLSatement.hpp */,
+				C337E07A1C59F711001A349D /* USQLShareObject.hpp */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		C337E07B1C59F711001A349D /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				C337E07E1C59F711001A349D /* USQLTests.cpp */,
+				C337E07F1C59F711001A349D /* USQLTests.hpp */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		C337E0871C5A070F001A349D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C337E0931C5A070F001A349D /* gtest.framework */,
+				C337E0951C5A070F001A349D /* libgtest.a */,
+				C337E0971C5A070F001A349D /* libgtest_main.a */,
+				C337E0991C5A070F001A349D /* gtest_unittest-framework */,
+				C337E09B1C5A070F001A349D /* gtest_unittest */,
+				C337E09D1C5A070F001A349D /* sample1_unittest-framework */,
+				C337E09F1C5A070F001A349D /* sample1_unittest-static */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C3999BE71C57AA5E004C285B = {
 			isa = PBXGroup;
 			children = (
+				C337E0861C5A070F001A349D /* gtest.xcodeproj */,
 				C3999BFB1C57AE67004C285B /* libsqlite3.tbd */,
-				C3999BFA1C57AE59004C285B /* Classes */,
-				C3999BF21C57AA5E004C285B /* UseSQLite */,
+				C337E0701C59F711001A349D /* Classes */,
+				C337E07B1C59F711001A349D /* Tests */,
+				C337E0351C59ED3F001A349D /* USQLTests */,
 				C3999BF11C57AA5E004C285B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,53 +182,30 @@
 		C3999BF11C57AA5E004C285B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3999BF01C57AA5E004C285B /* UseSQLite */,
+				C337E0341C59ED3F001A349D /* USQLTests */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		C3999BF21C57AA5E004C285B /* UseSQLite */ = {
-			isa = PBXGroup;
-			children = (
-				C3999BF31C57AA5E004C285B /* main.m */,
-			);
-			path = UseSQLite;
-			sourceTree = "<group>";
-		};
-		C3999BFA1C57AE59004C285B /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				C3999BFD1C57AE85004C285B /* USQLConnection.cpp */,
-				C3999BFE1C57AE85004C285B /* USQLConnection.hpp */,
-				C3999C011C57AF1B004C285B /* USQLNoCopyable.hpp */,
-				C3999C041C57B3D9004C285B /* USQLDefs.hpp */,
-				C3999C071C57B62C004C285B /* USQLShareObject.hpp */,
-				C3999C091C57B88E004C285B /* USQLSatement.cpp */,
-				C3999C0A1C57B88E004C285B /* USQLSatement.hpp */,
-				C337E00C1C58AF5B001A349D /* USQLCommand.cpp */,
-				C337E00D1C58AF5B001A349D /* USQLCommand.hpp */,
-			);
-			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C3999BEF1C57AA5E004C285B /* UseSQLite */ = {
+		C337E0331C59ED3F001A349D /* USQLTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C3999BF71C57AA5E004C285B /* Build configuration list for PBXNativeTarget "UseSQLite" */;
+			buildConfigurationList = C337E0381C59ED3F001A349D /* Build configuration list for PBXNativeTarget "USQLTests" */;
 			buildPhases = (
-				C3999BEC1C57AA5E004C285B /* Sources */,
-				C3999BED1C57AA5E004C285B /* Frameworks */,
-				C3999BEE1C57AA5E004C285B /* CopyFiles */,
+				C337E0301C59ED3F001A349D /* Sources */,
+				C337E0311C59ED3F001A349D /* Frameworks */,
+				C337E0321C59ED3F001A349D /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C337E0A21C5A073C001A349D /* PBXTargetDependency */,
 			);
-			name = UseSQLite;
-			productName = UseSQLite;
-			productReference = C3999BF01C57AA5E004C285B /* UseSQLite */;
+			name = USQLTests;
+			productName = USQLTests;
+			productReference = C337E0341C59ED3F001A349D /* USQLTests */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -124,7 +217,7 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = 2Coding;
 				TargetAttributes = {
-					C3999BEF1C57AA5E004C285B = {
+					C337E0331C59ED3F001A349D = {
 						CreatedOnToolsVersion = 7.2;
 					};
 				};
@@ -139,28 +232,115 @@
 			mainGroup = C3999BE71C57AA5E004C285B;
 			productRefGroup = C3999BF11C57AA5E004C285B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C337E0871C5A070F001A349D /* Products */;
+					ProjectRef = C337E0861C5A070F001A349D /* gtest.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
-				C3999BEF1C57AA5E004C285B /* UseSQLite */,
+				C337E0331C59ED3F001A349D /* USQLTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		C337E0931C5A070F001A349D /* gtest.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = gtest.framework;
+			remoteRef = C337E0921C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C337E0951C5A070F001A349D /* libgtest.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libgtest.a;
+			remoteRef = C337E0941C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C337E0971C5A070F001A349D /* libgtest_main.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libgtest_main.a;
+			remoteRef = C337E0961C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C337E0991C5A070F001A349D /* gtest_unittest-framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "gtest_unittest-framework";
+			remoteRef = C337E0981C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C337E09B1C5A070F001A349D /* gtest_unittest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = gtest_unittest;
+			remoteRef = C337E09A1C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C337E09D1C5A070F001A349D /* sample1_unittest-framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "sample1_unittest-framework";
+			remoteRef = C337E09C1C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C337E09F1C5A070F001A349D /* sample1_unittest-static */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "sample1_unittest-static";
+			remoteRef = C337E09E1C5A070F001A349D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXSourcesBuildPhase section */
-		C3999BEC1C57AA5E004C285B /* Sources */ = {
+		C337E0301C59ED3F001A349D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C337E00E1C58AF5B001A349D /* USQLCommand.cpp in Sources */,
-				C3999BFF1C57AE85004C285B /* USQLConnection.cpp in Sources */,
-				C3999C0B1C57B88E004C285B /* USQLSatement.cpp in Sources */,
-				C3999BF41C57AA5E004C285B /* main.m in Sources */,
+				C337E0801C59F711001A349D /* USQLCommand.cpp in Sources */,
+				C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */,
+				C337E0371C59ED3F001A349D /* main.cpp in Sources */,
+				C337E0821C59F711001A349D /* USQLSatement.cpp in Sources */,
+				C337E0841C59F711001A349D /* USQLTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C337E0A21C5A073C001A349D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "gtest-framework";
+			targetProxy = C337E0A11C5A073C001A349D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		C337E0391C59ED3F001A349D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libstdc++";
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C337E03A1C59ED3F001A349D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libstdc++";
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		C3999BF51C57AA5E004C285B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -240,37 +420,23 @@
 			};
 			name = Release;
 		};
-		C3999BF81C57AA5E004C285B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		C3999BF91C57AA5E004C285B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C337E0381C59ED3F001A349D /* Build configuration list for PBXNativeTarget "USQLTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C337E0391C59ED3F001A349D /* Debug */,
+				C337E03A1C59ED3F001A349D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C3999BEB1C57AA5E004C285B /* Build configuration list for PBXProject "UseSQLite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C3999BF51C57AA5E004C285B /* Debug */,
 				C3999BF61C57AA5E004C285B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C3999BF71C57AA5E004C285B /* Build configuration list for PBXNativeTarget "UseSQLite" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C3999BF81C57AA5E004C285B /* Debug */,
-				C3999BF91C57AA5E004C285B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
