@@ -31,12 +31,21 @@
 #include <map>
 
 #define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT 0
+#define USQL_ERROR_TEXT ""
 #define USQL_ERROR_FLOAT 0.0f
-#define USQL_ERROR_BLOB 0
+#define USQL_ERROR_BLOB ""
 
+#define USQL_INVALID_COLUMN_INDEX -1
 
 namespace usqlite {
+    typedef enum {
+        USQLInvalidType = -1,
+        USQLInteger,
+        USQLText,
+        USQLFloat,
+        USQLBlob
+    }USQLColumnType;
+    
     class USQLSatement;
     class USQLQuery
     {
@@ -48,11 +57,21 @@ namespace usqlite {
         bool next();
         bool reset();
         
+        int columnForName(const std::string &name);
+        
+        int columnCount();
+        bool availableIndex(int idx);
+        USQLColumnType typeForName(const std::string &name);
+        USQLColumnType typeForColumn(int i);
+        
         int intForName(const std::string &name);
+        std::string textForName(const std::string &name);
+        double doubleForName(const std::string &name);
+//        std::string blobForName(const std::string &name);
         
     private:
         bool initNameColumn();
-        int hasName(const std::string &name);
+        int hasName(const std::string &name, USQLColumnType type);
         
     private:
         USQLQuery &operator=(const USQLQuery &other) {

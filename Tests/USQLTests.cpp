@@ -26,6 +26,7 @@
 
 #include "USQLTests.hpp"
 #include "USQL.hpp"
+#include <sstream>
 using namespace usqlite;
 
 static const char *_db = "/tmp/usqlite.db";
@@ -68,12 +69,30 @@ protected:
     
     virtual void SetUp() {
         _connection.open();
-        _connection.exec("create table if not exists use_sqlite_table(a text, b int)");
+        createTable();
     }
     virtual void TearDown() {
-        USQLCommand cmd("drop table if exists use_sqlite_table", _connection);
-        cmd.exeNoQuery();
+        dropTable();
         _connection.closeSync();
+    }
+    
+    bool createTable() {
+        return _connection.exec("create table if not exists use_sqlite_table(a text, b int, c real, d blob)");
+    }
+    
+    bool dropTable() {
+        return _connection.exec("drop table if exists use_sqlite_table");
+    }
+    
+    bool insertRow(const std::string &a, int b, double c) {
+        std::stringstream ss;
+        ss<<"insert into use_sqlite_table (a, b, c) values ('"<<a<<"', "<<b<<", "<<c<<")";
+        std::string cmd = ss.str();
+        return _connection.exec(cmd);
+    }
+    
+    bool clearTable() {
+        return _connection.exec("delete from use_sqlite_table");
     }
     
 protected:
@@ -82,9 +101,9 @@ protected:
 
 TEST_F(USQLTests, fail_on_closed_database)
 {
-    _connection.close();
-    
     USQLCommand cmd("select * from use_sqlite_table", _connection);
+    EXPECT_TRUE(cmd.exeNoQuery());
+    EXPECT_TRUE(_connection.closeSync());
     EXPECT_FALSE(cmd.exeNoQuery());
 }
 
@@ -105,13 +124,69 @@ TEST_F(USQLTests, success_exe_sql)
     EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
 }
 
+TEST_F(USQLTests, query_on_closed_database)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    
+    USQLCommand cmd("select * from use_sqlite_table", _connection);
+    USQLQuery query = cmd.exeQuery();
+    EXPECT_TRUE(query.next());
+    EXPECT_TRUE(query.reset());
+    
+    EXPECT_TRUE(_connection.closeSync());
+    EXPECT_FALSE(query.next());
+    EXPECT_FALSE(query.reset());
+}
+
+TEST_F(USQLTests, query_reset)
+{
+    EXPECT_TRUE(clearTable());
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    USQLCommand cmd("select * from use_sqlite_table", _connection);
+    USQLQuery query = cmd.exeQuery();
+    
+    EXPECT_TRUE(query.next());
+    EXPECT_FALSE(query.next());
+    
+    EXPECT_TRUE(query.reset());
+    EXPECT_TRUE(query.next());
+}
+
 TEST_F(USQLTests, query_int)
 {
-    _connection.exec("insert into use_sqlite_table (a, b) values ('hello world', 10)");
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
     USQLCommand cmd("select * from use_sqlite_table", _connection);
     USQLQuery query = cmd.exeQuery();
     EXPECT_TRUE(query.next());
     EXPECT_EQ(10, query.intForName("b"));
+    EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("a"));
+    EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("c"));
+    EXPECT_FALSE(query.next());
+}
+
+TEST_F(USQLTests, query_text)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    
+    USQLCommand cmd("select * from use_sqlite_table", _connection);
+    USQLQuery query = cmd.exeQuery();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(USQL_ERROR_TEXT, query.textForName("b"));
+    EXPECT_EQ("hello world", query.textForName("a"));
+    EXPECT_EQ(USQL_ERROR_TEXT, query.textForName("c"));
+    EXPECT_FALSE(query.next());
+}
+
+TEST_F(USQLTests, query_double)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    
+    USQLCommand cmd("select * from use_sqlite_table", _connection);
+    USQLQuery query = cmd.exeQuery();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(USQL_ERROR_FLOAT, query.doubleForName("b"));
+    EXPECT_EQ(USQL_ERROR_FLOAT, query.doubleForName("a"));
+    EXPECT_EQ(12.3, query.doubleForName("c"));
     EXPECT_FALSE(query.next());
 }

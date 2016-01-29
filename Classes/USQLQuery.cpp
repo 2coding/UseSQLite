@@ -51,6 +51,14 @@ namespace usqlite {
         return _stmt->reset();
     }
     
+    int USQLQuery::columnCount() {
+        return sqlite3_column_count(_stmt->statement());
+    }
+    
+    bool USQLQuery::availableIndex(int idx) {
+        return idx >= 0 && idx < columnCount();
+    }
+    
     bool USQLQuery::initNameColumn() {
         if (_columns.size() > 0) {
             return true;
@@ -61,7 +69,7 @@ namespace usqlite {
             return false;
         }
         
-        int count = sqlite3_column_count(stmt);
+        int count = columnCount();
         if (count == 0) {
             return false;
         }
@@ -78,25 +86,102 @@ namespace usqlite {
         return true;
     }
     
-    int USQLQuery::hasName(const std::string &name) {
+    int USQLQuery::columnForName(const std::string &name) {
         if (name.empty() || !initNameColumn()) {
-            return -1;
+            return USQL_INVALID_COLUMN_INDEX;
         }
         
         auto iter = _columns.find(name);
         if (iter == _columns.end()) {
-            return -1;
+            return USQL_INVALID_COLUMN_INDEX;
         }
         
-        return iter->second;
+        int idx = iter->second;
+        return availableIndex(idx) ? idx : USQL_INVALID_COLUMN_INDEX;
+    }
+    
+    USQLColumnType USQLQuery::typeForColumn(int i) {
+        if (!availableIndex(i)) {
+            return USQLInvalidType;
+        }
+        
+        USQLColumnType type = USQLInvalidType;
+        int t = sqlite3_column_type(_stmt->statement(), i);
+        switch (t) {
+            case SQLITE_INTEGER:
+                type = USQLInteger;
+                break;
+            
+            case SQLITE_TEXT:
+                type = USQLText;
+                break;
+                
+            case SQLITE_FLOAT:
+                type = USQLFloat;
+                break;
+                
+            case SQLITE_BLOB:
+                type = USQLBlob;
+                break;
+        }
+        
+        return type;
+    }
+    
+    USQLColumnType USQLQuery::typeForName(const std::string &name) {
+        int i = columnForName(name);
+        return typeForColumn(i);
+    }
+    
+    int USQLQuery::hasName(const std::string &name, USQLColumnType type) {
+        int idx = columnForName(name);
+        return typeForColumn(idx) == type ? idx : USQL_INVALID_COLUMN_INDEX;
     }
     
     int USQLQuery::intForName(const std::string &name) {
         int i = 0;
-        if ((i = hasName(name)) < 0) {
+        if ((i = hasName(name, USQLInteger)) < 0) {
             return USQL_ERROR_INTEGER;
         }
         
         return sqlite3_column_int(_stmt->statement(), i);
     }
+    
+    std::string USQLQuery::textForName(const std::string &name) {
+        int i = 0;
+        if ((i = hasName(name, USQLText)) < 0) {
+            return USQL_ERROR_TEXT;
+        }
+        
+        const unsigned char *txt = sqlite3_column_text(_stmt->statement(), i);
+        return std::string(txt ? (const char *)txt : USQL_ERROR_TEXT);
+    }
+    
+    double USQLQuery::doubleForName(const std::string &name) {
+        int i = 0;
+        if ((i = hasName(name, USQLFloat)) < 0) {
+            return USQL_ERROR_FLOAT;
+        }
+        
+        return sqlite3_column_double(_stmt->statement(), i);
+    }
+    
+//    std::string USQLQuery::blobForName(const std::string &name) {
+//        int i = 0;
+//        if ((i = hasName(name, SQLITE_BLOB)) < 0) {
+//            return USQL_ERROR_BLOB;
+//        }
+//        
+//        const void *data = sqlite3_column_blob(_stmt->statement(), i);
+//        if (!data) {
+//            return USQL_ERROR_BLOB;
+//        }
+//        
+//        int size = sqlite3_column_bytes(_stmt->statement(), i);
+//        if (size <= 0) {
+//            return USQL_ERROR_BLOB;
+//        }
+//        
+//        return std::string((const char *)data, size);
+//    }
 }
