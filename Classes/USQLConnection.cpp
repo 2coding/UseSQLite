@@ -27,6 +27,7 @@
 #include "USQLConnection.hpp"
 #include "USQLDefs.hpp"
 #include "USQLSatement.hpp"
+#include "USQLCommand.hpp"
 #include <algorithm>
 
 namespace usqlite {
@@ -127,5 +128,14 @@ namespace usqlite {
             }
             stmt->release();
         }
+    }
+    
+    bool USQLConnection::exec(const std::string &cmd) {
+        if (cmd.empty() || !isOpenning()) {
+            return false;
+        }
+        
+        USQLCommand command(cmd, *this);
+        return command.exeNoQuery();
     }
 }

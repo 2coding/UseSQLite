@@ -29,6 +29,7 @@
 
 #include <string>
 #include "USQLNoCopyable.hpp"
+#include "USQLQuery.hpp"
 
 namespace usqlite {
     class USQLConnection;
@@ -41,6 +42,7 @@ namespace usqlite {
         virtual ~USQLCommand();
         
         bool exeNoQuery();
+        USQLQuery exeQuery();
         
     private:
         USQLSatement *_statement;

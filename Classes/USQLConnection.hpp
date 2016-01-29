@@ -43,6 +43,9 @@ namespace usqlite {
         
         bool open();
         bool open(int flags);
+        bool isOpenning() const {
+            return _db != nullptr;
+        }
         
         void close();
         bool closeSync();
@@ -65,6 +68,8 @@ namespace usqlite {
         
         void registerStatement(USQLSatement *stmt);
         void unregisterStatement(USQLSatement *stmt);
+        
+        bool exec(const std::string &cmd);
         
     private:
         void finilizeAllStatements(bool finilized);

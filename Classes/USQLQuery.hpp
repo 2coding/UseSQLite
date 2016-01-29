@@ -24,41 +24,45 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLSatement_hpp
-#define USQLSatement_hpp
+#ifndef USQLQuery_hpp
+#define USQLQuery_hpp
 
 #include <string>
-#include <sqlite3.h>
-#include "USQLShareObject.hpp"
+#include <map>
+
+#define USQL_ERROR_INTEGER 0
+#define USQL_ERROR_TEXT 0
+#define USQL_ERROR_FLOAT 0.0f
+#define USQL_ERROR_BLOB 0
+
 
 namespace usqlite {
-    class USQLConnection;
-    
-    class USQLSatement : public USQLShareObject
+    class USQLSatement;
+    class USQLQuery
     {
     public:
-        static USQLSatement *create(const std::string &cmd, USQLConnection &connction);
+        USQLQuery(USQLSatement *stmt);
+        USQLQuery(const USQLQuery &other);
+        virtual ~USQLQuery();
         
+        bool next();
         bool reset();
-        bool step();
-        bool query();
-        void finilize();
         
-        sqlite3_stmt *statement() {
-            return _stmt;
+        int intForName(const std::string &name);
+        
+    private:
+        bool initNameColumn();
+        int hasName(const std::string &name);
+        
+    private:
+        USQLQuery &operator=(const USQLQuery &other) {
+            return *this;
         }
         
     private:
-        USQLSatement(const std::string &cmd, USQLConnection &connection);
-        ~USQLSatement();
-        
-        bool prepare();
-        
-    private:
-        const std::string _command;
-        sqlite3_stmt *_stmt;
-        USQLConnection &_connection;
+        USQLSatement *_stmt;
+        std::map<std::string, int> _columns;
     };
 }
 
-#endif /* USQLSatement_hpp */
+#endif /* USQLQuery_hpp */

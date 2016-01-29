@@ -52,10 +52,10 @@ TEST(usqlite_tests, open_close_database)
 }
 
 #pragma mark - sqlite base tests
-class usqlite_base_tests : public testing::Test
+class USQLTests : public testing::Test
 {
 public:
-    usqlite_base_tests() : _connection(_db) {}
+    USQLTests() : _connection(_db) {}
     
 protected:
     static void SetUpTestCase() {
@@ -68,9 +68,7 @@ protected:
     
     virtual void SetUp() {
         _connection.open();
-        
-        USQLCommand cmd("create table if not exists use_sqlite_table(a text)", _connection);
-        cmd.exeNoQuery();
+        _connection.exec("create table if not exists use_sqlite_table(a text, b int)");
     }
     virtual void TearDown() {
         USQLCommand cmd("drop table if exists use_sqlite_table", _connection);
@@ -82,24 +80,38 @@ protected:
     USQLConnection _connection;
 };
 
-TEST_F(usqlite_base_tests, fail_on_closed_database)
+TEST_F(USQLTests, fail_on_closed_database)
 {
     _connection.close();
     
-    USQLCommand cmd("select * from table", _connection);
+    USQLCommand cmd("select * from use_sqlite_table", _connection);
     EXPECT_FALSE(cmd.exeNoQuery());
 }
 
-TEST_F(usqlite_base_tests, fail_on_bad_statement)
+TEST_F(USQLTests, fail_on_bad_statement)
 {
     USQLCommand cmd("bla bla bla", _connection);
     EXPECT_FALSE(cmd.exeNoQuery());
     EXPECT_NE(SQLITE_OK, _connection.lastErrorCode());
 }
 
-TEST_F(usqlite_base_tests, success_exe_sql)
+TEST_F(USQLTests, success_exe_sql)
 {
     USQLCommand cmd("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(cmd.exeNoQuery());
     EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
+    
+    EXPECT_TRUE(cmd.exeNoQuery());
+    EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
+}
+
+TEST_F(USQLTests, query_int)
+{
+    _connection.exec("insert into use_sqlite_table (a, b) values ('hello world', 10)");
+    
+    USQLCommand cmd("select * from use_sqlite_table", _connection);
+    USQLQuery query = cmd.exeQuery();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(10, query.intForName("b"));
+    EXPECT_FALSE(query.next());
 }

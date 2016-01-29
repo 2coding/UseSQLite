@@ -93,4 +93,17 @@ namespace usqlite {
         
         return USQL_STEP_OK(code);
     }
+    
+    bool USQLSatement::query() {
+        if (!_stmt && !reset()) {
+            return false;
+        }
+        
+        int code = sqlite3_step(_stmt);
+        if (!USQL_STEP_OK(code)) {
+            _connection.setLastErrorCode(code);
+        }
+        
+        return USQL_QUERY_OK(code);
+    }
 }

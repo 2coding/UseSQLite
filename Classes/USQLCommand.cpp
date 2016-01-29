@@ -26,6 +26,7 @@
 
 #include "USQLCommand.hpp"
 #include "USQLSatement.hpp"
+#include "USQLQuery.hpp"
 
 namespace usqlite {
     USQLCommand::USQLCommand(const std::string &cmd, USQLConnection &connection) {
@@ -39,5 +40,9 @@ namespace usqlite {
     
     bool USQLCommand::exeNoQuery() {
         return _statement->step();
+    }
+    
+    USQLQuery USQLCommand::exeQuery() {
+        return USQLQuery(_statement);
     }
 }
