@@ -57,7 +57,7 @@ namespace usqlite {
         bool next();
         bool reset();
         
-        int columnForName(const std::string &name);
+        int columnIndexForName(const std::string &name);
         
         int columnCount();
         bool availableIndex(int idx);

@@ -86,7 +86,7 @@ namespace usqlite {
         return true;
     }
     
-    int USQLQuery::columnForName(const std::string &name) {
+    int USQLQuery::columnIndexForName(const std::string &name) {
         if (name.empty() || !initNameColumn()) {
             return USQL_INVALID_COLUMN_INDEX;
         }
@@ -129,12 +129,12 @@ namespace usqlite {
     }
     
     USQLColumnType USQLQuery::typeForName(const std::string &name) {
-        int i = columnForName(name);
+        int i = columnIndexForName(name);
         return typeForColumn(i);
     }
     
     int USQLQuery::hasName(const std::string &name, USQLColumnType type) {
-        int idx = columnForName(name);
+        int idx = columnIndexForName(name);
         return typeForColumn(idx) == type ? idx : USQL_INVALID_COLUMN_INDEX;
     }
     
