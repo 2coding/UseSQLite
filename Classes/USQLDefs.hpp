@@ -27,10 +27,31 @@
 #ifndef USQLDefs_hpp
 #define USQLDefs_hpp
 
-#include <sqlite3.h>
+#include "USQLStdCpp.hpp"
 
 #define USQL_OK(code) ((code) == SQLITE_OK)
 #define USQL_STEP_OK(code) ((code) == SQLITE_DONE || (code) == SQLITE_ROW)
 #define USQL_QUERY_OK(code) ((code) == SQLITE_ROW)
+
+#define USQL_LOCK
+#define USQL_START_LOCK { USQL_LOCK
+#define USQL_UNLOCK }
+
+//defines
+#define USQL_ERROR_INTEGER 0
+#define USQL_ERROR_TEXT ""
+#define USQL_ERROR_FLOAT (double)0.0f
+#define USQL_ERROR_BLOB ""
+
+#define USQL_INVALID_COLUMN_INDEX -1
+
+typedef enum {
+    USQLInvalidType = -1,
+    USQLInteger,
+    USQLText,
+    USQLFloat,
+    USQLBlob,
+    USQLNull,
+}USQLColumnType;
 
 #endif /* USQLDefs_hpp */

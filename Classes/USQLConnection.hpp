@@ -27,61 +27,37 @@
 #ifndef USQLConnection_hpp
 #define USQLConnection_hpp
 
-#include <string>
-#include <sqlite3.h>
-#include <list>
-#include "USQLNoCopyable.hpp"
+#include "USQLStdCpp.hpp"
+#include "USQLObject.hpp"
+#include "USQLQuery.hpp"
 
 namespace usqlite {
-    class USQLSatement;
-    
     class USQLConnection : public USQLNoCopyable
     {
     public:
         USQLConnection(const std::string &filename);
         ~USQLConnection();
         
+        sqlite3 *db();
+        
         bool open();
         bool open(int flags);
-        bool isOpenning() const {
-            return _db != nullptr;
-        }
+        bool isOpenning() const;
         
         void close();
         bool closeSync();
         
-        void setLastErrorCode(int code) {
-            _errorCode = code;
-        }
+        void setLastErrorCode(int code);
         
-        int lastErrorCode() const {
-            return _errorCode;
-        }
+        int lastErrorCode() const;
         
-        std::string lastErrorMessage() {
-            return _db ? sqlite3_errmsg(_db) : sqlite3_errstr(lastErrorCode());
-        }
-        
-        sqlite3 *db() {
-            return _db;
-        }
-        
-        void registerStatement(USQLSatement *stmt);
-        void unregisterStatement(USQLSatement *stmt);
+        std::string lastErrorMessage();
         
         bool exec(const std::string &cmd);
+        USQLQuery query(const std::string &cmd);
         
     private:
-        void finilizeAllStatements(bool finilized);
-        
-    public:
-        const std::string filename;
-        
-    private:
-        sqlite3 *_db;
-        int _errorCode;
-        
-        std::list<USQLSatement *> _statements;
+        USQLObject *_field;
     };
 }
 

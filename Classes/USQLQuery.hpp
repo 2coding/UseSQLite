@@ -27,60 +27,53 @@
 #ifndef USQLQuery_hpp
 #define USQLQuery_hpp
 
-#include <string>
-#include <map>
-
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT 0.0f
-#define USQL_ERROR_BLOB ""
-
-#define USQL_INVALID_COLUMN_INDEX -1
+#include "USQLDefs.hpp"
+#include "USQLObject.hpp"
 
 namespace usqlite {
-    typedef enum {
-        USQLInvalidType = -1,
-        USQLInteger,
-        USQLText,
-        USQLFloat,
-        USQLBlob
-    }USQLColumnType;
-    
-    class USQLSatement;
-    class USQLQuery
+    class USQLQuery : public USQLObject
     {
     public:
-        USQLQuery(USQLSatement *stmt);
+        USQLQuery(USQLObject *stmt);
         USQLQuery(const USQLQuery &other);
         virtual ~USQLQuery();
         
         bool next();
         bool reset();
         
-        int columnIndexForName(const std::string &name);
+        int columnCount() const;
+        bool availableIndex(int idx) const;
+        int columnIndexForName(const std::string &name) const;
         
-        int columnCount();
-        bool availableIndex(int idx);
-        USQLColumnType typeForName(const std::string &name);
-        USQLColumnType typeForColumn(int i);
+        USQLColumnType typeForName(const std::string &name) const;
+        USQLColumnType typeForColumn(int i) const;
         
         int intForName(const std::string &name);
+        int intForColumnIndex(int idx);
+        
+        int64_t int64ForName(const std::string &name);
+        int64_t int64ForColumnIndex(int idx);
+        
         std::string textForName(const std::string &name);
-        double doubleForName(const std::string &name);
-//        std::string blobForName(const std::string &name);
+        std::string textForColumnIndex(int idx);
+        
+        double floatForName(const std::string &name);
+        double floatForColumnIndex(int idx);
         
     private:
-        bool initNameColumn();
-        int hasName(const std::string &name, USQLColumnType type);
+        const unsigned char *cstrForColumnIndex(int idx);
         
     private:
         USQLQuery &operator=(const USQLQuery &other) {
             return *this;
         }
-        
+
     private:
-        USQLSatement *_stmt;
-        std::map<std::string, int> _columns;
+        USQLObject *_field;
+        
+//    private:
+//        USQLSatement *_stmt;
+//        std::map<std::string, int> _columns;
     };
 }
 

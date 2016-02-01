@@ -24,11 +24,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLNoCopyable_hpp
-#define USQLNoCopyable_hpp
+#ifndef USQLObject_hpp
+#define USQLObject_hpp
 
 namespace usqlite {
-    class USQLNoCopyable
+    class USQLObject
+    {
+    protected:
+        USQLObject() {}
+        USQLObject(const USQLObject &other) {}
+        USQLObject &operator=(const USQLObject &other) {
+            return *this;
+        }
+        
+    public:
+        virtual ~USQLObject() {}
+    };
+    
+    class USQLNoCopyable : public USQLObject
     {
     protected:
         USQLNoCopyable() {}
@@ -40,6 +53,27 @@ namespace usqlite {
             return *this;
         }
     };
+    
+    class USQLShareObject : public USQLNoCopyable
+    {
+    protected:
+        USQLShareObject() : _count(1) {}
+        
+    public:
+        void release() {
+            --_count;
+            if (_count <= 0) {
+                delete this;
+            }
+        }
+        
+        void retain() {
+            ++_count;
+        }
+        
+    private:
+        int _count;
+    };
 }
 
-#endif /* USQLNoCopyable_hpp */
+#endif /* USQLObject_hpp */

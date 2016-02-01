@@ -24,32 +24,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLShareObject_hpp
-#define USQLShareObject_hpp
+#ifndef USQLStdCpp_hpp
+#define USQLStdCpp_hpp
 
-#include "USQLNoCopyable.hpp"
+#include <string>
+#include <list>
+#include <map>
+#include <vector>
+#include <algorithm>
 
-namespace usqlite {
-    class USQLShareObject : public USQLNoCopyable
-    {
-    protected:
-        USQLShareObject() : _count(1) {}
-        
-    public:
-        void release() {
-            --_count;
-            if (_count <= 0) {
-                delete this;
-            }
-        }
-        
-        void retain() {
-            ++_count;
-        }
-        
-    private:
-        int _count;
-    };
-}
+#include <stdint.h>
 
-#endif /* USQLShareObject_hpp */
+#include <sqlite3.h>
+
+#endif /* USQLStdCpp_hpp */

@@ -26,20 +26,22 @@
 
 #include "USQLConnection.hpp"
 #include "USQLDefs.hpp"
-#include "USQLSatement.hpp"
-#include "USQLCommand.hpp"
-#include <algorithm>
+#include "_USQLStatement.hpp"
+#include "_USQLDatabase.hpp"
+
+#define _USQL_CONNECTION_FIELD (dynamic_cast<_USQLDatabase *>(_field))
 
 namespace usqlite {
-    USQLConnection::USQLConnection(const std::string &fn)
-    : filename(fn.empty() ? ":memory" : fn)
-    , _errorCode(SQLITE_OK)
-    , _db(nullptr) {
-        
+    USQLConnection::USQLConnection(const std::string &fn) {
+        _field = new _USQLDatabase(fn);
     }
     
     USQLConnection::~USQLConnection() {
-        close();
+        delete _USQL_CONNECTION_FIELD;
+    }
+    
+    sqlite3 *USQLConnection::db() {
+        return _USQL_CONNECTION_FIELD->db();
     }
     
     bool USQLConnection::open() {
@@ -47,87 +49,45 @@ namespace usqlite {
     }
     
     bool USQLConnection::open(int flags) {
-        if (_db) {
-            return true;
-        }
-        
-        _errorCode = sqlite3_open_v2(filename.c_str(), &_db, flags, nullptr);
-        return USQL_OK(_errorCode);
+        USQL_START_LOCK;
+        return _USQL_CONNECTION_FIELD->open(flags);
+        USQL_UNLOCK;
+    }
+    
+    bool USQLConnection::isOpenning() const {
+        USQL_START_LOCK;
+        return _USQL_CONNECTION_FIELD->isOpenning();
+        USQL_UNLOCK;
     }
     
     bool USQLConnection::closeSync() {
-        if (!_db) {
-            return true;
-        }
-        
-        int code = sqlite3_close(_db);
-        if (code == SQLITE_BUSY) {
-            //busy
-            finilizeAllStatements(true);
-            
-            code = sqlite3_close(_db);
-        }
-        
-        if (USQL_OK(code)) {
-            _db = nullptr;
-        }
-        
-        _errorCode = code;
-        return USQL_OK(_errorCode);
+        USQL_START_LOCK;
+        return _USQL_CONNECTION_FIELD->closeSync();
+        USQL_UNLOCK;
     }
     
     void USQLConnection::close() {
-        if (!_db) {
-            return;
-        }
-        
-        finilizeAllStatements(false);
-        
-        _errorCode = sqlite3_close_v2(_db);
-        _db = nullptr;
+        USQL_START_LOCK;
+        _USQL_CONNECTION_FIELD->close();
+        USQL_UNLOCK;
     }
     
-    void USQLConnection::registerStatement(USQLSatement *stmt) {
-        if (!stmt) {
-            return;
-        }
-        
-        auto ret = std::find(_statements.begin(), _statements.end(), stmt);
-        if (ret != _statements.end()) {
-            return;
-        }
-        
-        _statements.push_back(stmt);
-        stmt->retain();
+    void USQLConnection::setLastErrorCode(int code) {
+        USQL_START_LOCK;
+        _USQL_CONNECTION_FIELD->setLastErrorCode(code);
+        USQL_UNLOCK;
     }
     
-    void USQLConnection::unregisterStatement(USQLSatement *stmt) {
-        if (!stmt) {
-            return;
-        }
-        
-        auto ret = std::find(_statements.begin(), _statements.end(), stmt);
-        if (ret != _statements.end()) {
-            _statements.remove(stmt);
-            stmt->release();
-        }
+    int USQLConnection::lastErrorCode() const {
+        USQL_START_LOCK;
+        return _USQL_CONNECTION_FIELD->lastErrorCode();
+        USQL_UNLOCK;
     }
     
-    void USQLConnection::finilizeAllStatements(bool finilized) {
-        if (_statements.size() == 0) {
-            return;
-        }
-        
-        auto list = _statements;
-        _statements.clear();
-        
-        for (auto iter = list.begin(); iter != list.end(); ++iter) {
-            USQLSatement *stmt = *iter;
-            if (finilized) {
-                stmt->finilize();
-            }
-            stmt->release();
-        }
+    std::string USQLConnection::lastErrorMessage() {
+        USQL_START_LOCK;
+        return _USQL_CONNECTION_FIELD->lastErrorMessage();
+        USQL_UNLOCK;
     }
     
     bool USQLConnection::exec(const std::string &cmd) {
@@ -135,7 +95,22 @@ namespace usqlite {
             return false;
         }
         
-        USQLCommand command(cmd, *this);
-        return command.exeNoQuery();
+        USQL_START_LOCK;
+        _USQLStatement *stmt = _USQLStatement::create(cmd, _USQL_CONNECTION_FIELD);
+        bool ret = stmt->step();
+        stmt->release();
+        
+        return ret;
+        USQL_UNLOCK;
+    }
+    
+    USQLQuery USQLConnection::query(const std::string &cmd) {
+        USQL_START_LOCK;
+        _USQLStatement *stmt = _USQLStatement::create(cmd, _USQL_CONNECTION_FIELD);
+        USQLQuery query(stmt);
+        stmt->release();
+        
+        return query;
+        USQL_UNLOCK;
     }
 }

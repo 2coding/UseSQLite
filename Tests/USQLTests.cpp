@@ -41,14 +41,20 @@ TEST(usqlite_tests, open_close_database)
 {
     USQLConnection connection(_db);
     EXPECT_TRUE(connection.open());
+    EXPECT_TRUE(connection.isOpenning());
     EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
     connection.setLastErrorCode(SQLITE_BUSY);
     EXPECT_TRUE(connection.closeSync());
+    
+    EXPECT_FALSE(connection.isOpenning());
     EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
     
     connection.open();
+    EXPECT_TRUE(connection.isOpenning());
     connection.setLastErrorCode(SQLITE_BUSY);
+    
     connection.close();
+    EXPECT_FALSE(connection.isOpenning());
     EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
 }
 
@@ -69,9 +75,12 @@ protected:
     
     virtual void SetUp() {
         _connection.open();
+        dropTable();
         createTable();
+        clearTable();
     }
     virtual void TearDown() {
+        clearTable();
         dropTable();
         _connection.closeSync();
     }
@@ -101,35 +110,45 @@ protected:
 
 TEST_F(USQLTests, fail_on_closed_database)
 {
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    EXPECT_TRUE(cmd.exeNoQuery());
+    EXPECT_TRUE(insertRow("row 1", 10, 12.3));
+    
+    std::string cmd("select * from use_sqlite_table");
+    EXPECT_TRUE(_connection.exec(cmd));
+    
+    USQLQuery query = _connection.query(cmd);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(4, query.columnCount());
+    EXPECT_EQ("row 1", query.textForName("a"));
+    EXPECT_EQ(10, query.intForName("b"));
+    
     EXPECT_TRUE(_connection.closeSync());
-    EXPECT_FALSE(cmd.exeNoQuery());
+    EXPECT_FALSE(_connection.exec(cmd));
+    USQLQuery failed = _connection.query(cmd);
+    EXPECT_EQ(0, failed.columnCount());
+    EXPECT_EQ(USQL_ERROR_TEXT, failed.textForName("a"));
+    EXPECT_EQ(USQL_ERROR_INTEGER, failed.intForName("b"));
 }
 
 TEST_F(USQLTests, fail_on_bad_statement)
 {
-    USQLCommand cmd("bla bla bla", _connection);
-    EXPECT_FALSE(cmd.exeNoQuery());
+    EXPECT_FALSE(_connection.exec("bla bla bla"));
     EXPECT_NE(SQLITE_OK, _connection.lastErrorCode());
 }
 
 TEST_F(USQLTests, success_exe_sql)
 {
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    EXPECT_TRUE(cmd.exeNoQuery());
+    std::string cmd("select * from use_sqlite_table");
+    EXPECT_TRUE(_connection.exec(cmd));
     EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
     
-    EXPECT_TRUE(cmd.exeNoQuery());
+    EXPECT_TRUE(_connection.exec(cmd));
     EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
 }
 
 TEST_F(USQLTests, query_on_closed_database)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
-    
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    USQLQuery query = cmd.exeQuery();
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
     EXPECT_TRUE(query.next());
     EXPECT_TRUE(query.reset());
     
@@ -140,11 +159,9 @@ TEST_F(USQLTests, query_on_closed_database)
 
 TEST_F(USQLTests, query_reset)
 {
-    EXPECT_TRUE(clearTable());
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    USQLQuery query = cmd.exeQuery();
     
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
     EXPECT_TRUE(query.next());
     EXPECT_FALSE(query.next());
     
@@ -152,14 +169,47 @@ TEST_F(USQLTests, query_reset)
     EXPECT_TRUE(query.next());
 }
 
+TEST_F(USQLTests, query_column)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
+    EXPECT_TRUE(query.next());
+    
+    EXPECT_EQ(4, query.columnCount());
+    EXPECT_EQ(0, query.columnIndexForName("a"));
+    EXPECT_EQ(USQL_INVALID_COLUMN_INDEX, query.columnIndexForName("A"));
+    EXPECT_EQ(1, query.columnIndexForName("b"));
+    EXPECT_EQ(2, query.columnIndexForName("c"));
+    
+    EXPECT_TRUE(query.availableIndex(0));
+    EXPECT_TRUE(query.availableIndex(3));
+    EXPECT_FALSE(query.availableIndex(-1));
+    EXPECT_FALSE(query.availableIndex(4));
+}
+
+TEST_F(USQLTests, query_column_type)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
+    
+    EXPECT_TRUE(query.next());
+    
+    EXPECT_EQ(USQLText, query.typeForName("a"));
+    EXPECT_EQ(USQLInteger, query.typeForName("b"));
+    EXPECT_EQ(USQLFloat, query.typeForName("c"));
+    EXPECT_EQ(USQLNull, query.typeForName("d"));
+    EXPECT_EQ(USQLInvalidType, query.typeForName("A"));
+}
+
 TEST_F(USQLTests, query_int)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    USQLQuery query = cmd.exeQuery();
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
     EXPECT_TRUE(query.next());
     EXPECT_EQ(10, query.intForName("b"));
+    EXPECT_EQ(10, query.int64ForName("b"));
     EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("a"));
     EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("c"));
     EXPECT_FALSE(query.next());
@@ -169,8 +219,7 @@ TEST_F(USQLTests, query_text)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    USQLQuery query = cmd.exeQuery();
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
     EXPECT_TRUE(query.next());
     EXPECT_EQ(USQL_ERROR_TEXT, query.textForName("b"));
     EXPECT_EQ("hello world", query.textForName("a"));
@@ -182,11 +231,10 @@ TEST_F(USQLTests, query_double)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLCommand cmd("select * from use_sqlite_table", _connection);
-    USQLQuery query = cmd.exeQuery();
+    USQLQuery query = _connection.query("select * from use_sqlite_table");
     EXPECT_TRUE(query.next());
-    EXPECT_EQ(USQL_ERROR_FLOAT, query.doubleForName("b"));
-    EXPECT_EQ(USQL_ERROR_FLOAT, query.doubleForName("a"));
-    EXPECT_EQ(12.3, query.doubleForName("c"));
+    EXPECT_EQ(USQL_ERROR_FLOAT, query.floatForName("b"));
+    EXPECT_EQ(USQL_ERROR_FLOAT, query.floatForName("a"));
+    EXPECT_EQ(12.3, query.floatForName("c"));
     EXPECT_FALSE(query.next());
 }

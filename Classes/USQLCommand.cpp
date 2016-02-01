@@ -25,24 +25,23 @@
  **/
 
 #include "USQLCommand.hpp"
-#include "USQLSatement.hpp"
 #include "USQLQuery.hpp"
 
 namespace usqlite {
     USQLCommand::USQLCommand(const std::string &cmd, USQLConnection &connection) {
-        _statement = USQLSatement::create(cmd, connection);
+//        _statement = USQLSatement::create(cmd, connection);
     }
     
     USQLCommand::~USQLCommand() {
-        _statement->finilize();
-        _statement->release();
+//        _statement->finilize();
+//        _statement->release();
     }
     
-    bool USQLCommand::exeNoQuery() {
-        return _statement->step();
-    }
+//    bool USQLCommand::exeNoQuery() {
+//        return _statement->step();
+//    }
     
-    USQLQuery USQLCommand::exeQuery() {
-        return USQLQuery(_statement);
-    }
+//    USQLQuery USQLCommand::exeQuery() {
+//        return USQLQuery(_statement);
+//    }
 }

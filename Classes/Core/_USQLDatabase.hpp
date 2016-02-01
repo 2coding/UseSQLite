@@ -24,41 +24,57 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLSatement_hpp
-#define USQLSatement_hpp
+#ifndef _USQLDatabase_hpp
+#define _USQLDatabase_hpp
 
-#include <string>
-#include <sqlite3.h>
-#include "USQLShareObject.hpp"
+#include "USQLStdCpp.hpp"
+#include "USQLObject.hpp"
 
 namespace usqlite {
-    class USQLConnection;
+    class _USQLStatement;
     
-    class USQLSatement : public USQLShareObject
+    class _USQLDatabase : public USQLObject
     {
     public:
-        static USQLSatement *create(const std::string &cmd, USQLConnection &connction);
+        _USQLDatabase(const std::string &filename);
+        ~_USQLDatabase();
         
-        bool reset();
-        bool step();
-        bool query();
-        void finilize();
-        
-        sqlite3_stmt *statement() {
-            return _stmt;
+        bool open(int flags);
+        inline bool isOpenning() const {
+            return _db != nullptr;
         }
         
-    private:
-        USQLSatement(const std::string &cmd, USQLConnection &connection);
-        ~USQLSatement();
+        void close();
+        bool closeSync();
         
-        bool prepare();
+        inline void setLastErrorCode(int code) {
+            _errorCode = code;
+        }
+        
+        inline int lastErrorCode() const {
+            return _errorCode;
+        }
+        
+        inline std::string lastErrorMessage() {
+            return _db ? sqlite3_errmsg(_db) : sqlite3_errstr(lastErrorCode());
+        }
+        
+        inline sqlite3 *db() {
+            return _db;
+        }
+        
+        void registerStatement(_USQLStatement *stmt);
+        void unregisterStatement(_USQLStatement *stmt);
+        void finilizeAllStatements(bool finilized);
         
     private:
-        const std::string _command;
-        sqlite3_stmt *_stmt;
-        USQLConnection &_connection;
+        std::string _filename;
+        sqlite3 *_db;
+        
+        int _errorCode;
+        
+        std::list<_USQLStatement *> _statements;
     };
 }
 
-#endif /* USQLSatement_hpp */
+#endif /* _USQLDatabase_hpp */

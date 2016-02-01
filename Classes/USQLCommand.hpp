@@ -28,7 +28,7 @@
 #define USQLCommand_hpp
 
 #include <string>
-#include "USQLNoCopyable.hpp"
+#include "USQLObject.hpp"
 #include "USQLQuery.hpp"
 
 namespace usqlite {

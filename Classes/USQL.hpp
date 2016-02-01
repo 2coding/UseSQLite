@@ -27,9 +27,9 @@
 #ifndef USQL_hpp
 #define USQL_hpp
 
-#include "USQLNoCopyable.hpp"
+#include "USQLObject.hpp"
 #include "USQLQuery.hpp"
-#include "USQLCommand.hpp"
+//#include "USQLCommand.hpp"
 #include "USQLConnection.hpp"
 
 #endif /* USQL_hpp */
