@@ -28,6 +28,7 @@
 #define USQLStdCpp_hpp
 
 #include <string>
+#include <sstream>
 #include <list>
 #include <map>
 #include <vector>

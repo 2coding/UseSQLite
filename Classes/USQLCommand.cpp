@@ -25,23 +25,31 @@
  **/
 
 #include "USQLCommand.hpp"
-#include "USQLQuery.hpp"
 
 namespace usqlite {
-    USQLCommand::USQLCommand(const std::string &cmd, USQLConnection &connection) {
-//        _statement = USQLSatement::create(cmd, connection);
+    USQLCommand::USQLCommand(const std::string &cmd)
+    : _command(cmd) {
     }
     
     USQLCommand::~USQLCommand() {
-//        _statement->finilize();
-//        _statement->release();
     }
     
-//    bool USQLCommand::exeNoQuery() {
-//        return _statement->step();
-//    }
-    
-//    USQLQuery USQLCommand::exeQuery() {
-//        return USQLQuery(_statement);
-//    }
+    bool USQLCommand::availableBindName(const std::string &name) {
+        std::string cmd = command();
+        if (cmd.empty() || name.empty()) {
+            return false;
+        }
+        
+        std::string key = ":" + name;
+        if (cmd.find(key) != std::string::npos) {
+            return true;
+        }
+        
+        key = "@" + name;
+        if (cmd.find(key) != std::string::npos) {
+            return true;
+        }
+        
+        return false;
+    }
 }

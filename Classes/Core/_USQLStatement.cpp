@@ -35,7 +35,7 @@ namespace usqlite {
     , _db(db){
     }
     
-    _USQLStatement::_USQLStatement() {
+    _USQLStatement::~_USQLStatement() {
         finilize();
     }
     

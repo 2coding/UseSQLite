@@ -70,10 +70,6 @@ namespace usqlite {
 
     private:
         USQLObject *_field;
-        
-//    private:
-//        USQLSatement *_stmt;
-//        std::map<std::string, int> _columns;
     };
 }
 

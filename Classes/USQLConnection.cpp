@@ -91,13 +91,22 @@ namespace usqlite {
     }
     
     bool USQLConnection::exec(const std::string &cmd) {
-        if (cmd.empty() || !isOpenning()) {
+        if (cmd.empty()) {
+            return false;
+        }
+        
+        return exec(USQLCommand(cmd));
+    }
+    
+    bool USQLConnection::exec(const usqlite::USQLCommand &cmd) {
+        if (!isOpenning()) {
             return false;
         }
         
         USQL_START_LOCK;
-        _USQLStatement *stmt = _USQLStatement::create(cmd, _USQL_CONNECTION_FIELD);
+        _USQLStatement *stmt = _USQLStatement::create(cmd.command(), _USQL_CONNECTION_FIELD);
         bool ret = stmt->step();
+        stmt->finilize();
         stmt->release();
         
         return ret;
@@ -105,8 +114,12 @@ namespace usqlite {
     }
     
     USQLQuery USQLConnection::query(const std::string &cmd) {
+        return query(USQLCommand(cmd));
+    }
+    
+    USQLQuery USQLConnection::query(const usqlite::USQLCommand &cmd) {
         USQL_START_LOCK;
-        _USQLStatement *stmt = _USQLStatement::create(cmd, _USQL_CONNECTION_FIELD);
+        _USQLStatement *stmt = _USQLStatement::create(cmd.command(), _USQL_CONNECTION_FIELD);
         USQLQuery query(stmt);
         stmt->release();
         

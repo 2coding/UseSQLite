@@ -37,7 +37,6 @@ namespace usqlite {
             return *this;
         }
         
-    public:
         virtual ~USQLObject() {}
     };
     

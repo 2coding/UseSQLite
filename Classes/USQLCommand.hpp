@@ -27,25 +27,43 @@
 #ifndef USQLCommand_hpp
 #define USQLCommand_hpp
 
-#include <string>
+#include "USQLStdCpp.hpp"
 #include "USQLObject.hpp"
-#include "USQLQuery.hpp"
 
 namespace usqlite {
-    class USQLConnection;
-    class USQLSatement;
-    
     class USQLCommand : public USQLNoCopyable
     {
     public:
-        USQLCommand(const std::string &cmd, USQLConnection &connection);
+        explicit USQLCommand(const std::string &cmd);
         virtual ~USQLCommand();
         
-        bool exeNoQuery();
-        USQLQuery exeQuery();
+        virtual std::string command() const {
+            return _command;
+        }
+        
+        template<class Type>
+        bool bind(const std::string &name, Type value) {
+            std::string key = name;
+            if (name.find(":") == 0 || name.find("@") == 0) {
+                key = name.substr(1);
+            }
+            
+            if (key.empty()) {
+                return false;
+            }
+            
+            if (!availableBindName(key)) {
+                return false;
+            }
+            
+            return false;
+        }
         
     private:
-        USQLSatement *_statement;
+        bool availableBindName(const std::string &name);
+        
+    private:
+        std::string _command;
     };
 }
 

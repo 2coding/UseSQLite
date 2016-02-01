@@ -80,7 +80,7 @@ namespace usqlite {
         
     private:
         _USQLStatement(const std::string &cmd, _USQLDatabase *db);
-        _USQLStatement();
+        ~_USQLStatement();
         
         bool prepare();
         

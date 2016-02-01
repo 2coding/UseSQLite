@@ -41,6 +41,7 @@ namespace usqlite {
     }
     
     USQLQuery::~USQLQuery() {
+        _USQL_QUERY_FIELD->finilize();
         _USQL_QUERY_FIELD->release();
     }
     
