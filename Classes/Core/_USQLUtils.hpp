@@ -24,24 +24,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
+#ifndef _USQLUtils_hpp
+#define _USQLUtils_hpp
+#include "USQLStdCpp.hpp"
 
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
+#define _USQL_OK(code) ((code) == SQLITE_OK)
+#define _USQL_STEP_OK(code) ((code) == SQLITE_DONE || (code) == SQLITE_ROW)
+#define _USQL_QUERY_OK(code) ((code) == SQLITE_ROW)
 
-#define USQL_INVALID_COLUMN_INDEX -1
+#define _USQL_LOCK
+#define _USQL_START_LOCK { _USQL_LOCK
+#define _USQL_UNLOCK }
 
-typedef enum {
-    USQLInvalidType = -1,
-    USQLInteger,
-    USQLText,
-    USQLFloat,
-    USQLBlob,
-    USQLNull,
-}USQLColumnType;
+#define _USQL_OBJECT_CALL(obj, func) ((obj)->*(func))
+#define _USQL_TYPE_CALL(obj, type, func) _USQL_OBJECT_CALL(dynamic_cast<type *>(obj), &type::func)
 
-#endif /* USQLDefs_hpp */
+#define _USQL_STATEMENT_CALL(func) _USQL_TYPE_CALL(_field, _USQLStatement, func)
+
+#define _USQL_DATABASE_CALL(func) _USQL_TYPE_CALL(_field, _USQLDatabase, func)
+#define _USQL_CONNECTION_FIELD (dynamic_cast<_USQLDatabase *>(_field))
+
+#endif /* _USQLUtils_hpp */

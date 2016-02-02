@@ -26,7 +26,7 @@
 
 #include "_USQLStatement.hpp"
 #include "_USQLDatabase.hpp"
-#include "USQLDefs.hpp"
+#include "_USQLUtils.hpp"
 
 namespace usqlite {
     _USQLStatement::_USQLStatement(const std::string &cmd, _USQLDatabase *db)
@@ -63,14 +63,14 @@ namespace usqlite {
         
         sqlite3 *db = _db->db();
         int code = sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr);
-        if (!USQL_OK(code)) {
+        if (!_USQL_OK(code)) {
             _db->setLastErrorCode(code);
         }
         else {
             _db->registerStatement(this);
         }
         
-        return USQL_OK(code);
+        return _USQL_OK(code);
     }
     
     bool _USQLStatement::reset() {
@@ -90,11 +90,11 @@ namespace usqlite {
         }
         
         int code = sqlite3_step(_stmt);
-        if (!USQL_STEP_OK(code)) {
+        if (!_USQL_STEP_OK(code)) {
             _db->setLastErrorCode(code);
         }
         
-        return USQL_STEP_OK(code);
+        return _USQL_STEP_OK(code);
     }
     
     bool _USQLStatement::query() {
@@ -103,12 +103,12 @@ namespace usqlite {
         }
         
         int code = sqlite3_step(_stmt);
-        if (!USQL_STEP_OK(code)) {
+        if (!_USQL_STEP_OK(code)) {
             _db->setLastErrorCode(code);
         }
         
         initColumnInfo();
-        return USQL_QUERY_OK(code);
+        return _USQL_QUERY_OK(code);
     }
     
     int _USQLStatement::columnIndexForName(const std::string &name) const {

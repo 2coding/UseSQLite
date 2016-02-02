@@ -25,11 +25,8 @@
  **/
 
 #include "USQLConnection.hpp"
-#include "USQLDefs.hpp"
 #include "_USQLStatement.hpp"
 #include "_USQLDatabase.hpp"
-
-#define _USQL_CONNECTION_FIELD (dynamic_cast<_USQLDatabase *>(_field))
 
 namespace usqlite {
     USQLConnection::USQLConnection(const std::string &fn) {
@@ -37,11 +34,11 @@ namespace usqlite {
     }
     
     USQLConnection::~USQLConnection() {
-        delete _USQL_CONNECTION_FIELD;
+        delete _field;
     }
     
     sqlite3 *USQLConnection::db() {
-        return _USQL_CONNECTION_FIELD->db();
+        return _USQL_DATABASE_CALL(db)();
     }
     
     bool USQLConnection::open() {
@@ -49,45 +46,45 @@ namespace usqlite {
     }
     
     bool USQLConnection::open(int flags) {
-        USQL_START_LOCK;
-        return _USQL_CONNECTION_FIELD->open(flags);
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        return _USQL_DATABASE_CALL(open)(flags);
+        _USQL_UNLOCK;
     }
     
     bool USQLConnection::isOpenning() const {
-        USQL_START_LOCK;
-        return _USQL_CONNECTION_FIELD->isOpenning();
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        return _USQL_DATABASE_CALL(isOpenning)();
+        _USQL_UNLOCK;
     }
     
     bool USQLConnection::closeSync() {
-        USQL_START_LOCK;
-        return _USQL_CONNECTION_FIELD->closeSync();
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        return _USQL_DATABASE_CALL(closeSync)();
+        _USQL_UNLOCK;
     }
     
     void USQLConnection::close() {
-        USQL_START_LOCK;
-        _USQL_CONNECTION_FIELD->close();
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        _USQL_DATABASE_CALL(close)();
+        _USQL_UNLOCK;
     }
     
     void USQLConnection::setLastErrorCode(int code) {
-        USQL_START_LOCK;
-        _USQL_CONNECTION_FIELD->setLastErrorCode(code);
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        _USQL_DATABASE_CALL(setLastErrorCode)(code);
+        _USQL_UNLOCK;
     }
     
     int USQLConnection::lastErrorCode() const {
-        USQL_START_LOCK;
-        return _USQL_CONNECTION_FIELD->lastErrorCode();
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        return _USQL_DATABASE_CALL(lastErrorCode)();
+        _USQL_UNLOCK;
     }
     
     std::string USQLConnection::lastErrorMessage() {
-        USQL_START_LOCK;
-        return _USQL_CONNECTION_FIELD->lastErrorMessage();
-        USQL_UNLOCK;
+        _USQL_START_LOCK;
+        return _USQL_DATABASE_CALL(lastErrorMessage)();
+        _USQL_UNLOCK;
     }
     
     bool USQLConnection::exec(const std::string &cmd) {
@@ -103,14 +100,14 @@ namespace usqlite {
             return false;
         }
         
-        USQL_START_LOCK;
+        _USQL_START_LOCK;
         _USQLStatement *stmt = _USQLStatement::create(cmd.command(), _USQL_CONNECTION_FIELD);
         bool ret = stmt->step();
         stmt->finilize();
         stmt->release();
         
         return ret;
-        USQL_UNLOCK;
+        _USQL_UNLOCK;
     }
     
     USQLQuery USQLConnection::query(const std::string &cmd) {
@@ -118,12 +115,12 @@ namespace usqlite {
     }
     
     USQLQuery USQLConnection::query(const usqlite::USQLCommand &cmd) {
-        USQL_START_LOCK;
+        _USQL_START_LOCK;
         _USQLStatement *stmt = _USQLStatement::create(cmd.command(), _USQL_CONNECTION_FIELD);
         USQLQuery query(stmt);
         stmt->release();
         
         return query;
-        USQL_UNLOCK;
+        _USQL_UNLOCK;
     }
 }

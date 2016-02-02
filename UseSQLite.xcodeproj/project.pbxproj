@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C30B95C21C5F35680040DE1C /* _USQLDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95C01C5F35680040DE1C /* _USQLDatabase.cpp */; };
 		C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */; };
+		C30B95D21C604A5B0040DE1C /* USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95D01C604A5B0040DE1C /* USQLStatement.cpp */; };
 		C337E0371C59ED3F001A349D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0361C59ED3F001A349D /* main.cpp */; };
 		C337E0801C59F711001A349D /* USQLCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0721C59F711001A349D /* USQLCommand.cpp */; };
 		C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0741C59F711001A349D /* USQLConnection.cpp */; };
@@ -96,6 +97,9 @@
 		C30B95CB1C5F38C50040DE1C /* USQLObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLObject.hpp; sourceTree = "<group>"; };
 		C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _USQLStatement.cpp; sourceTree = "<group>"; };
 		C30B95CE1C5F3E600040DE1C /* _USQLStatement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _USQLStatement.hpp; sourceTree = "<group>"; };
+		C30B95D01C604A5B0040DE1C /* USQLStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLStatement.cpp; sourceTree = "<group>"; };
+		C30B95D11C604A5B0040DE1C /* USQLStatement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLStatement.hpp; sourceTree = "<group>"; };
+		C30B95D41C604AE90040DE1C /* _USQLUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _USQLUtils.hpp; sourceTree = "<group>"; };
 		C337E0341C59ED3F001A349D /* USQLTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = USQLTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		C337E0361C59ED3F001A349D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C337E0711C59F711001A349D /* USQL.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQL.hpp; sourceTree = "<group>"; };
@@ -132,6 +136,7 @@
 				C30B95CE1C5F3E600040DE1C /* _USQLStatement.hpp */,
 				C30B95C01C5F35680040DE1C /* _USQLDatabase.cpp */,
 				C30B95C11C5F35680040DE1C /* _USQLDatabase.hpp */,
+				C30B95D41C604AE90040DE1C /* _USQLUtils.hpp */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -158,6 +163,8 @@
 				C337E0A31C5B0561001A349D /* USQLQuery.cpp */,
 				C337E0A41C5B0561001A349D /* USQLQuery.hpp */,
 				C30B95CB1C5F38C50040DE1C /* USQLObject.hpp */,
+				C30B95D01C604A5B0040DE1C /* USQLStatement.cpp */,
+				C30B95D11C604A5B0040DE1C /* USQLStatement.hpp */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -324,6 +331,7 @@
 				C337E0A51C5B0561001A349D /* USQLQuery.cpp in Sources */,
 				C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */,
 				C30B95C21C5F35680040DE1C /* _USQLDatabase.cpp in Sources */,
+				C30B95D21C604A5B0040DE1C /* USQLStatement.cpp in Sources */,
 				C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */,
 				C337E0371C59ED3F001A349D /* main.cpp in Sources */,
 				C337E0841C59F711001A349D /* USQLTests.cpp in Sources */,
@@ -344,9 +352,11 @@
 		C337E0391C59ED3F001A349D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -354,9 +364,11 @@
 		C337E03A1C59ED3F001A349D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

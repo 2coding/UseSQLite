@@ -24,24 +24,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
+#ifndef USQLStatement_hpp
+#define USQLStatement_hpp
 
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
+#include "USQLStdCpp.hpp"
+#include "USQLObject.hpp"
 
-#define USQL_INVALID_COLUMN_INDEX -1
+namespace usqlite {
+    class USQLStatement : public USQLObject
+    {
+    public:
+        USQLStatement(USQLObject *stmt);
+        ~USQLStatement();
+        
+    private:
+        USQLObject *_field;
+    };
+}
 
-typedef enum {
-    USQLInvalidType = -1,
-    USQLInteger,
-    USQLText,
-    USQLFloat,
-    USQLBlob,
-    USQLNull,
-}USQLColumnType;
-
-#endif /* USQLDefs_hpp */
+#endif /* USQLStatement_hpp */

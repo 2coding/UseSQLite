@@ -27,7 +27,9 @@
 #ifndef _USQLSatement_hpp
 #define _USQLSatement_hpp
 
+#include "USQLStdCpp.hpp"
 #include "USQLDefs.hpp"
+#include "_USQLUtils.hpp"
 #include "USQLObject.hpp"
 
 namespace usqlite {

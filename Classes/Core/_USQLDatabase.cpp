@@ -25,7 +25,7 @@
  **/
 
 #include "_USQLDatabase.hpp"
-#include "USQLDefs.hpp"
+#include "_USQLUtils.hpp"
 #include "_USQLStatement.hpp"
 
 namespace usqlite {
@@ -50,7 +50,7 @@ namespace usqlite {
         }
         
         _errorCode = sqlite3_open_v2(_filename.c_str(), &_db, flags, nullptr);
-        return USQL_OK(_errorCode);
+        return _USQL_OK(_errorCode);
     }
     
     bool _USQLDatabase::closeSync() {
@@ -66,12 +66,12 @@ namespace usqlite {
             code = sqlite3_close(_db);
         }
         
-        if (USQL_OK(code)) {
+        if (_USQL_OK(code)) {
             _db = nullptr;
         }
         
         _errorCode = code;
-        return USQL_OK(_errorCode);
+        return _USQL_OK(_errorCode);
     }
     
     void _USQLDatabase::close() {
@@ -90,7 +90,7 @@ namespace usqlite {
             return;
         }
         
-        USQL_START_LOCK;
+        _USQL_START_LOCK;
         auto ret = std::find(_statements.begin(), _statements.end(), stmt);
         if (ret != _statements.end()) {
             return;
@@ -98,7 +98,7 @@ namespace usqlite {
         
         _statements.push_back(stmt);
         stmt->retain();
-        USQL_UNLOCK;
+        _USQL_UNLOCK;
     }
     
     void _USQLDatabase::unregisterStatement(_USQLStatement *stmt) {
@@ -106,17 +106,17 @@ namespace usqlite {
             return;
         }
         
-        USQL_START_LOCK;
+        _USQL_START_LOCK;
         auto ret = std::find(_statements.begin(), _statements.end(), stmt);
         if (ret != _statements.end()) {
             _statements.remove(stmt);
             stmt->release();
         }
-        USQL_UNLOCK;
+        _USQL_UNLOCK;
     }
     
     void _USQLDatabase::finilizeAllStatements(bool finilized) {
-        USQL_START_LOCK;
+        _USQL_START_LOCK;
         if (_statements.size() == 0) {
             return;
         }
@@ -131,6 +131,6 @@ namespace usqlite {
             }
             stmt->release();
         }
-        USQL_UNLOCK;
+        _USQL_UNLOCK;
     }
 }

@@ -27,9 +27,11 @@
 #ifndef USQL_hpp
 #define USQL_hpp
 
+#include "USQLStdCpp.hpp"
+#include "USQLDefs.hpp"
 #include "USQLObject.hpp"
 #include "USQLQuery.hpp"
-//#include "USQLCommand.hpp"
+#include "USQLCommand.hpp"
 #include "USQLConnection.hpp"
 
 #endif /* USQL_hpp */

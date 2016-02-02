@@ -24,24 +24,4 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
-
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
-
-#define USQL_INVALID_COLUMN_INDEX -1
-
-typedef enum {
-    USQLInvalidType = -1,
-    USQLInteger,
-    USQLText,
-    USQLFloat,
-    USQLBlob,
-    USQLNull,
-}USQLColumnType;
-
-#endif /* USQLDefs_hpp */
+#include "USQLStatement.hpp"
