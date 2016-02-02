@@ -33,23 +33,4 @@ namespace usqlite {
     
     USQLCommand::~USQLCommand() {
     }
-    
-    bool USQLCommand::availableBindName(const std::string &name) {
-        std::string cmd = command();
-        if (cmd.empty() || name.empty()) {
-            return false;
-        }
-        
-        std::string key = ":" + name;
-        if (cmd.find(key) != std::string::npos) {
-            return true;
-        }
-        
-        key = "@" + name;
-        if (cmd.find(key) != std::string::npos) {
-            return true;
-        }
-        
-        return false;
-    }
 }

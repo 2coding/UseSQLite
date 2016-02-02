@@ -30,7 +30,7 @@
 
 namespace usqlite {
     USQLQuery::USQLQuery(USQLObject *stmt)
-    : _field(dynamic_cast<_USQLStatement *>(stmt)) {
+    : _field(stmt) {
         _USQL_STATEMENT_CALL(retain)();
     }
     

@@ -41,27 +41,6 @@ namespace usqlite {
             return _command;
         }
         
-        template<class Type>
-        bool bind(const std::string &name, Type value) {
-            std::string key = name;
-            if (name.find(":") == 0 || name.find("@") == 0) {
-                key = name.substr(1);
-            }
-            
-            if (key.empty()) {
-                return false;
-            }
-            
-            if (!availableBindName(key)) {
-                return false;
-            }
-            
-            return false;
-        }
-        
-    private:
-        bool availableBindName(const std::string &name);
-        
     private:
         std::string _command;
     };

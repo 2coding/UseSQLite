@@ -32,7 +32,8 @@ namespace usqlite {
     _USQLStatement::_USQLStatement(const std::string &cmd, _USQLDatabase *db)
     : _stmt(nullptr)
     , _command(cmd)
-    , _db(db){
+    , _db(db)
+    , _parametersCount(0) {
     }
     
     _USQLStatement::~_USQLStatement() {
@@ -54,12 +55,15 @@ namespace usqlite {
         _db->unregisterStatement(this);
         
         clearColumnInfo();
+        clearParameters();
     }
     
     bool _USQLStatement::prepare() {
         if (_stmt) {
             return true;
         }
+        
+        clearParameters();
         
         sqlite3 *db = _db->db();
         int code = sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr);
@@ -68,6 +72,7 @@ namespace usqlite {
         }
         else {
             _db->registerStatement(this);
+            initParameters();
         }
         
         return _USQL_OK(code);
@@ -185,5 +190,34 @@ namespace usqlite {
         }
         
         return type;
+    }
+    
+    void _USQLStatement::initParameters() {
+        if (!_stmt) {
+            return;
+        }
+        
+        clearParameters();
+        
+        _parametersCount = sqlite3_bind_parameter_count(_stmt);
+        if (_parametersCount <= 0) {
+            return;
+        }
+        
+        for (int i = 1; i <= _parametersCount; ++i) {
+            const char *name = sqlite3_bind_parameter_name(_stmt, i);
+            if (name && name[0]) {
+                _nameParameters[name] = i;
+            }
+        }
+    }
+    
+    int _USQLStatement::parameterIndexForName(const std::string &name) const {
+        if (name.empty()) {
+            return USQL_INVALID_PARAMETER_INDEX;
+        }
+        
+        auto iter = _nameParameters.find(name);
+        return iter == _nameParameters.end() ? USQL_INVALID_PARAMETER_INDEX : iter->second;
     }
 }

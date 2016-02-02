@@ -25,3 +25,44 @@
  **/
 
 #include "USQLStatement.hpp"
+#include "_USQLUtils.hpp"
+#include "_USQLStatement.hpp"
+
+namespace usqlite {
+    USQLStatement::USQLStatement(USQLObject *stmt)
+    : _field(stmt) {
+        _USQL_STATEMENT_CALL(retain)();
+    }
+    
+    USQLStatement::USQLStatement(const USQLStatement &other) {
+        _field = other._field;
+        _USQL_STATEMENT_CALL(retain)();
+    }
+    
+    USQLStatement::~USQLStatement() {
+        _USQL_STATEMENT_CALL(finilize)();
+        _USQL_STATEMENT_CALL(release)();
+    }
+    
+    bool USQLStatement::bind(const std::string &key, int value) {
+        return _USQL_STATEMENT_CALL(bind<int>)(key, sqlite3_bind_int, value);
+    }
+    
+    bool USQLStatement::bind(const std::string &key, int64_t value) {
+        return _USQL_STATEMENT_CALL(bind<sqlite3_int64>)(key, sqlite3_bind_int64, value);
+    }
+    
+    bool USQLStatement::bind(const std::string &key, double value) {
+        return _USQL_STATEMENT_CALL(bind<double>)(key, sqlite3_bind_double, value);
+    }
+    
+    bool USQLStatement::bind(const std::string &key, const std::string &value) {
+        return _USQL_STATEMENT_FIELD->bind(key, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
+    }
+    
+//    bool USQLStatement::bind(const std::string &key, std::istream &blob) {
+//        std::streambuf *buf = blob.rdbuf();
+//        std::streamsize len = buf->in_avail();
+//        return _USQL_STATEMENT_FIELD->bind<const void *, int, void(*)(void *)>(key, sqlite3_bind_blob, static_cast<const void *>(buf->eback()), len, SQLITE_TRANSIENT);
+//    }
+}

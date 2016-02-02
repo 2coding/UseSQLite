@@ -35,7 +35,19 @@ namespace usqlite {
     {
     public:
         USQLStatement(USQLObject *stmt);
+        USQLStatement(const USQLStatement &other);
         ~USQLStatement();
+        
+        bool bind(const std::string &key, int value);
+        bool bind(const std::string &key, int64_t value);
+        bool bind(const std::string &key, double value);
+        bool bind(const std::string &key, const std::string &value);
+        bool bind(const std::string &key, std::istream &blob);
+        
+    private:
+        USQLStatement &operator=(const USQLStatement &other) {
+            return *this;
+        }
         
     private:
         USQLObject *_field;

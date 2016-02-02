@@ -39,6 +39,10 @@ namespace usqlite {
     public:
         static _USQLStatement *create(const std::string &cmd, _USQLDatabase *db);
         
+        std::string command() const {
+            return _command;
+        }
+        
         bool reset();
         bool step();
         bool query();
@@ -67,11 +71,30 @@ namespace usqlite {
             return fn(_stmt, idx);
         }
         
+        int parameterIndexForName(const std::string &name) const;
+        
+        template<class... TArgs>
+        bool bind(const std::string &name, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
+            int i = USQL_INVALID_PARAMETER_INDEX;
+            if ((i = parameterIndexForName(name)) == USQL_INVALID_PARAMETER_INDEX) {
+                return false;
+            }
+            
+            int code = func(_stmt, i, args...);
+            return _USQL_OK(code);
+        }
+        
     private:
         void initColumnInfo();
         void clearColumnInfo() {
             _columns.clear();
             _columnTypes.clear();
+        }
+        
+        void initParameters();
+        void clearParameters() {
+            _nameParameters.clear();
+            _parametersCount = 0;
         }
         
         USQLColumnType typeForColumn(int i);
@@ -93,6 +116,9 @@ namespace usqlite {
         
         std::map<std::string, int> _columns;
         std::vector<USQLColumnType> _columnTypes;
+        
+        std::map<std::string, int> _nameParameters;
+        int _parametersCount;
     };
 }
 

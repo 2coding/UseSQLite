@@ -34,6 +34,7 @@
 #define USQL_ERROR_BLOB ""
 
 #define USQL_INVALID_COLUMN_INDEX -1
+#define USQL_INVALID_PARAMETER_INDEX 0
 
 typedef enum {
     USQLInvalidType = -1,
