@@ -123,4 +123,14 @@ namespace usqlite {
         return query;
         _USQL_UNLOCK;
     }
+    
+    USQLStatement USQLConnection::compile(const std::string &cmd) {
+        _USQL_START_LOCK;
+        _USQLStatement *stmt = _USQLStatement::create(cmd, _USQL_CONNECTION_FIELD);
+        USQLStatement statement(stmt);
+        stmt->release();
+        
+        return statement;
+        _USQL_UNLOCK;
+    }
 }

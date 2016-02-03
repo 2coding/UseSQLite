@@ -45,24 +45,50 @@ namespace usqlite {
     }
     
     bool USQLStatement::bind(const std::string &key, int value) {
-        return _USQL_STATEMENT_CALL(bind<int>)(key, sqlite3_bind_int, value);
+        return _USQL_STATEMENT_CALL(bindName<int>)(key, sqlite3_bind_int, value);
     }
     
     bool USQLStatement::bind(const std::string &key, int64_t value) {
-        return _USQL_STATEMENT_CALL(bind<sqlite3_int64>)(key, sqlite3_bind_int64, value);
+        return _USQL_STATEMENT_CALL(bindName<sqlite3_int64>)(key, sqlite3_bind_int64, value);
     }
     
     bool USQLStatement::bind(const std::string &key, double value) {
-        return _USQL_STATEMENT_CALL(bind<double>)(key, sqlite3_bind_double, value);
+        return _USQL_STATEMENT_CALL(bindName<double>)(key, sqlite3_bind_double, value);
     }
     
     bool USQLStatement::bind(const std::string &key, const std::string &value) {
-        return _USQL_STATEMENT_FIELD->bind(key, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
+        return _USQL_STATEMENT_FIELD->bindName(key, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
     }
     
-//    bool USQLStatement::bind(const std::string &key, std::istream &blob) {
-//        std::streambuf *buf = blob.rdbuf();
-//        std::streamsize len = buf->in_avail();
-//        return _USQL_STATEMENT_FIELD->bind<const void *, int, void(*)(void *)>(key, sqlite3_bind_blob, static_cast<const void *>(buf->eback()), len, SQLITE_TRANSIENT);
-//    }
+    bool USQLStatement::bind(const std::string &key, const void *blob, int count) {
+        if (!blob || count <= 0) {
+            return false;
+        }
+        
+        return _USQL_STATEMENT_FIELD->bindName(key, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
+    }
+    
+    bool USQLStatement::bind(int index, int value) {
+        return _USQL_STATEMENT_CALL(bindIndex<int>)(index, sqlite3_bind_int, value);
+    }
+    
+    bool USQLStatement::bind(int index, int64_t value) {
+        return _USQL_STATEMENT_CALL(bindIndex<sqlite3_int64>)(index, sqlite3_bind_int64, value);
+    }
+    
+    bool USQLStatement::bind(int index, double value) {
+        return _USQL_STATEMENT_CALL(bindIndex<double>)(index, sqlite3_bind_double, value);
+    }
+    
+    bool USQLStatement::bind(int index, const std::string &value) {
+        return _USQL_STATEMENT_FIELD->bindIndex(index, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
+    }
+    
+    bool USQLStatement::bind(int index, const void *blob, int count) {
+        if (!blob || count <= 0) {
+            return false;
+        }
+        
+        return _USQL_STATEMENT_FIELD->bindIndex(index, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
+    }
 }

@@ -42,7 +42,13 @@ namespace usqlite {
         bool bind(const std::string &key, int64_t value);
         bool bind(const std::string &key, double value);
         bool bind(const std::string &key, const std::string &value);
-        bool bind(const std::string &key, std::istream &blob);
+        bool bind(const std::string &key, const void *blob, int count);
+        
+        bool bind(int index, int value);
+        bool bind(int index, int64_t value);
+        bool bind(int index, double value);
+        bool bind(int index, const std::string &value);
+        bool bind(int index, const void *blob, int count);
         
     private:
         USQLStatement &operator=(const USQLStatement &other) {

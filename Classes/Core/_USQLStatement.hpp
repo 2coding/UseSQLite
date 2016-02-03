@@ -74,9 +74,18 @@ namespace usqlite {
         int parameterIndexForName(const std::string &name) const;
         
         template<class... TArgs>
-        bool bind(const std::string &name, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
-            int i = USQL_INVALID_PARAMETER_INDEX;
-            if ((i = parameterIndexForName(name)) == USQL_INVALID_PARAMETER_INDEX) {
+        bool bindName(const std::string &name, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
+            int i = parameterIndexForName(name);
+            return bindIndex(i, func, args...);
+        }
+        
+        template<class... TArgs>
+        bool bindIndex(int i, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
+            if (i <= USQL_INVALID_PARAMETER_INDEX || i > _parametersCount) {
+                return false;
+            }
+            
+            if (!_stmt && !reset()) {
                 return false;
             }
             

@@ -31,6 +31,7 @@
 #include "USQLObject.hpp"
 #include "USQLQuery.hpp"
 #include "USQLCommand.hpp"
+#include "USQLStatement.hpp"
 
 namespace usqlite {
     class USQLConnection : public USQLNoCopyable
@@ -59,6 +60,8 @@ namespace usqlite {
         
         USQLQuery query(const std::string &cmd);
         USQLQuery query(const USQLCommand &cmd);
+        
+        USQLStatement compile(const std::string &cmd);
         
     private:
         USQLObject *_field;
