@@ -28,22 +28,7 @@
 #include "_USQLUtils.hpp"
 #include "_USQLStatement.hpp"
 
-namespace usqlite {
-    USQLStatement::USQLStatement(USQLObject *stmt)
-    : _field(stmt) {
-        _USQL_STATEMENT_CALL(retain)();
-    }
-    
-    USQLStatement::USQLStatement(const USQLStatement &other) {
-        _field = other._field;
-        _USQL_STATEMENT_CALL(retain)();
-    }
-    
-    USQLStatement::~USQLStatement() {
-        _USQL_STATEMENT_CALL(finilize)();
-        _USQL_STATEMENT_CALL(release)();
-    }
-    
+namespace usqlite {    
     bool USQLStatement::bind(const std::string &key, int value) {
         return _USQL_STATEMENT_CALL(bindName<int>)(key, sqlite3_bind_int, value);
     }

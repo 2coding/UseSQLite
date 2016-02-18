@@ -30,13 +30,6 @@
 namespace usqlite {
     class USQLObject
     {
-    protected:
-        USQLObject() {}
-        USQLObject(const USQLObject &other) {}
-        USQLObject &operator=(const USQLObject &other) {
-            return *this;
-        }
-        
     public:
         virtual ~USQLObject() {}
     };
@@ -47,32 +40,8 @@ namespace usqlite {
         USQLNoCopyable() {}
         virtual ~USQLNoCopyable() {}
         
-    private:
-        USQLNoCopyable(const USQLNoCopyable &other) {}
-        USQLNoCopyable &operator=(const USQLNoCopyable &other) {
-            return *this;
-        }
-    };
-    
-    class USQLShareObject : public USQLNoCopyable
-    {
-    protected:
-        USQLShareObject() : _count(1) {}
-        
-    public:
-        void release() {
-            --_count;
-            if (_count <= 0) {
-                delete this;
-            }
-        }
-        
-        void retain() {
-            ++_count;
-        }
-        
-    private:
-        int _count;
+        USQLNoCopyable(const USQLNoCopyable &other) = delete;
+        USQLNoCopyable &operator=(const USQLNoCopyable &other) = delete;
     };
 }
 

@@ -34,10 +34,11 @@
 
 namespace usqlite {
     class _USQLDatabase;
-    class _USQLStatement : public USQLShareObject
+    class _USQLStatement : public USQLNoCopyable
     {
     public:
-        static _USQLStatement *create(const std::string &cmd, _USQLDatabase *db);
+        _USQLStatement(const std::string &cmd, _USQLDatabase *db);
+        ~_USQLStatement();
         
         std::string command() const {
             return _command;
@@ -111,10 +112,6 @@ namespace usqlite {
         static bool safeTypeCast(USQLColumnType actual, USQLColumnType expect) {
             return actual == expect;
         }
-        
-    private:
-        _USQLStatement(const std::string &cmd, _USQLDatabase *db);
-        ~_USQLStatement();
         
         bool prepare();
         

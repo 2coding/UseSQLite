@@ -28,7 +28,6 @@
 #define USQLConnection_hpp
 
 #include "USQLStdCpp.hpp"
-#include "USQLObject.hpp"
 #include "USQLQuery.hpp"
 #include "USQLCommand.hpp"
 #include "USQLStatement.hpp"
@@ -38,9 +37,7 @@ namespace usqlite {
     {
     public:
         USQLConnection(const std::string &filename);
-        ~USQLConnection();
-        
-        sqlite3 *db();
+        virtual ~USQLConnection();
         
         bool open();
         bool open(int flags);
@@ -58,10 +55,12 @@ namespace usqlite {
         bool exec(const std::string &cmd);
         bool exec(const USQLCommand &cmd);
         
-        USQLQuery query(const std::string &cmd);
-        USQLQuery query(const USQLCommand &cmd);
+        USQLQuery *query(const std::string &cmd);
+        USQLQuery *query(const USQLCommand &cmd);
         
-        USQLStatement compile(const std::string &cmd);
+        USQLStatement *compile(const std::string &cmd);
+        
+        sqlite3 *db();
         
     private:
         USQLObject *_field;

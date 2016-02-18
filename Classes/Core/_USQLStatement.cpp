@@ -40,11 +40,6 @@ namespace usqlite {
         finilize();
     }
     
-    _USQLStatement * _USQLStatement::create(const std::string &cmd, _USQLDatabase *db) {
-        _USQLStatement *stmt = new _USQLStatement(cmd, db);
-        return stmt;
-    }
-    
     void _USQLStatement::finilize() {
         if (!_stmt) {
             return;
@@ -131,7 +126,7 @@ namespace usqlite {
     
     USQLColumnType _USQLStatement::typeForColumnIndex(int i) const {
         if (i < 0 || i >= _columnTypes.size()) {
-            return USQLInvalidType;
+            return USQLColumnType::USQLInvalidType;
         }
         
         return _columnTypes[i];
@@ -157,7 +152,7 @@ namespace usqlite {
             _columns[name] = i;
             
             USQLColumnType type = typeForColumn(i);
-            if (type == USQLInvalidType) {
+            if (type == USQLColumnType::USQLInvalidType) {
                 return;
             }
             _columnTypes.push_back(type);
@@ -165,27 +160,27 @@ namespace usqlite {
     }
     
     USQLColumnType _USQLStatement::typeForColumn(int i) {
-        USQLColumnType type = USQLInvalidType;
+        USQLColumnType type = USQLColumnType::USQLInvalidType;
         int t = sqlite3_column_type(_stmt, i);
         switch (t) {
             case SQLITE_INTEGER:
-                type = USQLInteger;
+                type = USQLColumnType::USQLInteger;
                 break;
                 
             case SQLITE_TEXT:
-                type = USQLText;
+                type = USQLColumnType::USQLText;
                 break;
                 
             case SQLITE_FLOAT:
-                type = USQLFloat;
+                type = USQLColumnType::USQLFloat;
                 break;
                 
             case SQLITE_BLOB:
-                type = USQLBlob;
+                type = USQLColumnType::USQLBlob;
                 break;
                 
             case SQLITE_NULL:
-                type = USQLNull;
+                type = USQLColumnType::USQLNull;
                 break;
         }
         

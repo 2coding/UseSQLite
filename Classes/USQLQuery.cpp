@@ -30,18 +30,15 @@
 
 namespace usqlite {
     USQLQuery::USQLQuery(USQLObject *stmt)
-    : _field(stmt) {
-        _USQL_STATEMENT_CALL(retain)();
-    }
-    
-    USQLQuery::USQLQuery(const USQLQuery &other) {
-        _field = other._field;
-        _USQL_STATEMENT_CALL(retain)();
-    }
+    : _field(stmt) {}
     
     USQLQuery::~USQLQuery() {
+        close();
+        delete _field;
+    }
+    
+    void USQLQuery::close() {
         _USQL_STATEMENT_CALL(finilize)();
-        _USQL_STATEMENT_CALL(release)();
     }
     
     bool USQLQuery::next() {
@@ -71,7 +68,7 @@ namespace usqlite {
     
     USQLColumnType USQLQuery::typeForColumn(int i) const {
         if (!availableIndex(i)) {
-            return USQLInvalidType;
+            return USQLColumnType::USQLInvalidType;
         }
         
         return _USQL_STATEMENT_CALL(typeForColumnIndex)(i);
@@ -83,7 +80,7 @@ namespace usqlite {
     }
     
     int USQLQuery::intForColumnIndex(int idx) {
-        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<int>)(idx, USQLInteger, sqlite3_column_int, USQL_ERROR_INTEGER);
+        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<int>)(idx, USQLColumnType::USQLInteger, sqlite3_column_int, USQL_ERROR_INTEGER);
     }
     
     int64_t USQLQuery::int64ForName(const std::string &name) {
@@ -92,7 +89,7 @@ namespace usqlite {
     }
     
     int64_t USQLQuery::int64ForColumnIndex(int idx) {
-        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<sqlite3_int64>)(idx, USQLInteger, sqlite3_column_int64, USQL_ERROR_INTEGER);
+        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<sqlite3_int64>)(idx, USQLColumnType::USQLInteger, sqlite3_column_int64, USQL_ERROR_INTEGER);
     }
     
     std::string USQLQuery::textForName(const std::string &name) {
@@ -106,7 +103,7 @@ namespace usqlite {
     }
     
     const unsigned char *USQLQuery::cstrForColumnIndex(int idx) {
-        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<const unsigned char *>)(idx, USQLText, sqlite3_column_text, nullptr);
+        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<const unsigned char *>)(idx, USQLColumnType::USQLText, sqlite3_column_text, nullptr);
     }
     
     double USQLQuery::floatForName(const std::string &name) {
@@ -115,6 +112,6 @@ namespace usqlite {
     }
     
     double USQLQuery::floatForColumnIndex(int idx) {
-        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<double>)(idx, USQLFloat, sqlite3_column_double, USQL_ERROR_FLOAT);
+        return _USQL_STATEMENT_CALL(staticValueForColumnIndex<double>)(idx, USQLColumnType::USQLFloat, sqlite3_column_double, USQL_ERROR_FLOAT);
     }
 }

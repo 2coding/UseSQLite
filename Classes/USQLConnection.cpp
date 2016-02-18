@@ -101,36 +101,27 @@ namespace usqlite {
         }
         
         _USQL_START_LOCK;
-        _USQLStatement *stmt = _USQLStatement::create(cmd.command(), _USQL_CONNECTION_FIELD);
-        bool ret = stmt->step();
-        stmt->finilize();
-        stmt->release();
-        
-        return ret;
+        _USQLStatement stmt(cmd.command(), _USQL_CONNECTION_FIELD);
+        return stmt.step();
+
         _USQL_UNLOCK;
     }
     
-    USQLQuery USQLConnection::query(const std::string &cmd) {
+    USQLQuery *USQLConnection::query(const std::string &cmd) {
         return query(USQLCommand(cmd));
     }
     
-    USQLQuery USQLConnection::query(const usqlite::USQLCommand &cmd) {
+    USQLQuery *USQLConnection::query(const usqlite::USQLCommand &cmd) {
         _USQL_START_LOCK;
-        _USQLStatement *stmt = _USQLStatement::create(cmd.command(), _USQL_CONNECTION_FIELD);
-        USQLQuery query(stmt);
-        stmt->release();
-        
-        return query;
+        _USQLStatement *stmt = new _USQLStatement(cmd.command(), _USQL_CONNECTION_FIELD);
+        return new USQLQuery(stmt);
         _USQL_UNLOCK;
     }
     
-    USQLStatement USQLConnection::compile(const std::string &cmd) {
+    USQLStatement *USQLConnection::compile(const std::string &cmd) {
         _USQL_START_LOCK;
-        _USQLStatement *stmt = _USQLStatement::create(cmd, _USQL_CONNECTION_FIELD);
-        USQLStatement statement(stmt);
-        stmt->release();
-        
-        return statement;
+        _USQLStatement *stmt = new _USQLStatement(cmd, _USQL_CONNECTION_FIELD);
+        return new USQLStatement(stmt);
         _USQL_UNLOCK;
     }
 }

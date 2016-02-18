@@ -29,14 +29,13 @@
 
 #include "USQLStdCpp.hpp"
 #include "USQLObject.hpp"
+#include "USQLQuery.hpp"
 
 namespace usqlite {
-    class USQLStatement : public USQLObject
+    class USQLStatement : public USQLQuery
     {
     public:
-        USQLStatement(USQLObject *stmt);
-        USQLStatement(const USQLStatement &other);
-        ~USQLStatement();
+        USQLStatement(USQLObject *stmt) : USQLQuery::USQLQuery(stmt) {}
         
         bool bind(const std::string &key, int value);
         bool bind(const std::string &key, int64_t value);
@@ -49,14 +48,6 @@ namespace usqlite {
         bool bind(int index, double value);
         bool bind(int index, const std::string &value);
         bool bind(int index, const void *blob, int count);
-        
-    private:
-        USQLStatement &operator=(const USQLStatement &other) {
-            return *this;
-        }
-        
-    private:
-        USQLObject *_field;
     };
 }
 

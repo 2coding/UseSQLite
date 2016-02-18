@@ -97,7 +97,6 @@ namespace usqlite {
         }
         
         _statements.push_back(stmt);
-        stmt->retain();
         _USQL_UNLOCK;
     }
     
@@ -110,7 +109,6 @@ namespace usqlite {
         auto ret = std::find(_statements.begin(), _statements.end(), stmt);
         if (ret != _statements.end()) {
             _statements.remove(stmt);
-            stmt->release();
         }
         _USQL_UNLOCK;
     }
@@ -129,7 +127,6 @@ namespace usqlite {
             if (finilized) {
                 stmt->finilize();
             }
-            stmt->release();
         }
         _USQL_UNLOCK;
     }
