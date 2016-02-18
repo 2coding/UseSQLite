@@ -48,6 +48,8 @@ namespace usqlite {
         bool bind(int index, double value);
         bool bind(int index, const std::string &value);
         bool bind(int index, const void *blob, int count);
+        
+        bool exec();
     };
 }
 

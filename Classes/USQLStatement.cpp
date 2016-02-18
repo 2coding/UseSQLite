@@ -76,4 +76,8 @@ namespace usqlite {
         
         return _USQL_STATEMENT_FIELD->bindIndex(index, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
     }
+    
+    bool USQLStatement::exec() {
+        return _USQL_STATEMENT_CALL(step)();
+    }
 }
