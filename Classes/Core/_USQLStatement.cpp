@@ -25,11 +25,11 @@
  **/
 
 #include "_USQLStatement.hpp"
-#include "_USQLDatabase.hpp"
 #include "_USQLUtils.hpp"
+#include "USQLConnection.hpp"
 
 namespace usqlite {
-    _USQLStatement::_USQLStatement(const std::string &cmd, _USQLDatabase *db)
+    _USQLStatement::_USQLStatement(const std::string &cmd, USQLConnection *db)
     : _stmt(nullptr)
     , _command(cmd)
     , _db(db)

@@ -33,6 +33,8 @@
 #include "USQLStatement.hpp"
 
 namespace usqlite {
+    class _USQLStatement;
+    
     class USQLConnection : public USQLNoCopyable
     {
     public:
@@ -41,29 +43,45 @@ namespace usqlite {
         
         bool open();
         bool open(int flags);
-        bool isOpenning() const;
+        bool isOpenning() const {
+            return _db != nullptr;
+        }
         
-        void close();
-        bool closeSync();
+        bool close();
         
-        void setLastErrorCode(int code);
+        inline void setLastErrorCode(int code) {
+            _errorCode = code;
+        }
         
-        int lastErrorCode() const;
+        inline int lastErrorCode() const {
+            return _errorCode;
+        }
         
-        std::string lastErrorMessage();
+        inline std::string lastErrorMessage() {
+            return _db ? sqlite3_errmsg(_db) : sqlite3_errstr(lastErrorCode());
+        }
         
+        inline sqlite3 *db() {
+            return _db;
+        }
+        
+    public:
         bool exec(const std::string &cmd);
-        bool exec(const USQLCommand &cmd);
         
-        USQLQuery *query(const std::string &cmd);
-        USQLQuery *query(const USQLCommand &cmd);
-        
-        USQLStatement *compile(const std::string &cmd);
-        
-        sqlite3 *db();
+    public:
+        void registerStatement(_USQLStatement *stmt);
+        void unregisterStatement(_USQLStatement *stmt);
         
     private:
-        USQLObject *_field;
+        void finilizeAllStatements(bool finilized);
+        
+    private:
+        std::string _filename;
+        sqlite3 *_db;
+        
+        int _errorCode;
+        
+        std::list<_USQLStatement *> _statements;
     };
 }
 

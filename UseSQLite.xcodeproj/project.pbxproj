@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C30B95C21C5F35680040DE1C /* _USQLDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95C01C5F35680040DE1C /* _USQLDatabase.cpp */; };
 		C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */; };
 		C30B95D21C604A5B0040DE1C /* USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95D01C604A5B0040DE1C /* USQLStatement.cpp */; };
 		C337E0371C59ED3F001A349D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0361C59ED3F001A349D /* main.cpp */; };
@@ -91,8 +90,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C30B95C01C5F35680040DE1C /* _USQLDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _USQLDatabase.cpp; sourceTree = "<group>"; };
-		C30B95C11C5F35680040DE1C /* _USQLDatabase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _USQLDatabase.hpp; sourceTree = "<group>"; };
 		C30B95C61C5F35CB0040DE1C /* USQLStdCpp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLStdCpp.hpp; sourceTree = "<group>"; };
 		C30B95CB1C5F38C50040DE1C /* USQLObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLObject.hpp; sourceTree = "<group>"; };
 		C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _USQLStatement.cpp; sourceTree = "<group>"; };
@@ -134,8 +131,6 @@
 			children = (
 				C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */,
 				C30B95CE1C5F3E600040DE1C /* _USQLStatement.hpp */,
-				C30B95C01C5F35680040DE1C /* _USQLDatabase.cpp */,
-				C30B95C11C5F35680040DE1C /* _USQLDatabase.hpp */,
 				C30B95D41C604AE90040DE1C /* _USQLUtils.hpp */,
 			);
 			path = Core;
@@ -330,7 +325,6 @@
 				C337E0801C59F711001A349D /* USQLCommand.cpp in Sources */,
 				C337E0A51C5B0561001A349D /* USQLQuery.cpp in Sources */,
 				C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */,
-				C30B95C21C5F35680040DE1C /* _USQLDatabase.cpp in Sources */,
 				C30B95D21C604A5B0040DE1C /* USQLStatement.cpp in Sources */,
 				C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */,
 				C337E0371C59ED3F001A349D /* main.cpp in Sources */,

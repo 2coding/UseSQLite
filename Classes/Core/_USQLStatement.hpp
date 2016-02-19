@@ -33,11 +33,11 @@
 #include "USQLObject.hpp"
 
 namespace usqlite {
-    class _USQLDatabase;
+    class USQLConnection;
     class _USQLStatement : public USQLNoCopyable
     {
     public:
-        _USQLStatement(const std::string &cmd, _USQLDatabase *db);
+        _USQLStatement(const std::string &cmd, USQLConnection *db);
         ~_USQLStatement();
         
         std::string command() const {
@@ -118,7 +118,7 @@ namespace usqlite {
     private:
         const std::string _command;
         sqlite3_stmt *_stmt;
-        _USQLDatabase *_db;
+        USQLConnection *_db;
         
         std::map<std::string, int> _columns;
         std::vector<USQLColumnType> _columnTypes;

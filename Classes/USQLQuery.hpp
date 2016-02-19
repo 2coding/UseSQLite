@@ -32,10 +32,12 @@
 #include "USQLObject.hpp"
 
 namespace usqlite {
+    class USQLConnection;
+    class _USQLStatement;
     class USQLQuery : public USQLNoCopyable
     {
     public:
-        USQLQuery(USQLObject *stmt);
+        USQLQuery(const std::string &cmd, USQLConnection &con);
         virtual ~USQLQuery();
         
         bool next();
@@ -66,7 +68,7 @@ namespace usqlite {
         const unsigned char *cstrForColumnIndex(int idx);
 
     protected:
-        USQLObject *_field;
+        _USQLStatement *_stmt;
     };
 }
 

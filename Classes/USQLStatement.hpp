@@ -35,7 +35,7 @@ namespace usqlite {
     class USQLStatement : public USQLQuery
     {
     public:
-        USQLStatement(USQLObject *stmt) : USQLQuery::USQLQuery(stmt) {}
+        USQLStatement(const std::string &cmd, USQLConnection &con) : USQLQuery::USQLQuery(cmd, con) {}
         
         bool bind(const std::string &key, int value);
         bool bind(const std::string &key, int64_t value);

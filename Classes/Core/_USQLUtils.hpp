@@ -32,17 +32,14 @@
 #define _USQL_STEP_OK(code) ((code) == SQLITE_DONE || (code) == SQLITE_ROW)
 #define _USQL_QUERY_OK(code) ((code) == SQLITE_ROW)
 
-#define _USQL_LOCK
-#define _USQL_START_LOCK { _USQL_LOCK
-#define _USQL_UNLOCK }
+//#define _USQL_LOCK
+//#define _USQL_START_LOCK { _USQL_LOCK
+//#define _USQL_UNLOCK }
 
 #define _USQL_OBJECT_CALL(obj, func) ((obj)->*(func))
 #define _USQL_TYPE_CALL(obj, type, func) _USQL_OBJECT_CALL(obj, &type::func)
 
 #define _USQL_STATEMENT_FIELD (dynamic_cast<_USQLStatement *>(_field))
 #define _USQL_STATEMENT_CALL(func) _USQL_TYPE_CALL(_USQL_STATEMENT_FIELD, _USQLStatement, func)
-
-#define _USQL_CONNECTION_FIELD (dynamic_cast<_USQLDatabase *>(_field))
-#define _USQL_DATABASE_CALL(func) _USQL_TYPE_CALL(_USQL_CONNECTION_FIELD, _USQLDatabase, func)
 
 #endif /* _USQLUtils_hpp */
