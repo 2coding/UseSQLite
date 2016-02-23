@@ -38,6 +38,7 @@
 #include <tr1/functional>
 
 #include <stdint.h>
+#include <assert.h>
 
 #include <sqlite3.h>
 

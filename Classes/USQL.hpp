@@ -34,4 +34,6 @@
 #include "USQLCommand.hpp"
 #include "USQLConnection.hpp"
 
+#include "USQLTableCommand.hpp"
+
 #endif /* USQL_hpp */

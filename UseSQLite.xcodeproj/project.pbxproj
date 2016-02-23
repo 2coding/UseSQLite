@@ -10,12 +10,12 @@
 		C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */; };
 		C30B95D21C604A5B0040DE1C /* USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95D01C604A5B0040DE1C /* USQLStatement.cpp */; };
 		C337E0371C59ED3F001A349D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0361C59ED3F001A349D /* main.cpp */; };
-		C337E0801C59F711001A349D /* USQLCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0721C59F711001A349D /* USQLCommand.cpp */; };
 		C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0741C59F711001A349D /* USQLConnection.cpp */; };
 		C337E0841C59F711001A349D /* USQLTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E07E1C59F711001A349D /* USQLTests.cpp */; };
 		C337E0851C59F764001A349D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C3999BFB1C57AE67004C285B /* libsqlite3.tbd */; };
 		C337E0A01C5A0717001A349D /* gtest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C337E0931C5A070F001A349D /* gtest.framework */; };
 		C337E0A51C5B0561001A349D /* USQLQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0A31C5B0561001A349D /* USQLQuery.cpp */; };
+		C3ADC95C1C7C3A8E0034C7BA /* USQLTableCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADC95A1C7C3A8E0034C7BA /* USQLTableCommand.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,8 +100,6 @@
 		C337E0341C59ED3F001A349D /* USQLTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = USQLTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		C337E0361C59ED3F001A349D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C337E0711C59F711001A349D /* USQL.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQL.hpp; sourceTree = "<group>"; };
-		C337E0721C59F711001A349D /* USQLCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLCommand.cpp; sourceTree = "<group>"; };
-		C337E0731C59F711001A349D /* USQLCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLCommand.hpp; sourceTree = "<group>"; };
 		C337E0741C59F711001A349D /* USQLConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLConnection.cpp; sourceTree = "<group>"; };
 		C337E0751C59F711001A349D /* USQLConnection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLConnection.hpp; sourceTree = "<group>"; };
 		C337E0761C59F711001A349D /* USQLDefs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLDefs.hpp; sourceTree = "<group>"; };
@@ -111,6 +109,9 @@
 		C337E0A31C5B0561001A349D /* USQLQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLQuery.cpp; sourceTree = "<group>"; };
 		C337E0A41C5B0561001A349D /* USQLQuery.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLQuery.hpp; sourceTree = "<group>"; };
 		C3999BFB1C57AE67004C285B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		C3ADC9551C7C38BD0034C7BA /* USQLCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLCommand.hpp; sourceTree = "<group>"; };
+		C3ADC95A1C7C3A8E0034C7BA /* USQLTableCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = USQLTableCommand.cpp; sourceTree = "<group>"; };
+		C3ADC95B1C7C3A8E0034C7BA /* USQLTableCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQLTableCommand.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,11 +148,10 @@
 		C337E0701C59F711001A349D /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C3ADC9531C7C38550034C7BA /* Extension */,
 				C30B95B71C5F35500040DE1C /* Core */,
 				C30B95C61C5F35CB0040DE1C /* USQLStdCpp.hpp */,
 				C337E0711C59F711001A349D /* USQL.hpp */,
-				C337E0721C59F711001A349D /* USQLCommand.cpp */,
-				C337E0731C59F711001A349D /* USQLCommand.hpp */,
 				C337E0741C59F711001A349D /* USQLConnection.cpp */,
 				C337E0751C59F711001A349D /* USQLConnection.hpp */,
 				C337E0761C59F711001A349D /* USQLDefs.hpp */,
@@ -205,6 +205,16 @@
 				C337E0341C59ED3F001A349D /* USQLTests */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C3ADC9531C7C38550034C7BA /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				C3ADC9551C7C38BD0034C7BA /* USQLCommand.hpp */,
+				C3ADC95A1C7C3A8E0034C7BA /* USQLTableCommand.cpp */,
+				C3ADC95B1C7C3A8E0034C7BA /* USQLTableCommand.hpp */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,12 +332,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C337E0801C59F711001A349D /* USQLCommand.cpp in Sources */,
 				C337E0A51C5B0561001A349D /* USQLQuery.cpp in Sources */,
 				C337E0811C59F711001A349D /* USQLConnection.cpp in Sources */,
 				C30B95D21C604A5B0040DE1C /* USQLStatement.cpp in Sources */,
 				C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */,
 				C337E0371C59ED3F001A349D /* main.cpp in Sources */,
+				C3ADC95C1C7C3A8E0034C7BA /* USQLTableCommand.cpp in Sources */,
 				C337E0841C59F711001A349D /* USQLTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

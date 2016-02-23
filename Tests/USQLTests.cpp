@@ -305,3 +305,66 @@ TEST_F(USQLTests, connnection_transaction)
     EXPECT_EQ(2, query.intForColumnIndex(0));
     query.close();
 }
+
+#pragma mark - extension tests
+class USQLExtTests : public testing::Test
+{
+public:
+    USQLExtTests() : _connection(_db) {}
+    
+protected:
+    virtual void SetUp() {
+        _connection.open();
+        _connection.exec("drop table if exists test_table_name");
+    }
+    virtual void TearDown() {
+        _connection.exec("drop table if exists test_table_name");
+        _connection.close();
+    }
+    
+    USQLConnection _connection;
+    std::string _testTablename = "test_table_name";
+};
+
+TEST_F(USQLExtTests, tablename_check)
+{
+    EXPECT_TRUE(USQLTableCommand::checkTablename("test_table_name"));
+    EXPECT_FALSE(USQLTableCommand::checkTablename("sqlite_test_table_name"));
+}
+
+TEST_F(USQLExtTests, create_table)
+{
+    std::map<USQLColumnConstraint, std::string> opta;
+    opta[USQLColumnConstraint::PrimaryKey] = "";
+    
+    std::map<USQLColumnConstraint, std::string> optb;
+    optb[USQLColumnConstraint::NotNull] = "";
+    optb[USQLColumnConstraint::Unique] = "";
+    optb[USQLColumnConstraint::Check] = "(b > 100)";
+    
+    std::map<USQLColumnConstraint, std::string> optc;
+    optc[USQLColumnConstraint::NotNull] = "";
+    optc[USQLColumnConstraint::Default] = "'hello world'";
+    optc[USQLColumnConstraint::Collate] = "NOCASE";
+    
+    std::vector<std::string> unique;
+    unique.push_back("a");
+    unique.push_back("c");
+    
+    auto cmd = USQLTableCommand::create(_testTablename);
+    cmd.temp(false).createIfNotExist(true)
+    .columnDef("a", "int", opta)
+    .columnDef("b", "int", optb)
+    .columnDef("c", "text", optc)
+    .tableConstraintCheck("(a + b < 200)")
+    .tableConstraintUnique(unique)
+    .withoutRowId(false);
+    
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+    EXPECT_TRUE(_connection.exec("insert into test_table_name (a, b) values (1, 101)"));
+    EXPECT_FALSE(_connection.exec("insert into test_table_name (a, b) values (2, 10)"));
+    EXPECT_FALSE(_connection.exec("insert into test_table_name (a, b) values (3, 197)"));
+    
+    USQLQuery query("select * from test_table_name where c = 'HELLO WORLD'", _connection);
+    EXPECT_TRUE(query.next());
+}

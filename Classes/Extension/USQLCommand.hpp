@@ -24,13 +24,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#include "USQLCommand.hpp"
+#ifndef USQLCommand_hpp
+#define USQLCommand_hpp
+
+#include "USQLDefs.hpp"
+#include "USQLStdCpp.hpp"
+#include "USQLObject.hpp"
 
 namespace usqlite {
-    USQLCommand::USQLCommand(const std::string &cmd)
-    : _command(cmd) {
-    }
-    
-    USQLCommand::~USQLCommand() {
-    }
+    class USQLCommand
+    {
+    public:
+        virtual std::string command() const = 0;
+    };
 }
+
+#endif /* USQLCommand_hpp */

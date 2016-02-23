@@ -51,6 +51,19 @@ namespace usqlite {
         USQLImmediate,
         USQLExclusive
     };
+    
+    enum class USQLColumnConstraint {
+        PrimaryKey,
+        PrimaryKeyAsc,
+        PrimaryKeyDesc,
+        Autoincrement,
+        NotNull,
+        Unique,
+        Check,
+        Default,
+        ForeignKey,
+        Collate
+    };
 }
 
 #endif /* USQLDefs_hpp */
