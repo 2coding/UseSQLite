@@ -52,7 +52,6 @@ namespace usqlite {
         inline void setLastErrorCode(int code) {
             _errorCode = code;
         }
-        
         inline int lastErrorCode() const {
             return _errorCode;
         }
@@ -68,11 +67,11 @@ namespace usqlite {
     public:
         bool exec(const std::string &cmd);
         
-    public:
+    protected:
+        friend class _USQLStatement;
+        
         void registerStatement(_USQLStatement *stmt);
         void unregisterStatement(_USQLStatement *stmt);
-        
-    private:
         void finilizeAllStatements(bool finilized);
         
     private:
