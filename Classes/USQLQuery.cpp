@@ -32,6 +32,7 @@ namespace usqlite {
     USQLQuery::USQLQuery(const std::string &cmd, USQLConnection &con)
     : _stmt(nullptr) {
         _stmt = new _USQLStatement(cmd, &con);
+        _stmt->reset();
     }
     
     USQLQuery::~USQLQuery() {

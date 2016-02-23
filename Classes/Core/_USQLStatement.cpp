@@ -98,7 +98,7 @@ namespace usqlite {
     }
     
     bool _USQLStatement::query() {
-        if (!_stmt && !reset()) {
+        if (!_stmt) {
             return false;
         }
         

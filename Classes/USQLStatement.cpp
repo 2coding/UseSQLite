@@ -28,7 +28,10 @@
 #include "_USQLUtils.hpp"
 #include "_USQLStatement.hpp"
 
-namespace usqlite {    
+namespace usqlite {
+    USQLStatement::USQLStatement(const std::string &cmd, USQLConnection &con)
+    : USQLQuery(cmd, con) {}
+    
     bool USQLStatement::bind(const std::string &key, int value) {
         return _stmt->bindName<int>(key, sqlite3_bind_int, value);
     }

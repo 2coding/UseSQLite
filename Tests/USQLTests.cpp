@@ -238,3 +238,40 @@ TEST_F(USQLTests, query_double)
     EXPECT_EQ(12.3, query.floatForName("c"));
     EXPECT_FALSE(query.next());
 }
+
+TEST_F(USQLTests, query_close)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3));
+    USQLQuery query("select * from use_sqlite_table", _connection);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(10, query.intForName("b"));
+    
+    query.close();
+    EXPECT_FALSE(query.next());
+    EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("b"));
+    
+    query.reset();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(10, query.intForName("b"));
+}
+
+TEST_F(USQLTests, statement_bind)
+{
+    USQLStatement stmt("insert into use_sqlite_table (a, b, c, d) values (:a, :b, :c, :d)", _connection);
+    const std::string tvalue = "bind hello world";
+    int ivalue = 123;
+    double rvalue = 111.23;
+    const std::string bvalue = "binary data";
+    EXPECT_TRUE(stmt.bind(":a", tvalue));
+    EXPECT_TRUE(stmt.bind(":b", ivalue));
+    EXPECT_TRUE(stmt.bind(":c", rvalue));
+    EXPECT_TRUE(stmt.bind(":d", bvalue.data(), (int)bvalue.size()));
+    EXPECT_TRUE(stmt.exec());
+    
+    USQLStatement query("select * from use_sqlite_table where a = ? and b = ? and c = ? and d = ?", _connection);
+    EXPECT_TRUE(query.bind(1, tvalue));
+    EXPECT_TRUE(query.bind(2, ivalue));
+    EXPECT_TRUE(query.bind(3, rvalue));
+    EXPECT_TRUE(query.bind(4, bvalue.data(), (int)bvalue.size()));
+    EXPECT_TRUE(query.next());
+}
