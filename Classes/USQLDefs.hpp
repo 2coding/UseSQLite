@@ -36,13 +36,21 @@
 #define USQL_INVALID_COLUMN_INDEX -1
 #define USQL_INVALID_PARAMETER_INDEX 0
 
-enum class USQLColumnType {
-    USQLInvalidType,
-    USQLInteger,
-    USQLText,
-    USQLFloat,
-    USQLBlob,
-    USQLNull,
-};
+namespace usqlite {
+    enum class USQLColumnType {
+        USQLInvalidType,
+        USQLInteger,
+        USQLText,
+        USQLFloat,
+        USQLBlob,
+        USQLNull,
+    };
+    
+    enum class USQLTransactionType {
+        USQLDeferred,
+        USQLImmediate,
+        USQLExclusive
+    };
+}
 
 #endif /* USQLDefs_hpp */

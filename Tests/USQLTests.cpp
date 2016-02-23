@@ -275,3 +275,33 @@ TEST_F(USQLTests, statement_bind)
     EXPECT_TRUE(query.bind(4, bvalue.data(), (int)bvalue.size()));
     EXPECT_TRUE(query.next());
 }
+
+TEST_F(USQLTests, connnection_transaction)
+{
+    USQLQuery query("select count(*) as row_count from use_sqlite_table", _connection);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(0, query.intForColumnIndex(0));
+    query.close();
+    
+    _connection.transaction(USQLTransactionType::USQLDeferred
+                            , [this]()->bool{
+                                this->insertRow("hello world", 10, 10.12);
+                                this->insertRow("row 2", 110, 12.22);
+                                return false;
+                            });
+    query.reset();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(0, query.intForColumnIndex(0));
+    query.close();
+    
+    _connection.transaction(USQLTransactionType::USQLDeferred
+                            , [this]()->bool{
+                                this->insertRow("hello world", 10, 10.12);
+                                this->insertRow("row 2", 110, 12.22);
+                                return true;
+                            });
+    query.reset();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(2, query.intForColumnIndex(0));
+    query.close();
+}

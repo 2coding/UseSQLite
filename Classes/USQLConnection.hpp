@@ -66,6 +66,7 @@ namespace usqlite {
         
     public:
         bool exec(const std::string &cmd);
+        bool transaction(USQLTransactionType type, std::tr1::function<bool()> action);
         
     protected:
         friend class _USQLStatement;

@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <iostream>
 #include <functional>
+#include <tr1/functional>
 
 #include <stdint.h>
 

@@ -128,4 +128,34 @@ namespace usqlite {
         _USQLStatement stmt(cmd, this);
         return stmt.step();
     }
+    
+    bool USQLConnection::transaction(USQLTransactionType type, std::tr1::function<bool()> action) {
+        if (!isOpenning()) {
+            return false;
+        }
+        
+        std::stringstream ss;
+        ss<<"BEGIN ";
+        if (type == USQLTransactionType::USQLDeferred) {
+            ss<<"DEFERRED";
+        }
+        else if(type == USQLTransactionType::USQLImmediate) {
+            ss<<"IMMEDIATE";
+        }
+        else {
+            ss<<"EXCLUSIVE";
+        }
+        ss<<" TRANSACTION";
+        
+        if (!this->exec(ss.str())) {
+            return false;
+        }
+        
+        if (action()) {
+            return this->exec("COMMIT");
+        }
+        else {
+            return this->exec("ROLLBACK");
+        }
+    }
 }
