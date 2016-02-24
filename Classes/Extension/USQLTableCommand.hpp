@@ -32,6 +32,41 @@
 namespace usqlite {
     class USQLTableCommand : public USQLCommand
     {
+#pragma mark - column-def
+    private:
+        struct _column
+        {
+            std::string name = "";
+            std::string type = "";
+            std::string constraint = "";
+            
+            _column() {}
+            _column(const std::string &n, const std::string &t, const std::string &c) :name(n), type(t), constraint(c) {}
+            _column(const std::string &n, const std::string &t, const std::map<USQLColumnConstraint, std::string> &c) : name(n), type(t), constraint(opt(c)) {}
+            
+            std::string columndef() const {
+                if (invalid()) {
+                    return "";
+                }
+                
+                std::stringstream ss;
+                ss<<name<<" "<<type;
+                if (!constraint.empty()) {
+                    ss<<" "<<constraint;
+                }
+                
+                return ss.str();
+            }
+            
+            bool invalid() const {
+                return name.empty() || type.empty();
+            }
+            
+            static std::string opt(const std::map<USQLColumnConstraint, std::string> &opt);
+        };
+        
+
+#pragma mark - CREATE TABLE
     public:
         class CreateTableCommand : public USQLCommand
         {
@@ -83,14 +118,6 @@ namespace usqlite {
                 ss<<")";
                 return ss.str();
             }
-          
-        private:
-            struct _column
-            {
-                std::string name;
-                std::string type;
-                std::string constraint;
-            };
             
         private:
             std::string _schema = "";
@@ -104,10 +131,75 @@ namespace usqlite {
             std::map<USQLColumnConstraint, std::string> _tableConstraint;
         };
         
+#pragma mark - DROP TABLE
+        class DropTableCommand : public USQLCommand
+        {
+        public:
+            DropTableCommand(const std::string &tablename);
+            
+            DropTableCommand &schema(const std::string &name) {
+                _schema = name;
+                return *this;
+            }
+            
+            DropTableCommand &ifExists(bool b) {
+                _ifExists = b;
+                return *this;
+            }
+            
+            virtual std::string command() const override;
+            
+        private:
+            std::string _schema = "";
+            std::string _tablename;
+            
+            bool _ifExists = true;
+        };
+        
+#pragma mark - ALTER TABLE
+        class AlterTableCommand : public USQLCommand
+        {
+        public:
+            AlterTableCommand(const std::string &tablename) : _tablename(tablename) {}
+            
+            AlterTableCommand &columnDef(const std::string &name, const std::string &type, const std::string &constraint = "") {
+                if (name.empty() || type.empty()) {
+                    return *this;
+                }
+                
+                _columndef.name = name;
+                _columndef.type = type;
+                _columndef.constraint = constraint;
+                return *this;
+            }
+            
+            AlterTableCommand &columnDef(const std::string &name, const std::string &type, const std::map<USQLColumnConstraint, std::string> &constraint) {
+                return columnDef(name, type, _column::opt(constraint));
+            }
+            
+            AlterTableCommand &schema(const std::string &name) {
+                _schema = name;
+                return *this;
+            }
+            
+            virtual std::string command() const override;
+            
+        private:
+            std::string _schema = "";
+            std::string _tablename;
+            
+            _column _columndef;
+        };
+        
+#pragma mark - table command
     public:
         static bool checkTablename(const std::string tablename);
         
         static CreateTableCommand create(const std::string &tablename);
+        static DropTableCommand drop(const std::string &tablename);
+        static AlterTableCommand alter(const std::string &tablename);
+        
+        static std::string rename(const std::string &oldname, const std::string &newname, const std::string &schema = "");
     };
 }
 

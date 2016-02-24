@@ -39,37 +39,34 @@ namespace usqlite {
         return USQLTableCommand::CreateTableCommand(tablename);
     }
     
-    USQLTableCommand::CreateTableCommand::CreateTableCommand(const std::string &tablename)
-    : _tablename(tablename) {
-        assert(USQLTableCommand::checkTablename(_tablename));
+    USQLTableCommand::DropTableCommand USQLTableCommand::drop(const std::string &tablename) {
+        return USQLTableCommand::DropTableCommand(tablename);
     }
     
-    USQLTableCommand::CreateTableCommand &USQLTableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::string &constraint) {
-        if (name.empty() || type.empty()) {
-            return *this;
+    std::string USQLTableCommand::rename(const std::string &oldname, const std::string &newname, const std::string &schema) {
+        if (!checkTablename(oldname) || !checkTablename(newname)) {
+            return "";
         }
         
-        _column cl;
-        cl.name = name;
-        cl.type = type;
-        cl.constraint = constraint;
+        std::stringstream buf;
+        buf<<"ALTER TABLE ";
+        if (!schema.empty()) {
+            buf<<schema<<".";
+        }
         
-        _columnDef[name] = cl;
-        return *this;
+        buf<<oldname<<" RENAME TO "<<newname;
+        return buf.str();
     }
     
-    USQLTableCommand::CreateTableCommand &USQLTableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::map<USQLColumnConstraint, std::string> &constraint) {
-        if (name.empty() || type.empty()) {
-            return *this;
-        }
-        
-        if (constraint.empty()) {
-            return columnDef(name, type);
-        }
-        
+    USQLTableCommand::AlterTableCommand USQLTableCommand::alter(const std::string &tablename) {
+        return USQLTableCommand::AlterTableCommand(tablename);
+    }
+    
+#pragma mark - column-def
+    std::string USQLTableCommand::_column::opt(const std::map<USQLColumnConstraint, std::string> &c) {
         std::stringstream ss;
-        for (auto iter = constraint.begin(); iter != constraint.end(); ++iter) {
-            if (iter != constraint.begin()) {
+        for (auto iter = c.begin(); iter != c.end(); ++iter) {
+            if (iter != c.begin()) {
                 ss<<" ";
             }
             
@@ -125,7 +122,26 @@ namespace usqlite {
             }
         }
         
-        return columnDef(name, type, ss.str());
+        return ss.str();
+    }
+    
+#pragma mark - CREATE TABLE
+    USQLTableCommand::CreateTableCommand::CreateTableCommand(const std::string &tablename)
+    : _tablename(tablename) {
+        assert(USQLTableCommand::checkTablename(_tablename));
+    }
+    
+    USQLTableCommand::CreateTableCommand &USQLTableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::string &constraint) {
+        if (name.empty() || type.empty()) {
+            return *this;
+        }
+        
+        _columnDef[name] = _column(name, type, constraint);
+        return *this;
+    }
+    
+    USQLTableCommand::CreateTableCommand &USQLTableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::map<USQLColumnConstraint, std::string> &constraint) {
+        return columnDef(name, type, USQLTableCommand::_column::opt(constraint));
     }
     
     USQLTableCommand::CreateTableCommand &USQLTableCommand::CreateTableCommand::tableConstraintPrimaryKey(const std::vector<std::string> columns) {
@@ -181,15 +197,16 @@ namespace usqlite {
         
         ss<<" (";
         for (auto iter = _columnDef.begin(); iter != _columnDef.end(); ++iter) {
+            auto info = iter->second;
+            if (info.invalid()) {
+                continue;
+            }
+            
             if (iter != _columnDef.begin()) {
                 ss<<","<<std::endl;
             }
-            
-            auto info = iter->second;
-            ss<<info.name<<" "<<info.type;
-            if (!info.constraint.empty()) {
-                ss<<" "<<info.constraint;
-            }
+
+            ss<<info.columndef();
         }
         
         for (auto iter = _tableConstraint.begin(); iter != _tableConstraint.end(); ++iter) {
@@ -204,4 +221,45 @@ namespace usqlite {
         
         return ss.str();
     }
+    
+#pragma mark - DROP TABLE
+    USQLTableCommand::DropTableCommand::DropTableCommand(const std::string &tablename)
+    : _tablename(tablename) {
+        assert(USQLTableCommand::checkTablename(_tablename));
+    }
+    
+    std::string USQLTableCommand::DropTableCommand::command() const {
+        std::stringstream ss;
+        ss<<"DROP TABLE ";
+        
+        if (_ifExists) {
+            ss<<"IF EXISTS ";
+        }
+        
+        if (!_schema.empty()) {
+            ss<<_schema<<".";
+        }
+        
+        ss<<_tablename;
+        return ss.str();
+    }
+
+#pragma mark - ALTER TABLE
+    std::string USQLTableCommand::AlterTableCommand::command() const {
+        if (_columndef.invalid()) {
+            return "";
+        }
+        
+        std::stringstream ss;
+        ss<<"ALTER TABLE ";
+        
+        if (!_schema.empty()) {
+            ss<<_schema<<".";
+        }
+        ss<<_tablename;
+        
+        ss<<" ADD "<<_columndef.columndef();
+        return ss.str();
+    }
+
 }

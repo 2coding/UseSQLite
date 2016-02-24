@@ -158,4 +158,19 @@ namespace usqlite {
             return this->exec("ROLLBACK");
         }
     }
+    
+    bool USQLConnection::tableExists(const std::string &tablename) {
+        if (tablename.empty()) {
+            return false;
+        }
+        
+        std::stringstream buf;
+        buf<<"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='"<<tablename<<"'";
+        USQLQuery query(buf.str(), *this);
+        if (!query.next()) {
+            return false;
+        }
+        
+        return query.intForColumnIndex(0) > 0;
+    }
 }

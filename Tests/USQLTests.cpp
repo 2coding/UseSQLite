@@ -361,10 +361,68 @@ TEST_F(USQLExtTests, create_table)
     .withoutRowId(false);
     
     EXPECT_TRUE(_connection.exec(cmd.command()));
+    EXPECT_TRUE(_connection.tableExists(_testTablename));
     EXPECT_TRUE(_connection.exec("insert into test_table_name (a, b) values (1, 101)"));
     EXPECT_FALSE(_connection.exec("insert into test_table_name (a, b) values (2, 10)"));
     EXPECT_FALSE(_connection.exec("insert into test_table_name (a, b) values (3, 197)"));
     
     USQLQuery query("select * from test_table_name where c = 'HELLO WORLD'", _connection);
     EXPECT_TRUE(query.next());
+}
+
+TEST_F(USQLExtTests, drop_table)
+{
+    auto cmd = USQLTableCommand::create(_testTablename);
+    cmd.createIfNotExist(true)
+    .columnDef("a", "int", "primary key");
+    
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+    EXPECT_TRUE(_connection.tableExists(_testTablename));
+    
+    auto drop = USQLTableCommand::drop(_testTablename);
+    drop.ifExists(true);
+    EXPECT_TRUE(_connection.exec(drop.command()));
+    EXPECT_FALSE(_connection.tableExists(_testTablename));
+}
+
+TEST_F(USQLExtTests, rename_table)
+{
+    auto create = USQLTableCommand::create(_testTablename);
+    create.createIfNotExist(true)
+    .columnDef("a", "int");
+    
+    EXPECT_TRUE(_connection.exec(create.command()));
+    EXPECT_TRUE(_connection.tableExists(_testTablename));
+    
+    const std::string newname = "new_test_table";
+    EXPECT_TRUE(_connection.exec(USQLTableCommand::rename(_testTablename, newname)));
+    EXPECT_FALSE(_connection.tableExists(_testTablename));
+    EXPECT_TRUE(_connection.tableExists(newname));
+    
+    EXPECT_TRUE(_connection.exec(USQLTableCommand::drop(newname).command()));
+}
+
+TEST_F(USQLExtTests, alter_table)
+{
+    auto create = USQLTableCommand::create(_testTablename);
+    create.createIfNotExist(true)
+    .columnDef("a", "int");
+    EXPECT_TRUE(_connection.exec(create.command()));
+    EXPECT_TRUE(_connection.exec("insert into test_table_name (a) values (1)"));
+    
+    std::string select = "select * from " + _testTablename;
+    USQLQuery query(select, _connection);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(0, query.columnIndexForName("a"));
+    EXPECT_TRUE(query.columnIndexForName("b") < 0);
+    
+    auto cmd = USQLTableCommand::alter(_testTablename);
+    EXPECT_EQ("", cmd.command());
+    cmd.columnDef("b", "text");
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+    
+    query.reset();
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(0, query.columnIndexForName("a"));
+    EXPECT_EQ(1, query.columnIndexForName("b"));
 }
