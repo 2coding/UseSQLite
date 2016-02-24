@@ -69,6 +69,7 @@ namespace usqlite {
         bool transaction(USQLTransactionType type, std::tr1::function<bool()> action);
         
         bool tableExists(const std::string &tablename);
+        std::vector<std::string> allTables(const std::string &schema = "");
         
     protected:
         friend class _USQLStatement;

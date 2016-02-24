@@ -160,7 +160,7 @@ namespace usqlite {
     }
     
     bool USQLConnection::tableExists(const std::string &tablename) {
-        if (tablename.empty()) {
+        if (tablename.empty() || !isOpenning()) {
             return false;
         }
         
@@ -172,5 +172,26 @@ namespace usqlite {
         }
         
         return query.intForColumnIndex(0) > 0;
+    }
+    
+    std::vector<std::string> USQLConnection::allTables(const std::string &schema) {
+        std::vector<std::string> tables;
+        if (!isOpenning()) {
+            return tables;
+        }
+        
+        std::stringstream buf;
+        buf<<"SELECT name FROM ";
+        if (!schema.empty()) {
+            buf<<schema<<".";
+        }
+        buf<<"sqlite_master WHERE type='table'";
+        
+        USQLQuery query(buf.str(), *this);
+        while (query.next()) {
+            tables.push_back(query.textForName("name"));
+        }
+        
+        return tables;
     }
 }

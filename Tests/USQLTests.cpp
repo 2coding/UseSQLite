@@ -90,7 +90,12 @@ protected:
     }
     
     bool dropTable() {
-        return _connection.exec("drop table if exists use_sqlite_table");
+        auto tables = _connection.allTables();
+        for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
+            _connection.exec(USQLTableCommand::drop(*iter).command());
+        }
+        
+        return true;
     }
     
     bool insertRow(const std::string &a, int b, double c) {
@@ -107,6 +112,29 @@ protected:
 protected:
     USQLConnection _connection;
 };
+
+TEST_F(USQLTests, connection_tables)
+{
+    dropTable();
+    EXPECT_EQ(0, _connection.allTables().size());
+    
+    std::vector<std::string> tables;
+    tables.push_back("test1");
+    tables.push_back("test2");
+    tables.push_back("test3");
+    for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
+        auto cmd = USQLTableCommand::create(*iter);
+        cmd.columnDef("a", "int");
+        EXPECT_TRUE(_connection.exec(cmd.command()));
+    }
+    
+    for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
+        EXPECT_TRUE(_connection.tableExists(*iter));
+    }
+    auto ret = _connection.allTables();
+    EXPECT_EQ(tables, ret);
+
+}
 
 TEST_F(USQLTests, fail_on_closed_database)
 {
