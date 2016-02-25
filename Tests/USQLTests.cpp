@@ -27,9 +27,13 @@
 #include "USQLTests.hpp"
 #include "USQL.hpp"
 #include <sstream>
+#include <cstdio>
 using namespace usqlite;
 
 static const char *_db = "/tmp/usqlite.db";
+
+static const char *_test1 = "/tmp/usqlite_test1.db";
+static const char *_test2 = "/tmp/usqlite_test2.db";
 
 int usqlite_test_run(int argc, const char **argv) {
     testing::InitGoogleTest(&argc, const_cast<char **>(argv));
@@ -58,6 +62,46 @@ TEST(usqlite_tests, open_close_database)
     EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
 }
 
+TEST(usqlite_tests, attach_detach_database)
+{
+    USQLConnection con(_test1);
+    con.open();
+    
+    const std::string schema = "test2";
+    EXPECT_TRUE(con.attachDatabase(_test2, schema));
+    
+    std::vector<std::string> test_tables;
+    test_tables.push_back("test_table1");
+    test_tables.push_back("test_table2");
+    test_tables.push_back("test_table3");
+    for (auto i = test_tables.begin(); i != test_tables.end(); ++i) {
+        auto create = USQLTableCommand::create(*i);
+        create.schema("test2")
+        .columnDef("a", "int");
+        
+        EXPECT_TRUE(con.exec(create.command()));
+    }
+    
+    EXPECT_EQ(0, con.allTables("main").size());
+    EXPECT_EQ(test_tables, con.allTables(schema));
+    
+    auto dbs = con.allDatabase();
+    EXPECT_EQ(2, dbs.size());
+    EXPECT_EQ("main", dbs[0].name);
+    EXPECT_EQ(_test1, dbs[0].filepath);
+    
+    EXPECT_EQ(schema, dbs[1].name);
+    EXPECT_EQ(_test2, dbs[1].filepath);
+    
+    con.detachDatabase(schema);
+    EXPECT_EQ(0, con.allTables(schema).size());
+    
+    con.close();
+    
+    std::remove(_test1);
+    std::remove(_test2);
+}
+
 #pragma mark - sqlite base tests
 class USQLTests : public testing::Test
 {
@@ -83,6 +127,8 @@ protected:
         clearTable();
         dropTable();
         _connection.close();
+        
+        std::remove(_db);
     }
     
     bool createTable() {
@@ -134,6 +180,57 @@ TEST_F(USQLTests, connection_tables)
     auto ret = _connection.allTables();
     EXPECT_EQ(tables, ret);
 
+}
+
+TEST_F(USQLTests, connection_table_info)
+{
+    const std::string tablename = "test_table";
+    std::vector<std::string> primaryKeys;
+    primaryKeys.push_back("a");
+    primaryKeys.push_back("c");
+    auto cmd = USQLTableCommand::create(tablename);
+    cmd.createIfNotExist(false)
+    .columnDef("a", "int", "default 11")
+    .columnDef("b", "text", "not null default 'hello world'")
+    .columnDef("c", "real", "default 12.3")
+    .tableConstraintPrimaryKey(primaryKeys);
+    
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+    auto table = _connection.tableInfo(tablename);
+    EXPECT_EQ(tablename, table.name);
+    EXPECT_EQ(3, table.columndefs.size());
+    
+    auto a = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const USQLConnection::ColumnInfo &c){
+        return c.name == "a";
+    });
+    EXPECT_TRUE(a != table.columndefs.end());
+    EXPECT_EQ("a", a->name);
+    EXPECT_EQ("int", a->type);
+    EXPECT_TRUE(a->nullable);
+    EXPECT_EQ("11", a->defaultValue);
+    
+    auto b = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const USQLConnection::ColumnInfo &c){
+        return c.name == "b";
+    });
+    EXPECT_TRUE(a != table.columndefs.end());
+    EXPECT_EQ("b", b->name);
+    EXPECT_EQ("text", b->type);
+    EXPECT_FALSE(b->nullable);
+    EXPECT_EQ("'hello world'", b->defaultValue);
+    
+    auto c = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const USQLConnection::ColumnInfo &c){
+        return c.name == "c";
+    });
+    EXPECT_TRUE(a != table.columndefs.end());
+    EXPECT_EQ("c", c->name);
+    EXPECT_EQ("real", c->type);
+    EXPECT_TRUE(c->nullable);
+    EXPECT_EQ("12.3", c->defaultValue);
+    
+    EXPECT_EQ(2, table.primaryKeys.size());
+    EXPECT_TRUE(std::find(table.primaryKeys.begin(), table.primaryKeys.end(), "a") != table.primaryKeys.end());
+    EXPECT_TRUE(std::find(table.primaryKeys.begin(), table.primaryKeys.end(), "b") == table.primaryKeys.end());
+    EXPECT_TRUE(std::find(table.primaryKeys.begin(), table.primaryKeys.end(), "c") != table.primaryKeys.end());
 }
 
 TEST_F(USQLTests, fail_on_closed_database)
@@ -346,8 +443,12 @@ protected:
         _connection.exec("drop table if exists test_table_name");
     }
     virtual void TearDown() {
-        _connection.exec("drop table if exists test_table_name");
+        auto tables = _connection.allTables();
+        for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
+            _connection.exec(USQLTableCommand::drop(*iter).ifExists(true).command());
+        }
         _connection.close();
+        std::remove(_db);
     }
     
     USQLConnection _connection;

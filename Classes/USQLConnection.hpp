@@ -68,8 +68,38 @@ namespace usqlite {
         bool exec(const std::string &cmd);
         bool transaction(USQLTransactionType type, std::tr1::function<bool()> action);
         
-        bool tableExists(const std::string &tablename);
+        //tables
+        struct ColumnInfo
+        {
+            std::string name;
+            std::string type;
+            bool nullable = false;
+            std::string defaultValue;
+        };
+        
+        struct TableInfo
+        {
+            std::string name;
+            std::vector<std::string> primaryKeys;
+            std::vector<ColumnInfo> columndefs;
+        };
+        
+        bool tableExists(const std::string &tablename, const std::string &schema = "");
         std::vector<std::string> allTables(const std::string &schema = "");
+        TableInfo tableInfo(const std::string &name, const std::string &schema = "");
+        
+        //attach or detach database
+        struct DatabaseInfo
+        {
+            std::string name;
+            std::string filepath;
+            
+            DatabaseInfo(const std::string &n, const std::string &f) : name(n), filepath(f) {}
+        };
+        bool attachDatabase(const std::string &filename, const std::string &schema);
+        void detachDatabase(const std::string &schema);
+        std::vector<DatabaseInfo> allDatabase();
+        
         
     protected:
         friend class _USQLStatement;

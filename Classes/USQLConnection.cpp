@@ -159,13 +159,17 @@ namespace usqlite {
         }
     }
     
-    bool USQLConnection::tableExists(const std::string &tablename) {
+    bool USQLConnection::tableExists(const std::string &tablename, const std::string &schema) {
         if (tablename.empty() || !isOpenning()) {
             return false;
         }
         
         std::stringstream buf;
-        buf<<"SELECT count(*) FROM sqlite_master WHERE type='table' AND name='"<<tablename<<"'";
+        buf<<"SELECT count(*) FROM ";
+        if (!schema.empty()) {
+            buf<<schema<<".";
+        }
+        buf<<"sqlite_master WHERE type='table' AND name='"<<tablename<<"'";
         USQLQuery query(buf.str(), *this);
         if (!query.next()) {
             return false;
@@ -193,5 +197,76 @@ namespace usqlite {
         }
         
         return tables;
+    }
+    
+    USQLConnection::TableInfo USQLConnection::tableInfo(const std::string &name, const std::string &schema) {
+        USQLConnection::TableInfo table;
+        if (name.empty()) {
+            return table;
+        }
+        
+        std::stringstream buf;
+        buf<<"PRAGMA ";
+        if (!schema.empty()) {
+            buf<<schema<<".";
+        }
+        buf<<"table_info("<<name<<")";
+        
+        USQLQuery query(buf.str(), *this);
+        while (query.next()) {
+            ColumnInfo column;
+            column.name = query.textForName("name");
+            column.type = query.textForName("type");
+            column.nullable = !query.intForName("notnull");
+            column.defaultValue = query.textForName("dflt_value");
+            
+            int idx = query.intForName("pk");
+            if (idx) {
+                table.primaryKeys.push_back(column.name);
+            }
+            
+            table.columndefs.push_back(column);
+        }
+        
+        table.name = name;
+        return table;
+    }
+    
+    bool USQLConnection::attachDatabase(const std::string &filename, const std::string &schema) {
+        if (filename.empty() || schema.empty()) {
+            return false;
+        }
+        
+        std::stringstream buf;
+        buf<<"ATTACH DATABASE '"<<filename<<"' AS "<<schema;
+        return exec(buf.str());
+    }
+    
+    void USQLConnection::detachDatabase(const std::string &schema) {
+        if (schema.empty()) {
+            return ;
+        }
+        
+        std::stringstream buf;
+        buf<<"DETACH DATABASE "<<schema;
+        exec(buf.str());
+    }
+    
+    std::vector<USQLConnection::DatabaseInfo> USQLConnection::allDatabase() {
+        std::vector<USQLConnection::DatabaseInfo> dbs;
+        
+        USQLQuery query("PRAGMA database_list", *this);
+        while (query.next()) {
+            if (query.columnCount() < 3) {
+                continue;
+            }
+            
+            std::string name = query.textForColumnIndex(1);
+            std::string file = query.textForColumnIndex(2);
+            dbs.push_back(DatabaseInfo(name, file));
+        }
+        query.close();
+        
+        return dbs;
     }
 }
