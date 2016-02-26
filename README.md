@@ -23,11 +23,20 @@ Example:
     }
     
 ### Bind
-    Cursor cursor("insert into table_name (a, b, c) values (:a, :b, :c)", _connection);
+    Cursor cursor("insert into table_name (a, b, c) values (:a, :b, :c)", db);
     cursor.bind(":a", 10);
     cursor.bind(":b", 11.2);
     cursor.bind(":c", "hello world");
     cursor.exec();
+
+### Command
+    auto create = TableCommand::create("table_name");
+    create.createIfNotExist(true)
+    .columnDef("a", "int", "default 11")
+    .columnDef("b", "real", "default 12.3")
+    .columnDef("c", "text", "not null default 'hello world'");
+
+    db.exec(create.command());
 
 ### See Also
 [sqlite doc](http://www.sqlite.org)
