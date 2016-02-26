@@ -53,6 +53,9 @@ namespace usql {
         int intForName(const std::string &name);
         int intForColumnIndex(int idx);
         
+        bool booleanForName(const std::string &name);
+        bool booleanForColumnIndex(int idx);
+        
         int64_t int64ForName(const std::string &name);
         int64_t int64ForColumnIndex(int idx);
         
@@ -61,6 +64,9 @@ namespace usql {
         
         double floatForName(const std::string &name);
         double floatForColumnIndex(int idx);
+        
+        std::time_t datetimeForName(const std::string &name);
+        std::time_t datetimeForColumnIndex(int idx);
         
         void close();
         

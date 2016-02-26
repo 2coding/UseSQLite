@@ -24,47 +24,39 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
+#ifndef UpdateCommand_hpp
+#define UpdateCommand_hpp
 
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
-#define USQL_ERROR_DATATIME (std::time_t)-1
-
-#define USQL_INVALID_COLUMN_INDEX -1
-#define USQL_INVALID_PARAMETER_INDEX 0
+#include "ExprCommand.hpp"
 
 namespace usql {
-    enum class ColumnType {
-        InvalidType,
-        Integer,
-        Text,
-        Float,
-        Blob,
-        Null,
-    };
-    
-    enum class TransactionType {
-        Deferred,
-        Immediate,
-        Exclusive
-    };
-    
-    enum class USQLColumnConstraint {
-        PrimaryKey,
-        PrimaryKeyAsc,
-        PrimaryKeyDesc,
-        Autoincrement,
-        NotNull,
-        Unique,
-        Check,
-        Default,
-        ForeignKey,
-        Collate
+    class UpdateCommand : public ExprCommand<UpdateCommand>
+    {
+    public:
+        using ExprCommand::ExprCommand;
+        
+        virtual std::string command() const override;
+        
+        template<class TValue>
+        UpdateCommand &value(const std::string &name, TValue v) {
+            if (name.empty()) {
+                return *this;
+            }
+            
+            std::stringstream buf;
+            const std::string str = tr1::is_convertible<TValue, const char *>::value ? "'" : "";
+            buf<<str<<v<<str;
+            return expr(name, buf.str());
+        }
+        
+        UpdateCommand &datetimeNow(const std::string &name);
+        UpdateCommand &timeNow(const std::string &name);
+        
+        UpdateCommand &expr(const std::string &name, const std::string &e);
+        
+    private:
+        std::map<std::string, std::string> _column;
     };
 }
 
-#endif /* USQLDefs_hpp */
+#endif /* UpdateCommand_hpp */

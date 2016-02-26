@@ -38,16 +38,20 @@
 
 #ifdef USQL_STD_TR1
 #include <tr1/functional>
+#include <tr1/type_traits>
 namespace tr1 = std::tr1;
 
 #else
 #include <functional>
+#include <type_traits>
 namespace tr1 = std;
 
 #endif
 
 #include <stdint.h>
 #include <cassert>
+#include <ctime>
+#include <cstdio>
 
 #include <sqlite3.h>
 

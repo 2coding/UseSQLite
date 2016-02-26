@@ -126,11 +126,6 @@ namespace usql {
     }
     
 #pragma mark - CREATE TABLE
-    TableCommand::CreateTableCommand::CreateTableCommand(const std::string &tablename)
-    : _tablename(tablename) {
-        assert(TableCommand::checkTablename(_tablename));
-    }
-    
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::string &constraint) {
         if (name.empty() || type.empty()) {
             return *this;
@@ -190,10 +185,7 @@ namespace usql {
             ss<<"IF NOT EXISTS ";
         }
         
-        if (!_schema.empty()) {
-            ss<<_schema<<".";
-        }
-        ss<<_tablename;
+        ss<<tablename();
         
         ss<<" (";
         for (auto iter = _columnDef.begin(); iter != _columnDef.end(); ++iter) {
@@ -223,11 +215,6 @@ namespace usql {
     }
     
 #pragma mark - DROP TABLE
-    TableCommand::DropTableCommand::DropTableCommand(const std::string &tablename)
-    : _tablename(tablename) {
-        assert(TableCommand::checkTablename(_tablename));
-    }
-    
     std::string TableCommand::DropTableCommand::command() const {
         std::stringstream ss;
         ss<<"DROP TABLE ";
@@ -236,11 +223,7 @@ namespace usql {
             ss<<"IF EXISTS ";
         }
         
-        if (!_schema.empty()) {
-            ss<<_schema<<".";
-        }
-        
-        ss<<_tablename;
+        ss<<tablename();
         return ss.str();
     }
 
@@ -253,10 +236,7 @@ namespace usql {
         std::stringstream ss;
         ss<<"ALTER TABLE ";
         
-        if (!_schema.empty()) {
-            ss<<_schema<<".";
-        }
-        ss<<_tablename;
+        ss<<tablename();
         
         ss<<" ADD "<<_columndef.columndef();
         return ss.str();

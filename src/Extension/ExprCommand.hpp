@@ -24,47 +24,40 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
+#ifndef ExprCommand_hpp
+#define ExprCommand_hpp
 
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
-#define USQL_ERROR_DATATIME (std::time_t)-1
-
-#define USQL_INVALID_COLUMN_INDEX -1
-#define USQL_INVALID_PARAMETER_INDEX 0
+#include "Command.hpp"
 
 namespace usql {
-    enum class ColumnType {
-        InvalidType,
-        Integer,
-        Text,
-        Float,
-        Blob,
-        Null,
-    };
-    
-    enum class TransactionType {
-        Deferred,
-        Immediate,
-        Exclusive
-    };
-    
-    enum class USQLColumnConstraint {
-        PrimaryKey,
-        PrimaryKeyAsc,
-        PrimaryKeyDesc,
-        Autoincrement,
-        NotNull,
-        Unique,
-        Check,
-        Default,
-        ForeignKey,
-        Collate
+    template<class T>
+    class ExprCommand : public Command<T>
+    {
+    public:
+        using Command<T>::Command;
+        
+        T &where(const std::string &e) {
+            if (e.empty()) {
+                return dynamic_cast<T &>(*this);
+            }
+            
+            _expr.append(" ");
+            _expr.append(e);
+            return dynamic_cast<T &>(*this);
+        }
+        
+    protected:
+        std::string exprStr() const {
+            if (_expr.empty()) {
+                return "";
+            }
+            
+            return "WHERE " + _expr;
+        }
+        
+    private:
+        std::string _expr;
     };
 }
 
-#endif /* USQLDefs_hpp */
+#endif /* ExprCommand_hpp */

@@ -24,47 +24,37 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
-
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
-#define USQL_ERROR_DATATIME (std::time_t)-1
-
-#define USQL_INVALID_COLUMN_INDEX -1
-#define USQL_INVALID_PARAMETER_INDEX 0
+#include "Utils.hpp"
+#include "USQLDefs.hpp"
 
 namespace usql {
-    enum class ColumnType {
-        InvalidType,
-        Integer,
-        Text,
-        Float,
-        Blob,
-        Null,
-    };
-    
-    enum class TransactionType {
-        Deferred,
-        Immediate,
-        Exclusive
-    };
-    
-    enum class USQLColumnConstraint {
-        PrimaryKey,
-        PrimaryKeyAsc,
-        PrimaryKeyDesc,
-        Autoincrement,
-        NotNull,
-        Unique,
-        Check,
-        Default,
-        ForeignKey,
-        Collate
-    };
+    std::time_t Utils::str2tm(const std::string &str) {
+        if (str.empty()) {
+            return USQL_ERROR_DATATIME;
+        }
+        
+        int year = 0, mouth = 0, day = 0;
+        int hour = 0, minute = 0;
+        double second = 0.0f;
+        std::sscanf(str.c_str(), "%d-%d-%d %d:%d:%lf", &year, &mouth, &day, &hour, &minute, &second);
+        
+        if (year <= 1900
+            || (mouth < 1 || mouth > 12)
+            || (day < 1 || day > 31)
+            || (hour < 0 || hour > 23)
+            || (minute < 0 || minute > 59)
+            || (second < 0 || second > 60)) {
+            return USQL_ERROR_DATATIME;
+        }
+        
+        std::tm tm;
+        tm.tm_sec = static_cast<int>(second);
+        tm.tm_min = minute;
+        tm.tm_hour = hour;
+        tm.tm_mday = day;
+        tm.tm_mon = mouth - 1;
+        tm.tm_year = year - 1900;
+        
+        return mktime(&tm);
+    }
 }
-
-#endif /* USQLDefs_hpp */

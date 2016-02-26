@@ -38,4 +38,12 @@
 #define _USQL_STATEMENT_FIELD (dynamic_cast<Statement *>(_field))
 #define _USQL_STATEMENT_CALL(func) _USQL_TYPE_CALL(_USQL_STATEMENT_FIELD, Statement, func)
 
+namespace usql {
+    class Utils
+    {
+    public:
+        static std::time_t str2tm(const std::string &str);
+    };
+}
+
 #endif /* Utils_hpp */

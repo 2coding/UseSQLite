@@ -32,10 +32,27 @@
 #include "Object.hpp"
 
 namespace usql {
+    template<class T>
     class Command
     {
     public:
+        Command(const std::string &tablename) : _tablename(tablename) {}
+        
+        T &schema(const std::string &schema) {
+            _schema = schema;
+            return dynamic_cast<T &>(*this);
+        }
+        
         virtual std::string command() const = 0;
+        
+    protected:
+        std::string tablename() const  {
+            return (_schema.empty() ? "" : (_schema + ".")) + _tablename;
+        }
+        
+    protected:
+        std::string _tablename;
+        std::string _schema = "";
     };
 }
 

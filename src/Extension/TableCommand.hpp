@@ -30,7 +30,7 @@
 #include "Command.hpp"
 
 namespace usql {
-    class TableCommand : public Command
+    class TableCommand
     {
 #pragma mark - column-def
     private:
@@ -68,18 +68,13 @@ namespace usql {
 
 #pragma mark - CREATE TABLE
     public:
-        class CreateTableCommand : public Command
+        class CreateTableCommand : public Command<CreateTableCommand>
         {
         public:
-            CreateTableCommand(const std::string &tablename);
+            using Command::Command;
             
             CreateTableCommand &createIfNotExist(bool b) {
                 _createIfNotExist = b;
-                return *this;
-            }
-            
-            CreateTableCommand &schema(const std::string &name) {
-                _schema = name;
                 return *this;
             }
             
@@ -120,9 +115,6 @@ namespace usql {
             }
             
         private:
-            std::string _schema = "";
-            std::string _tablename;
-            
             bool _temp = false;
             bool _withoutRowId = false;
             bool _createIfNotExist = true;
@@ -132,15 +124,10 @@ namespace usql {
         };
         
 #pragma mark - DROP TABLE
-        class DropTableCommand : public Command
+        class DropTableCommand : public Command<DropTableCommand>
         {
         public:
-            DropTableCommand(const std::string &tablename);
-            
-            DropTableCommand &schema(const std::string &name) {
-                _schema = name;
-                return *this;
-            }
+            using Command::Command;
             
             DropTableCommand &ifExists(bool b) {
                 _ifExists = b;
@@ -150,17 +137,14 @@ namespace usql {
             virtual std::string command() const override;
             
         private:
-            std::string _schema = "";
-            std::string _tablename;
-            
             bool _ifExists = true;
         };
         
 #pragma mark - ALTER TABLE
-        class AlterTableCommand : public Command
+        class AlterTableCommand : public Command<AlterTableCommand>
         {
         public:
-            AlterTableCommand(const std::string &tablename) : _tablename(tablename) {}
+            using Command::Command;
             
             AlterTableCommand &columnDef(const std::string &name, const std::string &type, const std::string &constraint = "") {
                 if (name.empty() || type.empty()) {
@@ -177,17 +161,9 @@ namespace usql {
                 return columnDef(name, type, _column::opt(constraint));
             }
             
-            AlterTableCommand &schema(const std::string &name) {
-                _schema = name;
-                return *this;
-            }
-            
             virtual std::string command() const override;
             
-        private:
-            std::string _schema = "";
-            std::string _tablename;
-            
+        private:            
             _column _columndef;
         };
         

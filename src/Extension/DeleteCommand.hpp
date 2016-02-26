@@ -24,47 +24,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLDefs_hpp
-#define USQLDefs_hpp
+#ifndef DeleteCommand_hpp
+#define DeleteCommand_hpp
 
-//defines
-#define USQL_ERROR_INTEGER 0
-#define USQL_ERROR_TEXT ""
-#define USQL_ERROR_FLOAT (double)0.0f
-#define USQL_ERROR_BLOB ""
-#define USQL_ERROR_DATATIME (std::time_t)-1
-
-#define USQL_INVALID_COLUMN_INDEX -1
-#define USQL_INVALID_PARAMETER_INDEX 0
+#include "ExprCommand.hpp"
 
 namespace usql {
-    enum class ColumnType {
-        InvalidType,
-        Integer,
-        Text,
-        Float,
-        Blob,
-        Null,
-    };
-    
-    enum class TransactionType {
-        Deferred,
-        Immediate,
-        Exclusive
-    };
-    
-    enum class USQLColumnConstraint {
-        PrimaryKey,
-        PrimaryKeyAsc,
-        PrimaryKeyDesc,
-        Autoincrement,
-        NotNull,
-        Unique,
-        Check,
-        Default,
-        ForeignKey,
-        Collate
+    class DeleteCommand : public ExprCommand<DeleteCommand>
+    {
+    public:
+        using ExprCommand::ExprCommand;
+        
+        virtual std::string command() const override;
     };
 }
 
-#endif /* USQLDefs_hpp */
+#endif /* DeleteCommand_hpp */

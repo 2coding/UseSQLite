@@ -28,6 +28,7 @@
 #include "USQL.hpp"
 #include <sstream>
 #include <cstdio>
+
 using namespace usql;
 
 static const char *_db = "/tmp/usqlite.db";
@@ -132,7 +133,7 @@ protected:
     }
     
     bool createTable() {
-        return _connection.exec("create table if not exists use_sqlite_table(a text, b int, c real, d blob)");
+        return _connection.exec("create table if not exists use_sqlite_table(a text, b int, c real, d blob, e boolean)");
     }
     
     bool dropTable() {
@@ -144,9 +145,9 @@ protected:
         return true;
     }
     
-    bool insertRow(const std::string &a, int b, double c) {
+    bool insertRow(const std::string &a, int b, double c, bool e = false) {
         std::stringstream ss;
-        ss<<"insert into use_sqlite_table (a, b, c) values ('"<<a<<"', "<<b<<", "<<c<<")";
+        ss<<"insert into use_sqlite_table (a, b, c, e) values ('"<<a<<"', "<<b<<", "<<c<<", "<<(e ? 1 : 0)<<")";
         std::string cmd = ss.str();
         return _connection.exec(cmd);
     }
@@ -242,7 +243,7 @@ TEST_F(USQLTests, fail_on_closed_database)
     
     Query query(cmd, _connection);
     EXPECT_TRUE(query.next());
-    EXPECT_EQ(4, query.columnCount());
+    EXPECT_EQ(5, query.columnCount());
     EXPECT_EQ("row 1", query.textForName("a"));
     EXPECT_EQ(10, query.intForName("b"));
     
@@ -301,7 +302,7 @@ TEST_F(USQLTests, query_column)
     Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     
-    EXPECT_EQ(4, query.columnCount());
+    EXPECT_EQ(5, query.columnCount());
     EXPECT_EQ(0, query.columnIndexForName("a"));
     EXPECT_EQ(USQL_INVALID_COLUMN_INDEX, query.columnIndexForName("A"));
     EXPECT_EQ(1, query.columnIndexForName("b"));
@@ -310,7 +311,7 @@ TEST_F(USQLTests, query_column)
     EXPECT_TRUE(query.availableIndex(0));
     EXPECT_TRUE(query.availableIndex(3));
     EXPECT_FALSE(query.availableIndex(-1));
-    EXPECT_FALSE(query.availableIndex(4));
+    EXPECT_FALSE(query.availableIndex(5));
 }
 
 TEST_F(USQLTests, query_column_type)
@@ -324,6 +325,7 @@ TEST_F(USQLTests, query_column_type)
     EXPECT_EQ(ColumnType::Integer, query.typeForName("b"));
     EXPECT_EQ(ColumnType::Float, query.typeForName("c"));
     EXPECT_EQ(ColumnType::Null, query.typeForName("d"));
+    EXPECT_EQ(ColumnType::Integer, query.typeForName("e"));
     EXPECT_EQ(ColumnType::InvalidType, query.typeForName("A"));
 }
 
@@ -338,6 +340,17 @@ TEST_F(USQLTests, query_int)
     EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("a"));
     EXPECT_EQ(USQL_ERROR_INTEGER, query.intForName("c"));
     EXPECT_FALSE(query.next());
+}
+
+TEST_F(USQLTests, query_boolean)
+{
+    EXPECT_TRUE(insertRow("hello world", 10, 12.3, true));
+    
+    Query query("select * from use_sqlite_table", _connection);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(ColumnType::Integer, query.typeForName("e"));
+    EXPECT_EQ(true, query.booleanForName("e"));
+    EXPECT_EQ(true, query.booleanForColumnIndex(4));
 }
 
 TEST_F(USQLTests, query_text)
@@ -380,7 +393,7 @@ TEST_F(USQLTests, query_close)
     EXPECT_EQ(10, query.intForName("b"));
 }
 
-TEST_F(USQLTests, statement_bind)
+TEST_F(USQLTests, cursor_bind)
 {
     Cursor stmt("insert into use_sqlite_table (a, b, c, d) values (:a, :b, :c, :d)", _connection);
     const std::string tvalue = "bind hello world";
@@ -554,4 +567,103 @@ TEST_F(USQLExtTests, alter_table)
     EXPECT_TRUE(query.next());
     EXPECT_EQ(0, query.columnIndexForName("a"));
     EXPECT_EQ(1, query.columnIndexForName("b"));
+}
+
+TEST_F(USQLExtTests, insert_row)
+{
+    auto create = TableCommand::create(_testTablename);
+    create.createIfNotExist(true)
+    .columnDef("a", "int")
+    .columnDef("b", "text")
+    .columnDef("c", "real")
+    .columnDef("d", "datetime")
+    .columnDef("e", "datetime")
+    .columnDef("f", "datetime");
+    EXPECT_TRUE(_connection.exec(create.command()));
+    
+    auto ts = std::time(nullptr);
+    
+    auto cmd = InsertCommand(_testTablename);
+    cmd.value("a", 10)
+    .value("b", "hello world")
+    .value("c", 12.3)
+    .datetimeNow("d")
+    .expr("e", "strftime('%s', 'now')")
+    .expr("f", "julianday('now')");
+    
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+//    EXPECT_EQ("", _connection.lastErrorMessage());
+    
+    Query query("select * from test_table_name", _connection);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(10, query.intForName("a"));
+    EXPECT_EQ("hello world", query.textForName("b"));
+    EXPECT_EQ(12.3, query.floatForName("c"));
+    EXPECT_TRUE(std::difftime(query.datetimeForName("d"), ts) < 1);
+    EXPECT_TRUE(std::difftime(query.datetimeForName("e"), ts) < 1);
+    EXPECT_TRUE(std::difftime(query.datetimeForName("f"), ts) < 1);
+}
+
+TEST_F(USQLExtTests, delete_row)
+{
+    auto create = TableCommand::create(_testTablename);
+    create.createIfNotExist(true)
+    .columnDef("a", "int")
+    .columnDef("b", "text")
+    .columnDef("c", "real");
+    EXPECT_TRUE(_connection.exec(create.command()));
+    
+    auto cmd = InsertCommand(_testTablename);
+    cmd.value("a", 10)
+    .value("b", "hello world")
+    .value("c", 12.3);
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+    
+    EXPECT_TRUE(_connection.exec(create.command()));
+    Query query("select * from test_table_name where a = 10", _connection);
+    EXPECT_TRUE(query.next());
+    query.reset();
+    
+    auto deletecmd = DeleteCommand(_testTablename);
+    deletecmd.where("a = 20");
+    EXPECT_TRUE(_connection.exec(deletecmd.command()));
+    EXPECT_TRUE(query.next());
+    query.reset();
+    
+    deletecmd = DeleteCommand(_testTablename);
+    deletecmd.where("a = 10");
+    EXPECT_TRUE(_connection.exec(deletecmd.command()));
+    EXPECT_FALSE(query.next());
+}
+
+TEST_F(USQLExtTests, update_row)
+{
+    auto create = TableCommand::create(_testTablename);
+    create.createIfNotExist(true)
+    .columnDef("a", "int")
+    .columnDef("b", "text")
+    .columnDef("c", "real");
+    EXPECT_TRUE(_connection.exec(create.command()));
+    
+    auto cmd = InsertCommand(_testTablename);
+    cmd.value("a", 10)
+    .value("b", "hello world")
+    .value("c", 12.3);
+    EXPECT_TRUE(_connection.exec(cmd.command()));
+    
+    EXPECT_TRUE(_connection.exec(create.command()));
+    Query query("select * from test_table_name where a = 10", _connection);
+    EXPECT_TRUE(query.next());
+    query.reset();
+    
+    auto update = UpdateCommand(_testTablename);
+    update.value("a", 20)
+    .where("a = 10");
+    EXPECT_TRUE(_connection.exec(update.command()));
+    
+    EXPECT_FALSE(query.next());
+    
+    Cursor cursor("select * from test_table_name where a=:a", _connection);
+    cursor.bind(":a", 20);
+    EXPECT_TRUE(cursor.next());
 }

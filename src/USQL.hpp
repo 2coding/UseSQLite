@@ -35,6 +35,10 @@
 #include "DBConnection.hpp"
 
 #include "Command.hpp"
+#include "ExprCommand.hpp"
 #include "TableCommand.hpp"
+#include "InsertCommand.hpp"
+#include "UpdateCommand.hpp"
+#include "DeleteCommand.hpp"
 
 #endif /* USQL_hpp */

@@ -86,6 +86,15 @@ namespace usql {
         return _stmt->staticValueForColumnIndex<int>(idx, ColumnType::Integer, sqlite3_column_int, USQL_ERROR_INTEGER);
     }
     
+    bool Query::booleanForName(const std::string &name) {
+        int i = columnIndexForName(name);
+        return booleanForColumnIndex(i);
+    }
+    
+    bool Query::booleanForColumnIndex(int idx) {
+        return intForColumnIndex(idx);
+    }
+    
     int64_t Query::int64ForName(const std::string &name) {
         int i = columnIndexForName(name);
         return int64ForColumnIndex(i);
@@ -116,5 +125,29 @@ namespace usql {
     
     double Query::floatForColumnIndex(int idx) {
         return _stmt->staticValueForColumnIndex<double>(idx, ColumnType::Float, sqlite3_column_double, USQL_ERROR_FLOAT);
+    }
+    
+    std::time_t Query::datetimeForName(const std::string &name) {
+        int i = columnIndexForName(name);
+        return datetimeForColumnIndex(i);
+    }
+    
+    std::time_t Query::datetimeForColumnIndex(int idx) {
+        auto type = typeForColumn(idx);
+        std::time_t ts = -1;
+        if (type == ColumnType::Integer) {
+            ts = intForColumnIndex(idx);
+        }
+        else if (type == ColumnType::Text) {
+            std::string str = textForColumnIndex(idx);
+            ts = Utils::str2tm(str);
+        }
+        else if (type == ColumnType::Float) {
+            double day = floatForColumnIndex(idx);
+            double t = (day - 2440587.5) * 86400.0;
+            ts = static_cast<std::time_t>(t);
+        }
+        
+        return ts;
     }
 }
