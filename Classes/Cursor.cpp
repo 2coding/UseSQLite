@@ -25,8 +25,8 @@
  **/
 
 #include "Cursor.hpp"
-#include "_USQLUtils.hpp"
-#include "_USQLStatement.hpp"
+#include "Utils.hpp"
+#include "Statement.hpp"
 
 namespace usql {
     Cursor::Cursor(const std::string &cmd, DBConnection &con)

@@ -24,23 +24,23 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#include "_USQLStatement.hpp"
-#include "_USQLUtils.hpp"
+#include "Statement.hpp"
+#include "Utils.hpp"
 #include "DBConnection.hpp"
 
 namespace usql {
-    _USQLStatement::_USQLStatement(const std::string &cmd, DBConnection *db)
+    Statement::Statement(const std::string &cmd, DBConnection *db)
     : _stmt(nullptr)
     , _command(cmd)
     , _db(db)
     , _parametersCount(0) {
     }
     
-    _USQLStatement::~_USQLStatement() {
+    Statement::~Statement() {
         finilize();
     }
     
-    void _USQLStatement::finilize() {
+    void Statement::finilize() {
         if (!_stmt) {
             return;
         }
@@ -53,7 +53,7 @@ namespace usql {
         clearParameters();
     }
     
-    bool _USQLStatement::prepare() {
+    bool Statement::prepare() {
         if (_stmt) {
             return true;
         }
@@ -73,7 +73,7 @@ namespace usql {
         return _USQL_OK(code);
     }
     
-    bool _USQLStatement::reset() {
+    bool Statement::reset() {
         clearColumnInfo();
         if (_stmt) {
             sqlite3_reset(_stmt);
@@ -84,7 +84,7 @@ namespace usql {
         }
     }
     
-    bool _USQLStatement::step() {
+    bool Statement::step() {
         if (!reset()) {
             return false;
         }
@@ -97,7 +97,7 @@ namespace usql {
         return _USQL_STEP_OK(code);
     }
     
-    bool _USQLStatement::query() {
+    bool Statement::query() {
         if (!_stmt) {
             return false;
         }
@@ -111,7 +111,7 @@ namespace usql {
         return _USQL_QUERY_OK(code);
     }
     
-    int _USQLStatement::columnIndexForName(const std::string &name) const {
+    int Statement::columnIndexForName(const std::string &name) const {
         if (name.empty()) {
             return USQL_INVALID_COLUMN_INDEX;
         }
@@ -124,7 +124,7 @@ namespace usql {
         return iter->second;
     }
     
-    ColumnType _USQLStatement::typeForColumnIndex(int i) const {
+    ColumnType Statement::typeForColumnIndex(int i) const {
         if (i < 0 || i >= _columnTypes.size()) {
             return ColumnType::InvalidType;
         }
@@ -132,7 +132,7 @@ namespace usql {
         return _columnTypes[i];
     }
     
-    void _USQLStatement::initColumnInfo() {
+    void Statement::initColumnInfo() {
         clearColumnInfo();
         if (!_stmt) {
             return ;
@@ -159,7 +159,7 @@ namespace usql {
         }
     }
     
-    ColumnType _USQLStatement::typeForColumn(int i) {
+    ColumnType Statement::typeForColumn(int i) {
         ColumnType type = ColumnType::InvalidType;
         int t = sqlite3_column_type(_stmt, i);
         switch (t) {
@@ -187,7 +187,7 @@ namespace usql {
         return type;
     }
     
-    void _USQLStatement::initParameters() {
+    void Statement::initParameters() {
         if (!_stmt) {
             return;
         }
@@ -207,7 +207,7 @@ namespace usql {
         }
     }
     
-    int _USQLStatement::parameterIndexForName(const std::string &name) const {
+    int Statement::parameterIndexForName(const std::string &name) const {
         if (name.empty()) {
             return USQL_INVALID_PARAMETER_INDEX;
         }

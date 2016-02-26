@@ -33,7 +33,7 @@
 
 namespace usql {
     class DBConnection;
-    class _USQLStatement;
+    class Statement;
     class Query : public USQLNoCopyable
     {
     public:
@@ -68,7 +68,7 @@ namespace usql {
         const unsigned char *cstrForColumnIndex(int idx);
 
     protected:
-        _USQLStatement *_stmt;
+        Statement *_stmt;
     };
 }
 

@@ -24,22 +24,18 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef _USQLUtils_hpp
-#define _USQLUtils_hpp
+#ifndef Utils_hpp
+#define Utils_hpp
 #include "StdCpp.hpp"
 
 #define _USQL_OK(code) ((code) == SQLITE_OK)
 #define _USQL_STEP_OK(code) ((code) == SQLITE_DONE || (code) == SQLITE_ROW)
 #define _USQL_QUERY_OK(code) ((code) == SQLITE_ROW)
 
-//#define _USQL_LOCK
-//#define _USQL_START_LOCK { _USQL_LOCK
-//#define _USQL_UNLOCK }
-
 #define _USQL_OBJECT_CALL(obj, func) ((obj)->*(func))
 #define _USQL_TYPE_CALL(obj, type, func) _USQL_OBJECT_CALL(obj, &type::func)
 
-#define _USQL_STATEMENT_FIELD (dynamic_cast<_USQLStatement *>(_field))
-#define _USQL_STATEMENT_CALL(func) _USQL_TYPE_CALL(_USQL_STATEMENT_FIELD, _USQLStatement, func)
+#define _USQL_STATEMENT_FIELD (dynamic_cast<Statement *>(_field))
+#define _USQL_STATEMENT_CALL(func) _USQL_TYPE_CALL(_USQL_STATEMENT_FIELD, Statement, func)
 
-#endif /* _USQLUtils_hpp */
+#endif /* Utils_hpp */

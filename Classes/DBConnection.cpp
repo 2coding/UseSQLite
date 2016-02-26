@@ -25,7 +25,7 @@
  **/
 
 #include "DBConnection.hpp"
-#include "_USQLStatement.hpp"
+#include "Statement.hpp"
 
 namespace usql {
     DBConnection::DBConnection(const std::string &fn)
@@ -76,7 +76,7 @@ namespace usql {
         return _USQL_OK(_errorCode);
     }
     
-    void DBConnection::registerStatement(_USQLStatement *stmt) {
+    void DBConnection::registerStatement(Statement *stmt) {
         if (!stmt) {
             return;
         }
@@ -89,7 +89,7 @@ namespace usql {
         _statements.push_back(stmt);
     }
     
-    void DBConnection::unregisterStatement(_USQLStatement *stmt) {
+    void DBConnection::unregisterStatement(Statement *stmt) {
         if (!stmt) {
             return;
         }
@@ -109,7 +109,7 @@ namespace usql {
         _statements.clear();
         
         for (auto iter = list.begin(); iter != list.end(); ++iter) {
-            _USQLStatement *stmt = *iter;
+            Statement *stmt = *iter;
             if (finilized) {
                 stmt->finilize();
             }
@@ -125,7 +125,7 @@ namespace usql {
             return false;
         }
         
-        _USQLStatement stmt(cmd, this);
+        Statement stmt(cmd, this);
         return stmt.step();
     }
     

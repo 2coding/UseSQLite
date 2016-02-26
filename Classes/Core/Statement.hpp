@@ -24,21 +24,21 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef _USQLSatement_hpp
-#define _USQLSatement_hpp
+#ifndef Statement_hpp
+#define Statement_hpp
 
 #include "StdCpp.hpp"
 #include "USQLDefs.hpp"
-#include "_USQLUtils.hpp"
+#include "Utils.hpp"
 #include "Object.hpp"
 
 namespace usql {
     class DBConnection;
-    class _USQLStatement : public USQLNoCopyable
+    class Statement : public USQLNoCopyable
     {
     public:
-        _USQLStatement(const std::string &cmd, DBConnection *db);
-        ~_USQLStatement();
+        Statement(const std::string &cmd, DBConnection *db);
+        ~Statement();
         
         std::string command() const {
             return _command;
@@ -61,7 +61,7 @@ namespace usql {
         
         template<class Type>
         Type staticValueForColumnIndex(int idx, ColumnType expect, Type (*fn)(sqlite3_stmt *, int), Type err) {
-            if (!_USQLStatement::safeTypeCast(typeForColumnIndex(idx), expect)) {
+            if (!Statement::safeTypeCast(typeForColumnIndex(idx), expect)) {
                 return err;
             }
             
@@ -128,4 +128,4 @@ namespace usql {
     };
 }
 
-#endif /* _USQLSatement_hpp */
+#endif /* Statement_hpp */

@@ -32,7 +32,7 @@
 #include "Cursor.hpp"
 
 namespace usql {
-    class _USQLStatement;
+    class Statement;
     
     class DBConnection : public USQLNoCopyable
     {
@@ -101,10 +101,10 @@ namespace usql {
         
         
     protected:
-        friend class _USQLStatement;
+        friend class Statement;
         
-        void registerStatement(_USQLStatement *stmt);
-        void unregisterStatement(_USQLStatement *stmt);
+        void registerStatement(Statement *stmt);
+        void unregisterStatement(Statement *stmt);
         void finilizeAllStatements(bool finilized);
         
     private:
@@ -113,7 +113,7 @@ namespace usql {
         
         int _errorCode;
         
-        std::list<_USQLStatement *> _statements;
+        std::list<Statement *> _statements;
     };
 }
 

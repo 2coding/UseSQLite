@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */; };
 		C337E0371C59ED3F001A349D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E0361C59ED3F001A349D /* main.cpp */; };
 		C337E0841C59F711001A349D /* USQLTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C337E07E1C59F711001A349D /* USQLTests.cpp */; };
 		C337E0851C59F764001A349D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C3999BFB1C57AE67004C285B /* libsqlite3.tbd */; };
@@ -16,6 +15,7 @@
 		C3ADC9761C7FEB900034C7BA /* Query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADC9741C7FEB900034C7BA /* Query.cpp */; };
 		C3ADC97A1C7FED8E0034C7BA /* Cursor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADC9781C7FED8E0034C7BA /* Cursor.cpp */; };
 		C3ADC97F1C7FEE810034C7BA /* TableCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADC97D1C7FEE810034C7BA /* TableCommand.cpp */; };
+		C3ADC9841C7FF0C60034C7BA /* Statement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADC9811C7FF0C60034C7BA /* Statement.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,9 +90,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = _USQLStatement.cpp; sourceTree = "<group>"; };
-		C30B95CE1C5F3E600040DE1C /* _USQLStatement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _USQLStatement.hpp; sourceTree = "<group>"; };
-		C30B95D41C604AE90040DE1C /* _USQLUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _USQLUtils.hpp; sourceTree = "<group>"; };
 		C337E0341C59ED3F001A349D /* USQLTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = USQLTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		C337E0361C59ED3F001A349D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C337E0711C59F711001A349D /* USQL.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = USQL.hpp; sourceTree = "<group>"; };
@@ -112,6 +109,9 @@
 		C3ADC97C1C7FEE810034C7BA /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Command.hpp; sourceTree = "<group>"; };
 		C3ADC97D1C7FEE810034C7BA /* TableCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TableCommand.cpp; sourceTree = "<group>"; };
 		C3ADC97E1C7FEE810034C7BA /* TableCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TableCommand.hpp; sourceTree = "<group>"; };
+		C3ADC9811C7FF0C60034C7BA /* Statement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Statement.cpp; sourceTree = "<group>"; };
+		C3ADC9821C7FF0C60034C7BA /* Statement.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Statement.hpp; sourceTree = "<group>"; };
+		C3ADC9831C7FF0C60034C7BA /* Utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,16 +127,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C30B95B71C5F35500040DE1C /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				C30B95CD1C5F3E600040DE1C /* _USQLStatement.cpp */,
-				C30B95CE1C5F3E600040DE1C /* _USQLStatement.hpp */,
-				C30B95D41C604AE90040DE1C /* _USQLUtils.hpp */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		C337E0351C59ED3F001A349D /* USQLTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,7 +138,7 @@
 		C337E0701C59F711001A349D /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				C30B95B71C5F35500040DE1C /* Core */,
+				C3ADC9801C7FF0C60034C7BA /* Core */,
 				C3ADC97B1C7FEE810034C7BA /* Extension */,
 				C3ADC9781C7FED8E0034C7BA /* Cursor.cpp */,
 				C3ADC9791C7FED8E0034C7BA /* Cursor.hpp */,
@@ -215,6 +205,16 @@
 				C3ADC97E1C7FEE810034C7BA /* TableCommand.hpp */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		C3ADC9801C7FF0C60034C7BA /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				C3ADC9811C7FF0C60034C7BA /* Statement.cpp */,
+				C3ADC9821C7FF0C60034C7BA /* Statement.hpp */,
+				C3ADC9831C7FF0C60034C7BA /* Utils.hpp */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,11 +334,11 @@
 			files = (
 				C3ADC9761C7FEB900034C7BA /* Query.cpp in Sources */,
 				C3ADC97F1C7FEE810034C7BA /* TableCommand.cpp in Sources */,
-				C30B95CF1C5F3E600040DE1C /* _USQLStatement.cpp in Sources */,
 				C3ADC97A1C7FED8E0034C7BA /* Cursor.cpp in Sources */,
 				C337E0371C59ED3F001A349D /* main.cpp in Sources */,
 				C337E0841C59F711001A349D /* USQLTests.cpp in Sources */,
 				C3ADC9721C7FE8F80034C7BA /* DBConnection.cpp in Sources */,
+				C3ADC9841C7FF0C60034C7BA /* Statement.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
