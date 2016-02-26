@@ -26,10 +26,10 @@
 
 #include "_USQLStatement.hpp"
 #include "_USQLUtils.hpp"
-#include "USQLConnection.hpp"
+#include "DBConnection.hpp"
 
-namespace usqlite {
-    _USQLStatement::_USQLStatement(const std::string &cmd, USQLConnection *db)
+namespace usql {
+    _USQLStatement::_USQLStatement(const std::string &cmd, DBConnection *db)
     : _stmt(nullptr)
     , _command(cmd)
     , _db(db)
@@ -124,9 +124,9 @@ namespace usqlite {
         return iter->second;
     }
     
-    USQLColumnType _USQLStatement::typeForColumnIndex(int i) const {
+    ColumnType _USQLStatement::typeForColumnIndex(int i) const {
         if (i < 0 || i >= _columnTypes.size()) {
-            return USQLColumnType::USQLInvalidType;
+            return ColumnType::InvalidType;
         }
         
         return _columnTypes[i];
@@ -151,36 +151,36 @@ namespace usqlite {
             
             _columns[name] = i;
             
-            USQLColumnType type = typeForColumn(i);
-            if (type == USQLColumnType::USQLInvalidType) {
+            ColumnType type = typeForColumn(i);
+            if (type == ColumnType::InvalidType) {
                 return;
             }
             _columnTypes.push_back(type);
         }
     }
     
-    USQLColumnType _USQLStatement::typeForColumn(int i) {
-        USQLColumnType type = USQLColumnType::USQLInvalidType;
+    ColumnType _USQLStatement::typeForColumn(int i) {
+        ColumnType type = ColumnType::InvalidType;
         int t = sqlite3_column_type(_stmt, i);
         switch (t) {
             case SQLITE_INTEGER:
-                type = USQLColumnType::USQLInteger;
+                type = ColumnType::Integer;
                 break;
                 
             case SQLITE_TEXT:
-                type = USQLColumnType::USQLText;
+                type = ColumnType::Text;
                 break;
                 
             case SQLITE_FLOAT:
-                type = USQLColumnType::USQLFloat;
+                type = ColumnType::Float;
                 break;
                 
             case SQLITE_BLOB:
-                type = USQLColumnType::USQLBlob;
+                type = ColumnType::Blob;
                 break;
                 
             case SQLITE_NULL:
-                type = USQLColumnType::USQLNull;
+                type = ColumnType::Null;
                 break;
         }
         

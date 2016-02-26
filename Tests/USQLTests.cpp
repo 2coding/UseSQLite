@@ -28,7 +28,7 @@
 #include "USQL.hpp"
 #include <sstream>
 #include <cstdio>
-using namespace usqlite;
+using namespace usql;
 
 static const char *_db = "/tmp/usqlite.db";
 
@@ -43,7 +43,7 @@ int usqlite_test_run(int argc, const char **argv) {
 #pragma mark - global test
 TEST(usqlite_tests, open_close_database)
 {
-    USQLConnection connection(_db);
+    DBConnection connection(_db);
     EXPECT_TRUE(connection.open());
     EXPECT_TRUE(connection.isOpenning());
     EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
@@ -64,7 +64,7 @@ TEST(usqlite_tests, open_close_database)
 
 TEST(usqlite_tests, attach_detach_database)
 {
-    USQLConnection con(_test1);
+    DBConnection con(_test1);
     con.open();
     
     const std::string schema = "test2";
@@ -75,7 +75,7 @@ TEST(usqlite_tests, attach_detach_database)
     test_tables.push_back("test_table2");
     test_tables.push_back("test_table3");
     for (auto i = test_tables.begin(); i != test_tables.end(); ++i) {
-        auto create = USQLTableCommand::create(*i);
+        auto create = TableCommand::create(*i);
         create.schema("test2")
         .columnDef("a", "int");
         
@@ -138,7 +138,7 @@ protected:
     bool dropTable() {
         auto tables = _connection.allTables();
         for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
-            _connection.exec(USQLTableCommand::drop(*iter).command());
+            _connection.exec(TableCommand::drop(*iter).command());
         }
         
         return true;
@@ -156,7 +156,7 @@ protected:
     }
     
 protected:
-    USQLConnection _connection;
+    DBConnection _connection;
 };
 
 TEST_F(USQLTests, connection_tables)
@@ -169,7 +169,7 @@ TEST_F(USQLTests, connection_tables)
     tables.push_back("test2");
     tables.push_back("test3");
     for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
-        auto cmd = USQLTableCommand::create(*iter);
+        auto cmd = TableCommand::create(*iter);
         cmd.columnDef("a", "int");
         EXPECT_TRUE(_connection.exec(cmd.command()));
     }
@@ -188,7 +188,7 @@ TEST_F(USQLTests, connection_table_info)
     std::vector<std::string> primaryKeys;
     primaryKeys.push_back("a");
     primaryKeys.push_back("c");
-    auto cmd = USQLTableCommand::create(tablename);
+    auto cmd = TableCommand::create(tablename);
     cmd.createIfNotExist(false)
     .columnDef("a", "int", "default 11")
     .columnDef("b", "text", "not null default 'hello world'")
@@ -200,7 +200,7 @@ TEST_F(USQLTests, connection_table_info)
     EXPECT_EQ(tablename, table.name);
     EXPECT_EQ(3, table.columndefs.size());
     
-    auto a = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const USQLConnection::ColumnInfo &c){
+    auto a = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const DBConnection::ColumnInfo &c){
         return c.name == "a";
     });
     EXPECT_TRUE(a != table.columndefs.end());
@@ -209,7 +209,7 @@ TEST_F(USQLTests, connection_table_info)
     EXPECT_TRUE(a->nullable);
     EXPECT_EQ("11", a->defaultValue);
     
-    auto b = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const USQLConnection::ColumnInfo &c){
+    auto b = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const DBConnection::ColumnInfo &c){
         return c.name == "b";
     });
     EXPECT_TRUE(a != table.columndefs.end());
@@ -218,7 +218,7 @@ TEST_F(USQLTests, connection_table_info)
     EXPECT_FALSE(b->nullable);
     EXPECT_EQ("'hello world'", b->defaultValue);
     
-    auto c = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const USQLConnection::ColumnInfo &c){
+    auto c = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const DBConnection::ColumnInfo &c){
         return c.name == "c";
     });
     EXPECT_TRUE(a != table.columndefs.end());
@@ -240,7 +240,7 @@ TEST_F(USQLTests, fail_on_closed_database)
     std::string cmd("select * from use_sqlite_table");
     EXPECT_TRUE(_connection.exec(cmd));
     
-    USQLQuery query(cmd, _connection);
+    Query query(cmd, _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(4, query.columnCount());
     EXPECT_EQ("row 1", query.textForName("a"));
@@ -248,7 +248,7 @@ TEST_F(USQLTests, fail_on_closed_database)
     
     EXPECT_TRUE(_connection.close());
     EXPECT_FALSE(_connection.exec(cmd));
-    USQLQuery failed(cmd, _connection);
+    Query failed(cmd, _connection);
     EXPECT_EQ(0, failed.columnCount());
     EXPECT_EQ(USQL_ERROR_TEXT, failed.textForName("a"));
     EXPECT_EQ(USQL_ERROR_INTEGER, failed.intForName("b"));
@@ -273,7 +273,7 @@ TEST_F(USQLTests, success_exe_sql)
 TEST_F(USQLTests, query_on_closed_database)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_TRUE(query.reset());
     
@@ -286,7 +286,7 @@ TEST_F(USQLTests, query_reset)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_FALSE(query.next());
     
@@ -298,7 +298,7 @@ TEST_F(USQLTests, query_column)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     
     EXPECT_EQ(4, query.columnCount());
@@ -316,22 +316,22 @@ TEST_F(USQLTests, query_column)
 TEST_F(USQLTests, query_column_type)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     
     EXPECT_TRUE(query.next());
     
-    EXPECT_EQ(USQLColumnType::USQLText, query.typeForName("a"));
-    EXPECT_EQ(USQLColumnType::USQLInteger, query.typeForName("b"));
-    EXPECT_EQ(USQLColumnType::USQLFloat, query.typeForName("c"));
-    EXPECT_EQ(USQLColumnType::USQLNull, query.typeForName("d"));
-    EXPECT_EQ(USQLColumnType::USQLInvalidType, query.typeForName("A"));
+    EXPECT_EQ(ColumnType::Text, query.typeForName("a"));
+    EXPECT_EQ(ColumnType::Integer, query.typeForName("b"));
+    EXPECT_EQ(ColumnType::Float, query.typeForName("c"));
+    EXPECT_EQ(ColumnType::Null, query.typeForName("d"));
+    EXPECT_EQ(ColumnType::InvalidType, query.typeForName("A"));
 }
 
 TEST_F(USQLTests, query_int)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(10, query.intForName("b"));
     EXPECT_EQ(10, query.int64ForName("b"));
@@ -344,7 +344,7 @@ TEST_F(USQLTests, query_text)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(USQL_ERROR_TEXT, query.textForName("b"));
     EXPECT_EQ("hello world", query.textForName("a"));
@@ -356,7 +356,7 @@ TEST_F(USQLTests, query_double)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
     
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(USQL_ERROR_FLOAT, query.floatForName("b"));
     EXPECT_EQ(USQL_ERROR_FLOAT, query.floatForName("a"));
@@ -367,7 +367,7 @@ TEST_F(USQLTests, query_double)
 TEST_F(USQLTests, query_close)
 {
     EXPECT_TRUE(insertRow("hello world", 10, 12.3));
-    USQLQuery query("select * from use_sqlite_table", _connection);
+    Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(10, query.intForName("b"));
     
@@ -382,7 +382,7 @@ TEST_F(USQLTests, query_close)
 
 TEST_F(USQLTests, statement_bind)
 {
-    USQLStatement stmt("insert into use_sqlite_table (a, b, c, d) values (:a, :b, :c, :d)", _connection);
+    Cursor stmt("insert into use_sqlite_table (a, b, c, d) values (:a, :b, :c, :d)", _connection);
     const std::string tvalue = "bind hello world";
     int ivalue = 123;
     double rvalue = 111.23;
@@ -393,7 +393,7 @@ TEST_F(USQLTests, statement_bind)
     EXPECT_TRUE(stmt.bind(":d", bvalue.data(), (int)bvalue.size()));
     EXPECT_TRUE(stmt.exec());
     
-    USQLStatement query("select * from use_sqlite_table where a = ? and b = ? and c = ? and d = ?", _connection);
+    Cursor query("select * from use_sqlite_table where a = ? and b = ? and c = ? and d = ?", _connection);
     EXPECT_TRUE(query.bind(1, tvalue));
     EXPECT_TRUE(query.bind(2, ivalue));
     EXPECT_TRUE(query.bind(3, rvalue));
@@ -403,12 +403,12 @@ TEST_F(USQLTests, statement_bind)
 
 TEST_F(USQLTests, connnection_transaction)
 {
-    USQLQuery query("select count(*) as row_count from use_sqlite_table", _connection);
+    Query query("select count(*) as row_count from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(0, query.intForColumnIndex(0));
     query.close();
     
-    _connection.transaction(USQLTransactionType::USQLDeferred
+    _connection.transaction(TransactionType::Deferred
                             , [this]()->bool{
                                 this->insertRow("hello world", 10, 10.12);
                                 this->insertRow("row 2", 110, 12.22);
@@ -419,7 +419,7 @@ TEST_F(USQLTests, connnection_transaction)
     EXPECT_EQ(0, query.intForColumnIndex(0));
     query.close();
     
-    _connection.transaction(USQLTransactionType::USQLDeferred
+    _connection.transaction(TransactionType::Deferred
                             , [this]()->bool{
                                 this->insertRow("hello world", 10, 10.12);
                                 this->insertRow("row 2", 110, 12.22);
@@ -445,20 +445,20 @@ protected:
     virtual void TearDown() {
         auto tables = _connection.allTables();
         for (auto iter = tables.begin(); iter != tables.end(); ++iter) {
-            _connection.exec(USQLTableCommand::drop(*iter).ifExists(true).command());
+            _connection.exec(TableCommand::drop(*iter).ifExists(true).command());
         }
         _connection.close();
         std::remove(_db);
     }
     
-    USQLConnection _connection;
+    DBConnection _connection;
     std::string _testTablename = "test_table_name";
 };
 
 TEST_F(USQLExtTests, tablename_check)
 {
-    EXPECT_TRUE(USQLTableCommand::checkTablename("test_table_name"));
-    EXPECT_FALSE(USQLTableCommand::checkTablename("sqlite_test_table_name"));
+    EXPECT_TRUE(TableCommand::checkTablename("test_table_name"));
+    EXPECT_FALSE(TableCommand::checkTablename("sqlite_test_table_name"));
 }
 
 TEST_F(USQLExtTests, create_table)
@@ -480,7 +480,7 @@ TEST_F(USQLExtTests, create_table)
     unique.push_back("a");
     unique.push_back("c");
     
-    auto cmd = USQLTableCommand::create(_testTablename);
+    auto cmd = TableCommand::create(_testTablename);
     cmd.temp(false).createIfNotExist(true)
     .columnDef("a", "int", opta)
     .columnDef("b", "int", optb)
@@ -495,20 +495,20 @@ TEST_F(USQLExtTests, create_table)
     EXPECT_FALSE(_connection.exec("insert into test_table_name (a, b) values (2, 10)"));
     EXPECT_FALSE(_connection.exec("insert into test_table_name (a, b) values (3, 197)"));
     
-    USQLQuery query("select * from test_table_name where c = 'HELLO WORLD'", _connection);
+    Query query("select * from test_table_name where c = 'HELLO WORLD'", _connection);
     EXPECT_TRUE(query.next());
 }
 
 TEST_F(USQLExtTests, drop_table)
 {
-    auto cmd = USQLTableCommand::create(_testTablename);
+    auto cmd = TableCommand::create(_testTablename);
     cmd.createIfNotExist(true)
     .columnDef("a", "int", "primary key");
     
     EXPECT_TRUE(_connection.exec(cmd.command()));
     EXPECT_TRUE(_connection.tableExists(_testTablename));
     
-    auto drop = USQLTableCommand::drop(_testTablename);
+    auto drop = TableCommand::drop(_testTablename);
     drop.ifExists(true);
     EXPECT_TRUE(_connection.exec(drop.command()));
     EXPECT_FALSE(_connection.tableExists(_testTablename));
@@ -516,7 +516,7 @@ TEST_F(USQLExtTests, drop_table)
 
 TEST_F(USQLExtTests, rename_table)
 {
-    auto create = USQLTableCommand::create(_testTablename);
+    auto create = TableCommand::create(_testTablename);
     create.createIfNotExist(true)
     .columnDef("a", "int");
     
@@ -524,28 +524,28 @@ TEST_F(USQLExtTests, rename_table)
     EXPECT_TRUE(_connection.tableExists(_testTablename));
     
     const std::string newname = "new_test_table";
-    EXPECT_TRUE(_connection.exec(USQLTableCommand::rename(_testTablename, newname)));
+    EXPECT_TRUE(_connection.exec(TableCommand::rename(_testTablename, newname)));
     EXPECT_FALSE(_connection.tableExists(_testTablename));
     EXPECT_TRUE(_connection.tableExists(newname));
     
-    EXPECT_TRUE(_connection.exec(USQLTableCommand::drop(newname).command()));
+    EXPECT_TRUE(_connection.exec(TableCommand::drop(newname).command()));
 }
 
 TEST_F(USQLExtTests, alter_table)
 {
-    auto create = USQLTableCommand::create(_testTablename);
+    auto create = TableCommand::create(_testTablename);
     create.createIfNotExist(true)
     .columnDef("a", "int");
     EXPECT_TRUE(_connection.exec(create.command()));
     EXPECT_TRUE(_connection.exec("insert into test_table_name (a) values (1)"));
     
     std::string select = "select * from " + _testTablename;
-    USQLQuery query(select, _connection);
+    Query query(select, _connection);
     EXPECT_TRUE(query.next());
     EXPECT_EQ(0, query.columnIndexForName("a"));
     EXPECT_TRUE(query.columnIndexForName("b") < 0);
     
-    auto cmd = USQLTableCommand::alter(_testTablename);
+    auto cmd = TableCommand::alter(_testTablename);
     EXPECT_EQ("", cmd.command());
     cmd.columnDef("b", "text");
     EXPECT_TRUE(_connection.exec(cmd.command()));

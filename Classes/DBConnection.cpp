@@ -24,26 +24,26 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#include "USQLConnection.hpp"
+#include "DBConnection.hpp"
 #include "_USQLStatement.hpp"
 
-namespace usqlite {
-    USQLConnection::USQLConnection(const std::string &fn)
+namespace usql {
+    DBConnection::DBConnection(const std::string &fn)
     : _filename(fn.empty() ? ":memory" : fn)
     , _errorCode(SQLITE_OK)
     , _db(nullptr) {
         
     }
     
-    USQLConnection::~USQLConnection() {
+    DBConnection::~DBConnection() {
         close();
     }
     
-    bool USQLConnection::open() {
+    bool DBConnection::open() {
         return open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
     }
     
-    bool USQLConnection::open(int flags) {
+    bool DBConnection::open(int flags) {
         if (_filename.empty()) {
             return false;
         }
@@ -56,7 +56,7 @@ namespace usqlite {
         return _USQL_OK(_errorCode);
     }
     
-    bool USQLConnection::close() {
+    bool DBConnection::close() {
         if (!_db) {
             return true;
         }
@@ -76,7 +76,7 @@ namespace usqlite {
         return _USQL_OK(_errorCode);
     }
     
-    void USQLConnection::registerStatement(_USQLStatement *stmt) {
+    void DBConnection::registerStatement(_USQLStatement *stmt) {
         if (!stmt) {
             return;
         }
@@ -89,7 +89,7 @@ namespace usqlite {
         _statements.push_back(stmt);
     }
     
-    void USQLConnection::unregisterStatement(_USQLStatement *stmt) {
+    void DBConnection::unregisterStatement(_USQLStatement *stmt) {
         if (!stmt) {
             return;
         }
@@ -100,7 +100,7 @@ namespace usqlite {
         }
     }
     
-    void USQLConnection::finilizeAllStatements(bool finilized) {
+    void DBConnection::finilizeAllStatements(bool finilized) {
         if (_statements.size() == 0) {
             return;
         }
@@ -116,7 +116,7 @@ namespace usqlite {
         }
     }
     
-    bool USQLConnection::exec(const std::string &cmd) {
+    bool DBConnection::exec(const std::string &cmd) {
         if (cmd.empty()) {
             return false;
         }
@@ -129,17 +129,17 @@ namespace usqlite {
         return stmt.step();
     }
     
-    bool USQLConnection::transaction(USQLTransactionType type, std::tr1::function<bool()> action) {
+    bool DBConnection::transaction(TransactionType type, std::tr1::function<bool()> action) {
         if (!isOpenning()) {
             return false;
         }
         
         std::stringstream ss;
         ss<<"BEGIN ";
-        if (type == USQLTransactionType::USQLDeferred) {
+        if (type == TransactionType::Deferred) {
             ss<<"DEFERRED";
         }
-        else if(type == USQLTransactionType::USQLImmediate) {
+        else if(type == TransactionType::Immediate) {
             ss<<"IMMEDIATE";
         }
         else {
@@ -159,7 +159,7 @@ namespace usqlite {
         }
     }
     
-    bool USQLConnection::tableExists(const std::string &tablename, const std::string &schema) {
+    bool DBConnection::tableExists(const std::string &tablename, const std::string &schema) {
         if (tablename.empty() || !isOpenning()) {
             return false;
         }
@@ -170,7 +170,7 @@ namespace usqlite {
             buf<<schema<<".";
         }
         buf<<"sqlite_master WHERE type='table' AND name='"<<tablename<<"'";
-        USQLQuery query(buf.str(), *this);
+        Query query(buf.str(), *this);
         if (!query.next()) {
             return false;
         }
@@ -178,7 +178,7 @@ namespace usqlite {
         return query.intForColumnIndex(0) > 0;
     }
     
-    std::vector<std::string> USQLConnection::allTables(const std::string &schema) {
+    std::vector<std::string> DBConnection::allTables(const std::string &schema) {
         std::vector<std::string> tables;
         if (!isOpenning()) {
             return tables;
@@ -191,7 +191,7 @@ namespace usqlite {
         }
         buf<<"sqlite_master WHERE type='table'";
         
-        USQLQuery query(buf.str(), *this);
+        Query query(buf.str(), *this);
         while (query.next()) {
             tables.push_back(query.textForName("name"));
         }
@@ -199,8 +199,8 @@ namespace usqlite {
         return tables;
     }
     
-    USQLConnection::TableInfo USQLConnection::tableInfo(const std::string &name, const std::string &schema) {
-        USQLConnection::TableInfo table;
+    DBConnection::TableInfo DBConnection::tableInfo(const std::string &name, const std::string &schema) {
+        DBConnection::TableInfo table;
         if (name.empty()) {
             return table;
         }
@@ -212,7 +212,7 @@ namespace usqlite {
         }
         buf<<"table_info("<<name<<")";
         
-        USQLQuery query(buf.str(), *this);
+        Query query(buf.str(), *this);
         while (query.next()) {
             ColumnInfo column;
             column.name = query.textForName("name");
@@ -232,7 +232,7 @@ namespace usqlite {
         return table;
     }
     
-    bool USQLConnection::attachDatabase(const std::string &filename, const std::string &schema) {
+    bool DBConnection::attachDatabase(const std::string &filename, const std::string &schema) {
         if (filename.empty() || schema.empty()) {
             return false;
         }
@@ -242,7 +242,7 @@ namespace usqlite {
         return exec(buf.str());
     }
     
-    void USQLConnection::detachDatabase(const std::string &schema) {
+    void DBConnection::detachDatabase(const std::string &schema) {
         if (schema.empty()) {
             return ;
         }
@@ -252,10 +252,10 @@ namespace usqlite {
         exec(buf.str());
     }
     
-    std::vector<USQLConnection::DatabaseInfo> USQLConnection::allDatabase() {
-        std::vector<USQLConnection::DatabaseInfo> dbs;
+    std::vector<DBConnection::DatabaseInfo> DBConnection::allDatabase() {
+        std::vector<DBConnection::DatabaseInfo> dbs;
         
-        USQLQuery query("PRAGMA database_list", *this);
+        Query query("PRAGMA database_list", *this);
         while (query.next()) {
             if (query.columnCount() < 3) {
                 continue;

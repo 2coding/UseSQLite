@@ -24,13 +24,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLTableCommand_hpp
-#define USQLTableCommand_hpp
+#ifndef TableCommand_hpp
+#define TableCommand_hpp
 
-#include "USQLCommand.hpp"
+#include "Command.hpp"
 
-namespace usqlite {
-    class USQLTableCommand : public USQLCommand
+namespace usql {
+    class TableCommand : public Command
     {
 #pragma mark - column-def
     private:
@@ -68,7 +68,7 @@ namespace usqlite {
 
 #pragma mark - CREATE TABLE
     public:
-        class CreateTableCommand : public USQLCommand
+        class CreateTableCommand : public Command
         {
         public:
             CreateTableCommand(const std::string &tablename);
@@ -132,7 +132,7 @@ namespace usqlite {
         };
         
 #pragma mark - DROP TABLE
-        class DropTableCommand : public USQLCommand
+        class DropTableCommand : public Command
         {
         public:
             DropTableCommand(const std::string &tablename);
@@ -157,7 +157,7 @@ namespace usqlite {
         };
         
 #pragma mark - ALTER TABLE
-        class AlterTableCommand : public USQLCommand
+        class AlterTableCommand : public Command
         {
         public:
             AlterTableCommand(const std::string &tablename) : _tablename(tablename) {}
@@ -203,4 +203,4 @@ namespace usqlite {
     };
 }
 
-#endif /* USQLTableCommand_hpp */
+#endif /* TableCommand_hpp */

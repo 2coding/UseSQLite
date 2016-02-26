@@ -24,22 +24,52 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLStdCpp_hpp
-#define USQLStdCpp_hpp
+#ifndef Query_hpp
+#define Query_hpp
 
-#include <string>
-#include <sstream>
-#include <list>
-#include <map>
-#include <vector>
-#include <algorithm>
-#include <iostream>
-#include <functional>
-#include <tr1/functional>
+#include "StdCpp.hpp"
+#include "USQLDefs.hpp"
+#include "Object.hpp"
 
-#include <stdint.h>
-#include <assert.h>
+namespace usql {
+    class DBConnection;
+    class _USQLStatement;
+    class Query : public USQLNoCopyable
+    {
+    public:
+        Query(const std::string &cmd, DBConnection &con);
+        virtual ~Query();
+        
+        bool next();
+        bool reset();
+        
+        int columnCount() const;
+        bool availableIndex(int idx) const;
+        int columnIndexForName(const std::string &name) const;
+        
+        ColumnType typeForName(const std::string &name) const;
+        ColumnType typeForColumn(int i) const;
+        
+        int intForName(const std::string &name);
+        int intForColumnIndex(int idx);
+        
+        int64_t int64ForName(const std::string &name);
+        int64_t int64ForColumnIndex(int idx);
+        
+        std::string textForName(const std::string &name);
+        std::string textForColumnIndex(int idx);
+        
+        double floatForName(const std::string &name);
+        double floatForColumnIndex(int idx);
+        
+        void close();
+        
+    protected:
+        const unsigned char *cstrForColumnIndex(int idx);
 
-#include <sqlite3.h>
+    protected:
+        _USQLStatement *_stmt;
+    };
+}
 
-#endif /* USQLStdCpp_hpp */
+#endif /* Query_hpp */

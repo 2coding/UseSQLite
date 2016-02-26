@@ -24,25 +24,33 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLObject_hpp
-#define USQLObject_hpp
+#ifndef USQLStatement_hpp
+#define USQLStatement_hpp
 
-namespace usqlite {
-    class USQLObject
+#include "StdCpp.hpp"
+#include "Object.hpp"
+#include "Query.hpp"
+
+namespace usql {
+    class Cursor : public Query
     {
     public:
-        virtual ~USQLObject() {}
-    };
-    
-    class USQLNoCopyable : public USQLObject
-    {
-    protected:
-        USQLNoCopyable() {}
-        virtual ~USQLNoCopyable() {}
+        Cursor(const std::string &cmd, DBConnection &con);
         
-        USQLNoCopyable(const USQLNoCopyable &other) = delete;
-        USQLNoCopyable &operator=(const USQLNoCopyable &other) = delete;
+        bool bind(const std::string &key, int value);
+        bool bind(const std::string &key, int64_t value);
+        bool bind(const std::string &key, double value);
+        bool bind(const std::string &key, const std::string &value);
+        bool bind(const std::string &key, const void *blob, int count);
+        
+        bool bind(int index, int value);
+        bool bind(int index, int64_t value);
+        bool bind(int index, double value);
+        bool bind(int index, const std::string &value);
+        bool bind(int index, const void *blob, int count);
+        
+        bool exec();
     };
 }
 
-#endif /* USQLObject_hpp */
+#endif /* USQLStatement_hpp */

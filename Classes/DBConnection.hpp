@@ -24,22 +24,21 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLConnection_hpp
-#define USQLConnection_hpp
+#ifndef DBConnection_hpp
+#define DBConnection_hpp
 
-#include "USQLStdCpp.hpp"
-#include "USQLQuery.hpp"
-#include "USQLCommand.hpp"
-#include "USQLStatement.hpp"
+#include "StdCpp.hpp"
+#include "Query.hpp"
+#include "Cursor.hpp"
 
-namespace usqlite {
+namespace usql {
     class _USQLStatement;
     
-    class USQLConnection : public USQLNoCopyable
+    class DBConnection : public USQLNoCopyable
     {
     public:
-        USQLConnection(const std::string &filename);
-        virtual ~USQLConnection();
+        DBConnection(const std::string &filename);
+        virtual ~DBConnection();
         
         bool open();
         bool open(int flags);
@@ -66,7 +65,7 @@ namespace usqlite {
         
     public:
         bool exec(const std::string &cmd);
-        bool transaction(USQLTransactionType type, std::tr1::function<bool()> action);
+        bool transaction(TransactionType type, std::tr1::function<bool()> action);
         
         //tables
         struct ColumnInfo
@@ -118,4 +117,4 @@ namespace usqlite {
     };
 }
 
-#endif /* USQLConnection_hpp */
+#endif /* DBConnection_hpp */

@@ -26,7 +26,7 @@
 
 #ifndef _USQLUtils_hpp
 #define _USQLUtils_hpp
-#include "USQLStdCpp.hpp"
+#include "StdCpp.hpp"
 
 #define _USQL_OK(code) ((code) == SQLITE_OK)
 #define _USQL_STEP_OK(code) ((code) == SQLITE_DONE || (code) == SQLITE_ROW)

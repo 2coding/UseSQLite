@@ -27,17 +27,17 @@
 #ifndef _USQLSatement_hpp
 #define _USQLSatement_hpp
 
-#include "USQLStdCpp.hpp"
+#include "StdCpp.hpp"
 #include "USQLDefs.hpp"
 #include "_USQLUtils.hpp"
-#include "USQLObject.hpp"
+#include "Object.hpp"
 
-namespace usqlite {
-    class USQLConnection;
+namespace usql {
+    class DBConnection;
     class _USQLStatement : public USQLNoCopyable
     {
     public:
-        _USQLStatement(const std::string &cmd, USQLConnection *db);
+        _USQLStatement(const std::string &cmd, DBConnection *db);
         ~_USQLStatement();
         
         std::string command() const {
@@ -57,10 +57,10 @@ namespace usqlite {
             return static_cast<int>(_columns.size());
         }
         int columnIndexForName(const std::string &name) const;
-        USQLColumnType typeForColumnIndex(int i) const;
+        ColumnType typeForColumnIndex(int i) const;
         
         template<class Type>
-        Type staticValueForColumnIndex(int idx, USQLColumnType expect, Type (*fn)(sqlite3_stmt *, int), Type err) {
+        Type staticValueForColumnIndex(int idx, ColumnType expect, Type (*fn)(sqlite3_stmt *, int), Type err) {
             if (!_USQLStatement::safeTypeCast(typeForColumnIndex(idx), expect)) {
                 return err;
             }
@@ -107,9 +107,9 @@ namespace usqlite {
             _parametersCount = 0;
         }
         
-        USQLColumnType typeForColumn(int i);
+        ColumnType typeForColumn(int i);
         
-        static bool safeTypeCast(USQLColumnType actual, USQLColumnType expect) {
+        static bool safeTypeCast(ColumnType actual, ColumnType expect) {
             return actual == expect;
         }
         
@@ -118,10 +118,10 @@ namespace usqlite {
     private:
         const std::string _command;
         sqlite3_stmt *_stmt;
-        USQLConnection *_db;
+        DBConnection *_db;
         
         std::map<std::string, int> _columns;
-        std::vector<USQLColumnType> _columnTypes;
+        std::vector<ColumnType> _columnTypes;
         
         std::map<std::string, int> _nameParameters;
         int _parametersCount;

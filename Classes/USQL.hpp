@@ -27,13 +27,14 @@
 #ifndef USQL_hpp
 #define USQL_hpp
 
-#include "USQLStdCpp.hpp"
+#include "StdCpp.hpp"
 #include "USQLDefs.hpp"
-#include "USQLObject.hpp"
-#include "USQLQuery.hpp"
-#include "USQLCommand.hpp"
-#include "USQLConnection.hpp"
+#include "Object.hpp"
+#include "Query.hpp"
+#include "Cursor.hpp"
+#include "DBConnection.hpp"
 
-#include "USQLTableCommand.hpp"
+#include "Command.hpp"
+#include "TableCommand.hpp"
 
 #endif /* USQL_hpp */

@@ -24,31 +24,31 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#include "USQLStatement.hpp"
+#include "Cursor.hpp"
 #include "_USQLUtils.hpp"
 #include "_USQLStatement.hpp"
 
-namespace usqlite {
-    USQLStatement::USQLStatement(const std::string &cmd, USQLConnection &con)
-    : USQLQuery(cmd, con) {}
+namespace usql {
+    Cursor::Cursor(const std::string &cmd, DBConnection &con)
+    : Query(cmd, con) {}
     
-    bool USQLStatement::bind(const std::string &key, int value) {
+    bool Cursor::bind(const std::string &key, int value) {
         return _stmt->bindName<int>(key, sqlite3_bind_int, value);
     }
     
-    bool USQLStatement::bind(const std::string &key, int64_t value) {
+    bool Cursor::bind(const std::string &key, int64_t value) {
         return _stmt->bindName<sqlite3_int64>(key, sqlite3_bind_int64, value);
     }
     
-    bool USQLStatement::bind(const std::string &key, double value) {
+    bool Cursor::bind(const std::string &key, double value) {
         return _stmt->bindName<double>(key, sqlite3_bind_double, value);
     }
     
-    bool USQLStatement::bind(const std::string &key, const std::string &value) {
+    bool Cursor::bind(const std::string &key, const std::string &value) {
         return _stmt->bindName(key, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
     }
     
-    bool USQLStatement::bind(const std::string &key, const void *blob, int count) {
+    bool Cursor::bind(const std::string &key, const void *blob, int count) {
         if (!blob || count <= 0) {
             return false;
         }
@@ -56,23 +56,23 @@ namespace usqlite {
         return _stmt->bindName(key, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
     }
     
-    bool USQLStatement::bind(int index, int value) {
+    bool Cursor::bind(int index, int value) {
         return _stmt->bindIndex<int>(index, sqlite3_bind_int, value);
     }
     
-    bool USQLStatement::bind(int index, int64_t value) {
+    bool Cursor::bind(int index, int64_t value) {
         return _stmt->bindIndex<sqlite3_int64>(index, sqlite3_bind_int64, value);
     }
     
-    bool USQLStatement::bind(int index, double value) {
+    bool Cursor::bind(int index, double value) {
         return _stmt->bindIndex<double>(index, sqlite3_bind_double, value);
     }
     
-    bool USQLStatement::bind(int index, const std::string &value) {
+    bool Cursor::bind(int index, const std::string &value) {
         return _stmt->bindIndex(index, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
     }
     
-    bool USQLStatement::bind(int index, const void *blob, int count) {
+    bool Cursor::bind(int index, const void *blob, int count) {
         if (!blob || count <= 0) {
             return false;
         }
@@ -80,7 +80,7 @@ namespace usqlite {
         return _stmt->bindIndex(index, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
     }
     
-    bool USQLStatement::exec() {
+    bool Cursor::exec() {
         return _stmt->step();
     }
 }

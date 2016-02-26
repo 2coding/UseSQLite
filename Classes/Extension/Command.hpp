@@ -24,33 +24,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLStatement_hpp
-#define USQLStatement_hpp
+#ifndef Command_hpp
+#define Command_hpp
 
-#include "USQLStdCpp.hpp"
-#include "USQLObject.hpp"
-#include "USQLQuery.hpp"
+#include "USQLDefs.hpp"
+#include "StdCpp.hpp"
+#include "Object.hpp"
 
-namespace usqlite {
-    class USQLStatement : public USQLQuery
+namespace usql {
+    class Command
     {
     public:
-        USQLStatement(const std::string &cmd, USQLConnection &con);
-        
-        bool bind(const std::string &key, int value);
-        bool bind(const std::string &key, int64_t value);
-        bool bind(const std::string &key, double value);
-        bool bind(const std::string &key, const std::string &value);
-        bool bind(const std::string &key, const void *blob, int count);
-        
-        bool bind(int index, int value);
-        bool bind(int index, int64_t value);
-        bool bind(int index, double value);
-        bool bind(int index, const std::string &value);
-        bool bind(int index, const void *blob, int count);
-        
-        bool exec();
+        virtual std::string command() const = 0;
     };
 }
 
-#endif /* USQLStatement_hpp */
+#endif /* Command_hpp */

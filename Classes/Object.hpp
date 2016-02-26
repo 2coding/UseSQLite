@@ -24,19 +24,25 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLCommand_hpp
-#define USQLCommand_hpp
+#ifndef Object_hpp
+#define Object_hpp
 
-#include "USQLDefs.hpp"
-#include "USQLStdCpp.hpp"
-#include "USQLObject.hpp"
-
-namespace usqlite {
-    class USQLCommand
+namespace usql {
+    class Object
     {
     public:
-        virtual std::string command() const = 0;
+        virtual ~Object() {}
+    };
+    
+    class USQLNoCopyable : public Object
+    {
+    protected:
+        USQLNoCopyable() {}
+        virtual ~USQLNoCopyable() {}
+        
+        USQLNoCopyable(const USQLNoCopyable &other) = delete;
+        USQLNoCopyable &operator=(const USQLNoCopyable &other) = delete;
     };
 }
 
-#endif /* USQLCommand_hpp */
+#endif /* Object_hpp */
