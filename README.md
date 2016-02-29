@@ -3,7 +3,7 @@ UseSQL
 sqlite c++ wrapper
 
 ### Support Platform
-    IOS 6
+    IOS
     OS X
     
 
