@@ -2,16 +2,21 @@ UseSQL
 ==========
 sqlite c++ wrapper
 
+### Support Platform
+    IOS 6
+    OS X
+    
+
 ### Requirement
 	Xcode 7.2+
     
-Example:
+Useage:
 ==========
 ### Open Database
     DBConnection connection("/tmp/usqlite.db");
     db.open();
     db.exec("create table if not exists table_name(a int, b real, c text)");
-    connection.exec("insert into table_name (a, b, c) values (10, 11.2, 'hello world')");
+    db.exec("insert into table_name (a, b, c) values (10, 11.2, 'hello world')");
     db.close();
     
 ### Query
@@ -37,6 +42,13 @@ Example:
     .columnDef("c", "text", "not null default 'hello world'");
 
     db.exec(create.command());
+
+==========
+### Todo
+    Custom function
+    Online backup
+    Custom VFS
+    Config
 
 ### See Also
 [sqlite doc](http://www.sqlite.org)
