@@ -26,8 +26,8 @@
 
 #ifndef USQLDefs_hpp
 #define USQLDefs_hpp
+#include "StdCpp.hpp"
 
-//defines
 #define USQL_ERROR_INTEGER 0
 #define USQL_ERROR_TEXT ""
 #define USQL_ERROR_FLOAT (double)0.0f
@@ -38,6 +38,13 @@
 #define USQL_INVALID_PARAMETER_INDEX 0
 
 namespace usql {
+    enum class Encoding {
+        UTF8 = SQLITE_UTF8,
+        UTF16LE = SQLITE_UTF16LE,
+        UTF16BE = SQLITE_UTF16BE,
+        UTF16 = SQLITE_UTF16
+    };
+    
     enum class ColumnType {
         InvalidType,
         Integer,

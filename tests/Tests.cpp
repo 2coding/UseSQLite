@@ -444,6 +444,30 @@ TEST_F(USQLTests, connnection_transaction)
     query.close();
 }
 
+TEST_F(USQLTests, connection_function)
+{
+    auto func = [](sqlite3_context* context, std::vector<sqlite3_value *> &argv){
+        if (argv.size() >= 1) {
+            auto text = sqlite3_value_text(argv[0]);
+            if (text) {
+                int len = (int)std::strlen((const char *)text);
+                sqlite3_result_int(context, len);
+                return ;
+            }
+        }
+        
+        sqlite3_result_int(context, -1);
+    };
+    EXPECT_TRUE(_connection.registerFunction(FunctionHelper::createFunction("usql_string_len", func, 1, true)));
+    
+    insertRow("hello world", 10, 12.3);
+    Query query("select usql_string_len(a) as string_len from use_sqlite_table", _connection);
+    EXPECT_TRUE(query.next());
+    EXPECT_EQ(11, query.intForName("string_len"));
+    
+    _connection.close();
+}
+
 #pragma mark - extension tests
 class USQLExtTests : public testing::Test
 {

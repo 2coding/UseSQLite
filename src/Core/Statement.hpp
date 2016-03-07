@@ -34,7 +34,7 @@
 
 namespace usql {
     class DBConnection;
-    class Statement : public USQLNoCopyable
+    class Statement : public NoCopyable
     {
     public:
         Statement(const std::string &cmd, DBConnection *db);

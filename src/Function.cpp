@@ -24,35 +24,42 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef StdCpp_hpp
-#define StdCpp_hpp
+#include "Function.hpp"
 
-#include <string>
-#include <sstream>
-#include <list>
-#include <map>
-#include <vector>
-#include <algorithm>
-#include <iostream>
-//#include <functional>
-
-#ifdef USQL_STD_TR1
-#include <tr1/functional>
-#include <tr1/type_traits>
-namespace tr1 = std::tr1;
-
-#else
-#include <functional>
-#include <type_traits>
-namespace tr1 = std;
-
-#endif
-
-#include <stdint.h>
-#include <cassert>
-#include <ctime>
-#include <cstdio>
-
-#include <sqlite3.h>
-
-#endif /* StdCpp_hpp */
+namespace usql {
+//    class _Function : public Function
+//    {
+//    public:
+//        _Function(const std::string &name, bool deterministic, sqlite_function func)
+//        : _name(name), _deterministic(deterministic), _func(func) {
+//            
+//        }
+//        
+//        std::string name() override {
+//            return _name;
+//        }
+//        
+//        bool deterministic() override {
+//            return _deterministic;
+//        }
+//        
+//        void func(sqlite3_context* context, std::vector<sqlite3_value *> &argv) override {
+//            if (_func) {
+//                _func(context, argv);
+//            }
+//        }
+//        
+//    private:
+//        std::string _name = "";
+//        bool _deterministic = false;
+//        sqlite_function _func;
+//    };
+//    
+//    Function *FunctionHelper::createFunction(const std::string &name, bool deterministic, sqlite_function func) {
+//        if (name.empty()) {
+//            return nullptr;
+//        }
+//        
+//        return new _Function(name, deterministic, func);
+//    }
+}

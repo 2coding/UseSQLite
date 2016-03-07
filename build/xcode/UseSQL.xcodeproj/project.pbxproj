@@ -53,6 +53,8 @@
 		C3ADCAD21C8045D10034C7BA /* UpdateCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCACE1C8045D10034C7BA /* UpdateCommand.cpp */; };
 		C3ADCAD31C8045D10034C7BA /* UpdateCommand.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3ADCACF1C8045D10034C7BA /* UpdateCommand.hpp */; };
 		C3ADCAD91C8049B70034C7BA /* ExprCommand.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3ADCAD51C8049B70034C7BA /* ExprCommand.hpp */; };
+		C3DAA3911C8D5EF70020801D /* Function.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA38F1C8D5EF70020801D /* Function.cpp */; };
+		C3DAA3921C8D5EF70020801D /* Function.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3DAA3901C8D5EF70020801D /* Function.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +170,8 @@
 		C3ADCACE1C8045D10034C7BA /* UpdateCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UpdateCommand.cpp; sourceTree = "<group>"; };
 		C3ADCACF1C8045D10034C7BA /* UpdateCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UpdateCommand.hpp; sourceTree = "<group>"; };
 		C3ADCAD51C8049B70034C7BA /* ExprCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ExprCommand.hpp; sourceTree = "<group>"; };
+		C3DAA38F1C8D5EF70020801D /* Function.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Function.cpp; sourceTree = "<group>"; };
+		C3DAA3901C8D5EF70020801D /* Function.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Function.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,6 +248,8 @@
 				C3ADCA6B1C7FF9140034C7BA /* StdCpp.hpp */,
 				C3ADCA6C1C7FF9140034C7BA /* USQL.hpp */,
 				C3ADCA6D1C7FF9140034C7BA /* USQLDefs.hpp */,
+				C3DAA38F1C8D5EF70020801D /* Function.cpp */,
+				C3DAA3901C8D5EF70020801D /* Function.hpp */,
 			);
 			name = src;
 			path = ../../src;
@@ -306,6 +312,7 @@
 				C3ADCA711C7FF9140034C7BA /* Statement.hpp in Headers */,
 				C3ADCAD91C8049B70034C7BA /* ExprCommand.hpp in Headers */,
 				C3ADCA851C7FF9140034C7BA /* StdCpp.hpp in Headers */,
+				C3DAA3921C8D5EF70020801D /* Function.hpp in Headers */,
 				C3ADCA761C7FF9140034C7BA /* Cursor.hpp in Headers */,
 				C3ADCA841C7FF9140034C7BA /* Query.hpp in Headers */,
 				C3ADCA7B1C7FF9140034C7BA /* Command.hpp in Headers */,
@@ -480,6 +487,7 @@
 				C3ADCA6E1C7FF9140034C7BA /* Statement.cpp in Sources */,
 				C3ADCACA1C8041950034C7BA /* DeleteCommand.cpp in Sources */,
 				C3ADCA771C7FF9140034C7BA /* DBConnection.cpp in Sources */,
+				C3DAA3911C8D5EF70020801D /* Function.cpp in Sources */,
 				C3ADCA811C7FF9140034C7BA /* Query.cpp in Sources */,
 				C3ADCA731C7FF9140034C7BA /* Cursor.cpp in Sources */,
 			);

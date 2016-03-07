@@ -34,14 +34,14 @@ namespace usql {
         virtual ~Object() {}
     };
     
-    class USQLNoCopyable : public Object
+    class NoCopyable : public Object
     {
     protected:
-        USQLNoCopyable() {}
-        virtual ~USQLNoCopyable() {}
+        NoCopyable() {}
+        virtual ~NoCopyable() {}
         
-        USQLNoCopyable(const USQLNoCopyable &other) = delete;
-        USQLNoCopyable &operator=(const USQLNoCopyable &other) = delete;
+        NoCopyable(const NoCopyable &other) = delete;
+        NoCopyable &operator=(const NoCopyable &other) = delete;
     };
 }
 

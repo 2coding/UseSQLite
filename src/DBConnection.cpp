@@ -61,6 +61,8 @@ namespace usql {
             return true;
         }
         
+        unregisterAllFunctions();
+        
         int code = sqlite3_close(_db);
         if (code == SQLITE_BUSY) {
             //busy
@@ -280,5 +282,64 @@ namespace usql {
         query.close();
         
         return dbs;
+    }
+    
+    bool DBConnection::registerFunction(Function *func) {
+        std::string name;
+        int argc = -1;
+        int opt = 0;
+        
+        typedef void(*sqlite_func)(sqlite3_context*,int,sqlite3_value**);
+        sqlite_func xfunc = nullptr, xstep = nullptr;
+        void (*xfinal)(sqlite3_context *) = nullptr;
+        
+        if (!func || !isOpenning()) {
+            goto failed;
+        }
+        
+        name = func->name();
+        if (name.empty()) {
+            goto failed;
+        }
+        
+        argc = std::max(-1, func->argumentsCount());
+        
+        opt |= static_cast<int>(func->encoding());
+        if (func->deterministic()) {
+            opt |= SQLITE_DETERMINISTIC;
+        }
+        
+        if (dynamic_cast<AggregateFunction *>(func)) {
+            xstep = AggregateFunction::xStep;
+            xfinal = AggregateFunction::xFinal;
+        }
+        else {
+            xfunc = Function::xFunc;
+        }
+        
+        _errorCode = sqlite3_create_function_v2(db(), name.c_str(), argc, opt, func, xfunc, xstep, xfinal, Function::xDestroy);
+        if (!_USQL_OK(_errorCode)) {
+            goto failed;
+        }
+        
+        _functions.push_back(name);
+        return true;
+        
+    failed:
+        delete func;
+        return false;
+    }
+    
+    void DBConnection::unregisterFunction(const std::string name) {
+        if (!isOpenning()) {
+            return;
+        }
+        
+        sqlite3_create_function(db(), name.c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
+    }
+    
+    void DBConnection::unregisterAllFunctions() {
+        std::for_each(_functions.begin(), _functions.end(), tr1::bind(&DBConnection::unregisterFunction, this, std::tr1::placeholders::_1));
+        _functions.clear();
     }
 }

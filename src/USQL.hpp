@@ -32,6 +32,7 @@
 #include "Object.hpp"
 #include "Query.hpp"
 #include "Cursor.hpp"
+#include "Function.hpp"
 #include "DBConnection.hpp"
 
 #include "Command.hpp"

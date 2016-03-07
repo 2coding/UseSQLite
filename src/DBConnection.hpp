@@ -30,11 +30,12 @@
 #include "StdCpp.hpp"
 #include "Query.hpp"
 #include "Cursor.hpp"
+#include "Function.hpp"
 
 namespace usql {
     class Statement;
     
-    class DBConnection : public USQLNoCopyable
+    class DBConnection : public NoCopyable
     {
     public:
         DBConnection(const std::string &filename);
@@ -103,6 +104,11 @@ namespace usql {
         void detachDatabase(const std::string &schema);
         std::vector<DatabaseInfo> allDatabase();
         
+    public:
+        bool registerFunction(Function *func);
+        
+        void unregisterFunction(const std::string name);
+        void unregisterAllFunctions();
         
     protected:
         friend class Statement;
@@ -118,6 +124,8 @@ namespace usql {
         int _errorCode;
         
         std::list<Statement *> _statements;
+        
+        std::list<std::string> _functions;
     };
 }
 
