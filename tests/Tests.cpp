@@ -476,18 +476,18 @@ TEST_F(USQLExtTests, tablename_check)
 
 TEST_F(USQLExtTests, create_table)
 {
-    std::map<USQLColumnConstraint, std::string> opta;
-    opta[USQLColumnConstraint::PrimaryKey] = "";
+    std::map<ColumnConstraint, std::string> opta;
+    opta[ColumnConstraint::PrimaryKey] = "";
     
-    std::map<USQLColumnConstraint, std::string> optb;
-    optb[USQLColumnConstraint::NotNull] = "";
-    optb[USQLColumnConstraint::Unique] = "";
-    optb[USQLColumnConstraint::Check] = "(b > 100)";
+    std::map<ColumnConstraint, std::string> optb;
+    optb[ColumnConstraint::NotNull] = "";
+    optb[ColumnConstraint::Unique] = "";
+    optb[ColumnConstraint::Check] = "(b > 100)";
     
-    std::map<USQLColumnConstraint, std::string> optc;
-    optc[USQLColumnConstraint::NotNull] = "";
-    optc[USQLColumnConstraint::Default] = "'hello world'";
-    optc[USQLColumnConstraint::Collate] = "NOCASE";
+    std::map<ColumnConstraint, std::string> optc;
+    optc[ColumnConstraint::NotNull] = "";
+    optc[ColumnConstraint::Default] = "'hello world'";
+    optc[ColumnConstraint::Collate] = "NOCASE";
     
     std::vector<std::string> unique;
     unique.push_back("a");

@@ -53,7 +53,7 @@ namespace usql {
         Exclusive
     };
     
-    enum class USQLColumnConstraint {
+    enum class ColumnConstraint {
         PrimaryKey,
         PrimaryKeyAsc,
         PrimaryKeyDesc,
@@ -64,6 +64,11 @@ namespace usql {
         Default,
         ForeignKey,
         Collate
+    };
+    
+    enum class BindType {
+        Copy,
+        Static
     };
 }
 

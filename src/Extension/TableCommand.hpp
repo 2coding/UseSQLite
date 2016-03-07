@@ -42,7 +42,7 @@ namespace usql {
             
             _column() {}
             _column(const std::string &n, const std::string &t, const std::string &c) :name(n), type(t), constraint(c) {}
-            _column(const std::string &n, const std::string &t, const std::map<USQLColumnConstraint, std::string> &c) : name(n), type(t), constraint(opt(c)) {}
+            _column(const std::string &n, const std::string &t, const std::map<ColumnConstraint, std::string> &c) : name(n), type(t), constraint(opt(c)) {}
             
             std::string columndef() const {
                 if (invalid()) {
@@ -62,7 +62,7 @@ namespace usql {
                 return name.empty() || type.empty();
             }
             
-            static std::string opt(const std::map<USQLColumnConstraint, std::string> &opt);
+            static std::string opt(const std::map<ColumnConstraint, std::string> &opt);
         };
         
 
@@ -89,7 +89,7 @@ namespace usql {
             }
             
             CreateTableCommand &columnDef(const std::string &name, const std::string &type, const std::string &constraint = "");
-            CreateTableCommand &columnDef(const std::string &name, const std::string &type, const std::map<USQLColumnConstraint, std::string> &constraint);
+            CreateTableCommand &columnDef(const std::string &name, const std::string &type, const std::map<ColumnConstraint, std::string> &constraint);
             
             CreateTableCommand &tableConstraintPrimaryKey(const std::vector<std::string> columns);
             CreateTableCommand &tableConstraintUnique(const std::vector<std::string> columns);
@@ -120,7 +120,7 @@ namespace usql {
             bool _createIfNotExist = true;
             
             std::map<std::string, _column> _columnDef;
-            std::map<USQLColumnConstraint, std::string> _tableConstraint;
+            std::map<ColumnConstraint, std::string> _tableConstraint;
         };
         
 #pragma mark - DROP TABLE
@@ -157,7 +157,7 @@ namespace usql {
                 return *this;
             }
             
-            AlterTableCommand &columnDef(const std::string &name, const std::string &type, const std::map<USQLColumnConstraint, std::string> &constraint) {
+            AlterTableCommand &columnDef(const std::string &name, const std::string &type, const std::map<ColumnConstraint, std::string> &constraint) {
                 return columnDef(name, type, _column::opt(constraint));
             }
             

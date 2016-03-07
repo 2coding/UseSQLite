@@ -63,7 +63,7 @@ namespace usql {
     }
     
 #pragma mark - column-def
-    std::string TableCommand::_column::opt(const std::map<USQLColumnConstraint, std::string> &c) {
+    std::string TableCommand::_column::opt(const std::map<ColumnConstraint, std::string> &c) {
         std::stringstream ss;
         for (auto iter = c.begin(); iter != c.end(); ++iter) {
             if (iter != c.begin()) {
@@ -72,49 +72,49 @@ namespace usql {
             
             auto type = iter->first;
             switch (type) {
-                case USQLColumnConstraint::PrimaryKey:
+                case ColumnConstraint::PrimaryKey:
                     ss<<"PRIMARY KEY";
                     break;
                     
-                case USQLColumnConstraint::PrimaryKeyAsc:
+                case ColumnConstraint::PrimaryKeyAsc:
                     ss<<"PRIMARY KEY ASC";
                     break;
                     
-                case USQLColumnConstraint::PrimaryKeyDesc:
+                case ColumnConstraint::PrimaryKeyDesc:
                     ss<<"PRIMARY KEY DESC";
                     break;
                     
-                case USQLColumnConstraint::Autoincrement:
+                case ColumnConstraint::Autoincrement:
                     ss<<"AUTOINCREMENT";
                     break;
                     
-                case USQLColumnConstraint::NotNull:
+                case ColumnConstraint::NotNull:
                     ss<<"NOT NULL";
                     break;
                     
-                case USQLColumnConstraint::Unique:
+                case ColumnConstraint::Unique:
                     ss<<"UNIQUE";
                     break;
                     
-                case USQLColumnConstraint::Check:
+                case ColumnConstraint::Check:
                     if (!iter->second.empty()) {
                         ss<<"CHECK"<<iter->second;
                     }
                     break;
                     
-                case USQLColumnConstraint::Default:
+                case ColumnConstraint::Default:
                     if (!iter->second.empty()) {
                         ss<<"DEFAULT "<<iter->second;
                     }
                     break;
                     
-                case USQLColumnConstraint::ForeignKey:
+                case ColumnConstraint::ForeignKey:
                     if (!iter->second.empty()) {
                         ss<<"FOREIGN KEY "<<iter->second;
                     }
                     break;
                     
-                case USQLColumnConstraint::Collate:
+                case ColumnConstraint::Collate:
                     if (!iter->second.empty()) {
                         ss<<"COLLATE "<<iter->second;
                     }
@@ -135,13 +135,13 @@ namespace usql {
         return *this;
     }
     
-    TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::map<USQLColumnConstraint, std::string> &constraint) {
+    TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::columnDef(const std::string &name, const std::string &type, const std::map<ColumnConstraint, std::string> &constraint) {
         return columnDef(name, type, TableCommand::_column::opt(constraint));
     }
     
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintPrimaryKey(const std::vector<std::string> columns) {
         if (!columns.empty()) {
-            _tableConstraint[USQLColumnConstraint::PrimaryKey] = "PRIMARY KEY " + joinString(columns);
+            _tableConstraint[ColumnConstraint::PrimaryKey] = "PRIMARY KEY " + joinString(columns);
         }
         
         return *this;
@@ -149,7 +149,7 @@ namespace usql {
     
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintUnique(const std::vector<std::string> columns) {
         if (!columns.empty()) {
-            _tableConstraint[USQLColumnConstraint::Unique] = "UNIQUE " + joinString(columns);
+            _tableConstraint[ColumnConstraint::Unique] = "UNIQUE " + joinString(columns);
         }
         
         return *this;
@@ -157,7 +157,7 @@ namespace usql {
     
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintCheck(const std::string &expr) {
         if (!expr.empty()) {
-            _tableConstraint[USQLColumnConstraint::Check] = "CHECK " + expr;
+            _tableConstraint[ColumnConstraint::Check] = "CHECK " + expr;
         }
         
         return *this;
@@ -166,7 +166,7 @@ namespace usql {
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintForeignKey(const std::vector<std::string> columns, const std::string &clause) {
         if (!columns.empty()) {
             std::string cmd = "FOREIGN KEY " + joinString(columns) + " " + clause;
-            _tableConstraint[USQLColumnConstraint::ForeignKey] = cmd;
+            _tableConstraint[ColumnConstraint::ForeignKey] = cmd;
         }
         
         return *this;

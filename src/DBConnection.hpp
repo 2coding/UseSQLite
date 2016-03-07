@@ -65,6 +65,10 @@ namespace usql {
         
     public:
         bool exec(const std::string &cmd);
+        
+        bool beginTransaction(TransactionType type);
+        bool commit();
+        bool rollback();
         bool transaction(TransactionType type, tr1::function<bool()> action);
         
         //tables

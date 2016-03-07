@@ -29,6 +29,24 @@
 #include "Statement.hpp"
 
 namespace usql {
+    static inline sqlite3_destructor_type bindValueDestructorType(BindType type) {
+        sqlite3_destructor_type t = SQLITE_TRANSIENT;
+        switch (type) {
+            case BindType::Copy:
+                t = SQLITE_TRANSIENT;
+                break;
+                
+            case BindType::Static:
+                t = SQLITE_STATIC;
+                break;
+                
+            default:
+                break;
+        }
+        
+        return t;
+    }
+    
     Cursor::Cursor(const std::string &cmd, DBConnection &con)
     : Query(cmd, con) {}
     
@@ -44,16 +62,16 @@ namespace usql {
         return _stmt->bindName<double>(key, sqlite3_bind_double, value);
     }
     
-    bool Cursor::bind(const std::string &key, const std::string &value) {
-        return _stmt->bindName(key, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
+    bool Cursor::bind(const std::string &key, const std::string &value, BindType opt) {
+        return _stmt->bindName(key, sqlite3_bind_text, value.c_str(), -1, bindValueDestructorType(opt));
     }
     
-    bool Cursor::bind(const std::string &key, const void *blob, int count) {
+    bool Cursor::bind(const std::string &key, const void *blob, int count, BindType opt) {
         if (!blob || count <= 0) {
             return false;
         }
         
-        return _stmt->bindName(key, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
+        return _stmt->bindName(key, sqlite3_bind_blob, blob, count, bindValueDestructorType(opt));
     }
     
     bool Cursor::bind(int index, int value) {
@@ -68,16 +86,16 @@ namespace usql {
         return _stmt->bindIndex<double>(index, sqlite3_bind_double, value);
     }
     
-    bool Cursor::bind(int index, const std::string &value) {
-        return _stmt->bindIndex(index, sqlite3_bind_text, value.c_str(), -1, SQLITE_TRANSIENT);
+    bool Cursor::bind(int index, const std::string &value, BindType opt) {
+        return _stmt->bindIndex(index, sqlite3_bind_text, value.c_str(), -1, bindValueDestructorType(opt));
     }
     
-    bool Cursor::bind(int index, const void *blob, int count) {
+    bool Cursor::bind(int index, const void *blob, int count, BindType opt) {
         if (!blob || count <= 0) {
             return false;
         }
         
-        return _stmt->bindIndex(index, sqlite3_bind_blob, blob, count, SQLITE_TRANSIENT);
+        return _stmt->bindIndex(index, sqlite3_bind_blob, blob, count, bindValueDestructorType(opt));
     }
     
     bool Cursor::exec() {

@@ -129,7 +129,7 @@ namespace usql {
         return stmt.step();
     }
     
-    bool DBConnection::transaction(TransactionType type, tr1::function<bool()> action) {
+    bool DBConnection::beginTransaction(TransactionType type) {
         if (!isOpenning()) {
             return false;
         }
@@ -147,15 +147,27 @@ namespace usql {
         }
         ss<<" TRANSACTION";
         
-        if (!this->exec(ss.str())) {
+        return this->exec(ss.str());
+    }
+    
+    bool DBConnection::commit() {
+        return this->exec("COMMIT");
+    }
+    
+    bool DBConnection::rollback() {
+        return this->exec("ROLLBACK");
+    }
+    
+    bool DBConnection::transaction(TransactionType type, tr1::function<bool()> action) {        
+        if (!beginTransaction(type)) {
             return false;
         }
         
         if (action()) {
-            return this->exec("COMMIT");
+            return commit();
         }
         else {
-            return this->exec("ROLLBACK");
+            return rollback();
         }
     }
     
