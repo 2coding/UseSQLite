@@ -32,13 +32,13 @@
 #include "Utils.hpp"
 #include "Object.hpp"
 #include "Result.hpp"
+#include "Database.hpp"
 
 namespace usql {
-    class DBConnection;
     class Statement : public NoCopyable
     {
     public:
-        Statement(const std::string &cmd, DBConnection *db);
+        Statement(const std::string &cmd, _WeakDatabase db);
         ~Statement();
         
         std::string command() const {
@@ -92,7 +92,7 @@ namespace usql {
                 return ret;
             }
             
-            return Result(func(_stmt, i, args...), connection());
+            return Result(func(_stmt, i, args...), _db);
         }
         
     private:
@@ -116,12 +116,10 @@ namespace usql {
         
         Result prepare();
         
-        sqlite3 *connection();
-        
     private:
         const std::string _command;
         sqlite3_stmt *_stmt;
-        DBConnection *_db;
+        _WeakDatabase _db;
         
         std::map<std::string, int> _columns;
         std::vector<ColumnType> _columnTypes;

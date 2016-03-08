@@ -30,8 +30,7 @@
 namespace usql {
     DBConnection::DBConnection(const std::string &fn)
     : _filename(fn.empty() ? ":memory" : fn)
-    , _db(nullptr) {
-        
+    , _db(Database::create()){
     }
     
     DBConnection::~DBConnection() {
@@ -43,76 +42,16 @@ namespace usql {
     }
     
     Result DBConnection::open(int flags) {
-        if (_filename.empty()) {
-            return Result::error();
-        }
-        
-        if (_db) {
-            return Result::success();
-        }
-        
-        return Result(sqlite3_open_v2(_filename.c_str(), &_db, flags, nullptr), nullptr);
+        return Result(_db->open(_filename, flags), _db);
     }
     
     Result DBConnection::close() {
-        if (!_db) {
-            return Result::success();
+        Result ret(_db->close(), _db);
+        if (ret) {
+            _functions.clear();
         }
         
-        unregisterAllFunctions();
-        
-        int code = sqlite3_close(_db);
-        if (code == SQLITE_BUSY) {
-            //busy
-            finilizeAllStatements(true);
-            code = sqlite3_close(_db);
-        }
-        
-        if (_USQL_OK(code)) {
-            _db = nullptr;
-        }
-        
-        return Result(code, db());
-    }
-    
-    void DBConnection::registerStatement(Statement *stmt) {
-        if (!stmt) {
-            return;
-        }
-        
-        auto ret = std::find(_statements.begin(), _statements.end(), stmt);
-        if (ret != _statements.end()) {
-            return;
-        }
-        
-        _statements.push_back(stmt);
-    }
-    
-    void DBConnection::unregisterStatement(Statement *stmt) {
-        if (!stmt) {
-            return;
-        }
-        
-        auto ret = std::find(_statements.begin(), _statements.end(), stmt);
-        if (ret != _statements.end()) {
-            _statements.remove(stmt);
-        }
-    }
-    
-    void DBConnection::finilizeAllStatements(bool finilized) {
-        if (_statements.size() == 0) {
-            return;
-        }
-        
-        auto list = _statements;
-        _statements.clear();
-        
-        for (auto iter = list.begin(); iter != list.end(); ++iter) {
-            Statement *stmt = *iter;
-            if (finilized) {
-                stmt->finilize();
-            }
-        }
+        return ret;
     }
     
     Result DBConnection::exec(const std::string &cmd) {
@@ -124,7 +63,7 @@ namespace usql {
             return false;
         }
         
-        Statement stmt(cmd, this);
+        Statement stmt(cmd, _db);
         return stmt.step();
     }
     
@@ -311,14 +250,14 @@ namespace usql {
             xfunc = Function::xFunc;
         }
         
-        code = sqlite3_create_function_v2(db(), func->name.c_str(), func->argumentCount(), opt, func, xfunc, xstep, xfinal, Function::xDestroy);
+        code = sqlite3_create_function_v2(_db->db(), func->name.c_str(), func->argumentCount(), opt, func, xfunc, xstep, xfinal, Function::xDestroy);
         if (!_USQL_OK(code)) {
             delete func;
-            return Result(code, db());
+            return Result(code, _db);
         }
         
         _functions.push_back(func->name);
-        return Result(code, db());
+        return Result(code, _db);
         
     failed:
         delete func;
@@ -330,13 +269,13 @@ namespace usql {
             return;
         }
         
-        sqlite3_create_function(db(), name.c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
+        sqlite3_create_function(_db->db(), name.c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
         _functions.remove(name);
     }
     
     void DBConnection::unregisterAllFunctions() {
         for (auto iter = _functions.begin(); iter != _functions.end(); ++iter) {
-            sqlite3_create_function(db(), iter->c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
+            sqlite3_create_function(_db->db(), iter->c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
         }
         _functions.clear();
     }

@@ -55,6 +55,10 @@
 		C3ADCAD91C8049B70034C7BA /* ExprCommand.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3ADCAD51C8049B70034C7BA /* ExprCommand.hpp */; };
 		C3DAA3921C8D5EF70020801D /* Function.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3DAA3901C8D5EF70020801D /* Function.hpp */; };
 		C3DAA39E1C8E746D0020801D /* Result.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3DAA39C1C8E746D0020801D /* Result.hpp */; };
+		C3DAA3A11C8EAA100020801D /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA39F1C8EAA100020801D /* Database.cpp */; };
+		C3DAA3A21C8EAA100020801D /* Database.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3DAA3A01C8EAA100020801D /* Database.hpp */; };
+		C3DAA3A31C8EB86C0020801D /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA39F1C8EAA100020801D /* Database.cpp */; };
+		C3DAA3A41C8EB86D0020801D /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA39F1C8EAA100020801D /* Database.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +176,8 @@
 		C3ADCAD51C8049B70034C7BA /* ExprCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ExprCommand.hpp; sourceTree = "<group>"; };
 		C3DAA3901C8D5EF70020801D /* Function.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Function.hpp; sourceTree = "<group>"; };
 		C3DAA39C1C8E746D0020801D /* Result.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Result.hpp; sourceTree = "<group>"; };
+		C3DAA39F1C8EAA100020801D /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Database.cpp; sourceTree = "<group>"; };
+		C3DAA3A01C8EAA100020801D /* Database.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Database.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +268,8 @@
 				C3ADCA5F1C7FF9140034C7BA /* Utils.hpp */,
 				C3ADCA5D1C7FF9140034C7BA /* Statement.cpp */,
 				C3ADCA5E1C7FF9140034C7BA /* Statement.hpp */,
+				C3DAA39F1C8EAA100020801D /* Database.cpp */,
+				C3DAA3A01C8EAA100020801D /* Database.hpp */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -315,6 +323,7 @@
 				C3ADCA851C7FF9140034C7BA /* StdCpp.hpp in Headers */,
 				C3DAA3921C8D5EF70020801D /* Function.hpp in Headers */,
 				C3ADCA761C7FF9140034C7BA /* Cursor.hpp in Headers */,
+				C3DAA3A21C8EAA100020801D /* Database.hpp in Headers */,
 				C3ADCA841C7FF9140034C7BA /* Query.hpp in Headers */,
 				C3ADCA7B1C7FF9140034C7BA /* Command.hpp in Headers */,
 				C3ADCA7F1C7FF9140034C7BA /* TableCommand.hpp in Headers */,
@@ -489,6 +498,7 @@
 				C3ADCACA1C8041950034C7BA /* DeleteCommand.cpp in Sources */,
 				C3ADCA771C7FF9140034C7BA /* DBConnection.cpp in Sources */,
 				C3ADCA811C7FF9140034C7BA /* Query.cpp in Sources */,
+				C3DAA3A11C8EAA100020801D /* Database.cpp in Sources */,
 				C3ADCA731C7FF9140034C7BA /* Cursor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -505,6 +515,7 @@
 				C3ADCACB1C8041950034C7BA /* DeleteCommand.cpp in Sources */,
 				C3ADCA781C7FF9140034C7BA /* DBConnection.cpp in Sources */,
 				C3ADCA821C7FF9140034C7BA /* Query.cpp in Sources */,
+				C3DAA3A31C8EB86C0020801D /* Database.cpp in Sources */,
 				C3ADCA741C7FF9140034C7BA /* Cursor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -523,6 +534,7 @@
 				C3ADCA591C7FF8F70034C7BA /* main.cpp in Sources */,
 				C3ADCA7E1C7FF9140034C7BA /* TableCommand.cpp in Sources */,
 				C3ADCABF1C801E1E0034C7BA /* InsertCommand.cpp in Sources */,
+				C3DAA3A41C8EB86D0020801D /* Database.cpp in Sources */,
 				C3ADCA5A1C7FF8F70034C7BA /* Tests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

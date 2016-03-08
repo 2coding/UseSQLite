@@ -24,31 +24,51 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef USQLStatement_hpp
-#define USQLStatement_hpp
+#ifndef Database_hpp
+#define Database_hpp
 
-#include "Query.hpp"
+#include "StdCpp.hpp"
+#include "Object.hpp"
 
 namespace usql {
-    class Cursor : public Query
+    class Database;
+    typedef tr1::shared_ptr<Database> _Database;
+    typedef tr1::weak_ptr<Database> _WeakDatabase;
+    
+    class Statement;
+    class Database : public NoCopyable
     {
     public:
-        Cursor(const std::string &cmd, DBConnection &db);
+        static _Database create() {
+            return tr1::shared_ptr<Database>(new Database());
+        }
         
-        Result bind(const std::string &key, int value);
-        Result bind(const std::string &key, int64_t value);
-        Result bind(const std::string &key, double value);
-        Result bind(const std::string &key, const std::string &value, BindType opt = BindType::Copy);
-        Result bind(const std::string &key, const void *blob, int count, BindType opt = BindType::Copy);
+        ~Database();
         
-        Result bind(int index, int value);
-        Result bind(int index, int64_t value);
-        Result bind(int index, double value);
-        Result bind(int index, const std::string &value, BindType opt = BindType::Copy);
-        Result bind(int index, const void *blob, int count, BindType opt = BindType::Copy);
+        int open(const std::string &filepath, int flags);
         
-        Result exec();
+        int close();
+        
+        bool isOpening() const {
+            return _db;
+        }
+        
+        sqlite3 *db() {
+            return _db;
+        }
+        
+        std::string errorDescription(int code) const;
+        
+    public:
+        void registerStatement(Statement *stmt);
+        void unregisterStatement(Statement *stmt);
+        void finilizeAllStatements(bool finilized);
+        
+    private:
+        sqlite3 *_db = nullptr;
+        
+        std::list<Statement *> _statements;
     };
 }
 
-#endif /* USQLStatement_hpp */
+#endif /* Database_hpp */

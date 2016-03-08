@@ -30,6 +30,7 @@
 #include "StdCpp.hpp"
 #include "Object.hpp"
 #include "Utils.hpp"
+#include "Database.hpp"
 
 namespace usql {
     class Result : public Object
@@ -50,17 +51,24 @@ namespace usql {
             return Result(SQLITE_OK, nullptr);
         }
         
-        static Result step(int c, sqlite3 *db) {
+        static Result step(int c, _WeakDatabase db) {
             return Result(c, db, ResultType::Step);
         }
         
-        static Result query(int c, sqlite3 *db) {
+        static Result query(int c, _WeakDatabase db) {
             return Result(c, db, ResultType::Query);
         }
         
         Result(bool res) : Result(res ? SQLITE_OK : SQLITE_ERROR, nullptr) {}
         
-        Result(int c, sqlite3 *db, ResultType type = ResultType::Normal) : _code(c), _description(db ? sqlite3_errmsg(db) : sqlite3_errstr(c)), _type(type) {}
+        Result(int c, sqlite3 *db, ResultType type = ResultType::Normal) : Result(c, (db ? sqlite3_errmsg(db) : sqlite3_errstr(c)), type) {}
+        
+        Result(int c, _WeakDatabase db, ResultType type = ResultType::Normal) : Result(c, db.expired() ? sqlite3_errstr(c) :  db.lock()->errorDescription(c), type) {}
+        
+        Result(int c, _Database db, ResultType type = ResultType::Normal) : Result(c, db->errorDescription(c), type) {}
+        
+        Result(int c, const std::string &msg, ResultType type = ResultType::Normal) : _code(c), _description(msg), _type(type) {}
+        
         Result(const Result &other) : _code(other._code), _description(other._description), _type(other._type) {}
         const Result & operator=(const Result &other) {
             if (this == &other) {

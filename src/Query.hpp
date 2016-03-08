@@ -38,7 +38,7 @@ namespace usql {
     class Query : public NoCopyable
     {
     public:
-        Query(const std::string &cmd, DBConnection &con);
+        Query(const std::string &cmd, DBConnection &db);
         virtual ~Query();
         
         Result next();

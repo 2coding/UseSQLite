@@ -38,11 +38,13 @@
 #ifdef USQL_STD_TR1
 #include <tr1/functional>
 #include <tr1/type_traits>
+#include <tr1/memory>
 namespace tr1 = std::tr1;
 
 #else
 #include <functional>
 #include <type_traits>
+#include <memory>
 namespace tr1 = std;
 
 #endif

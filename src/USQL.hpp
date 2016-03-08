@@ -30,6 +30,7 @@
 #include "StdCpp.hpp"
 #include "USQLDefs.hpp"
 #include "Object.hpp"
+#include "Database.hpp"
 #include "Result.hpp"
 #include "Query.hpp"
 #include "Cursor.hpp"

@@ -27,6 +27,7 @@
 #include "Cursor.hpp"
 #include "Utils.hpp"
 #include "Statement.hpp"
+#include "DBConnection.hpp"
 
 namespace usql {
     static inline sqlite3_destructor_type bindValueDestructorType(BindType type) {
@@ -47,8 +48,8 @@ namespace usql {
         return t;
     }
     
-    Cursor::Cursor(const std::string &cmd, DBConnection &con)
-    : Query(cmd, con) {}
+    Cursor::Cursor(const std::string &cmd, DBConnection &db)
+    : Query(cmd, db) {}
     
     Result Cursor::bind(const std::string &key, int value) {
         return _stmt->bindName<int>(key, sqlite3_bind_int, value);

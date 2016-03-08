@@ -27,11 +27,12 @@
 #include "StdCpp.hpp"
 #include "Query.hpp"
 #include "Statement.hpp"
+#include "DBConnection.hpp"
 
 namespace usql {
-    Query::Query(const std::string &cmd, DBConnection &con)
+    Query::Query(const std::string &cmd, DBConnection &db)
     : _stmt(nullptr) {
-        _stmt = new Statement(cmd, &con);
+        _stmt = new Statement(cmd, db.database());
         _stmt->reset();
     }
     

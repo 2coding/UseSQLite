@@ -29,7 +29,7 @@
 #include "DBConnection.hpp"
 
 namespace usql {
-    Statement::Statement(const std::string &cmd, DBConnection *db)
+    Statement::Statement(const std::string &cmd, _WeakDatabase db)
     : _stmt(nullptr)
     , _command(cmd)
     , _db(db)
@@ -47,14 +47,12 @@ namespace usql {
         
         sqlite3_finalize(_stmt);
         _stmt = nullptr;
-        _db->unregisterStatement(this);
+        if (!_db.expired()) {
+            _db.lock()->unregisterStatement(this);
+        }
         
         clearColumnInfo();
         clearParameters();
-    }
-    
-    sqlite3 *Statement::connection() {
-        return _db->db();
     }
     
     Result Statement::prepare() {
@@ -64,10 +62,15 @@ namespace usql {
         
         clearParameters();
         
-        sqlite3 *db = _db->db();
-        Result ret(sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr), db);
+        if (_db.expired()) {
+            return Result::error();
+        }
+        
+        auto ptr = _db.lock();
+        sqlite3 *db = ptr->db();
+        Result ret(sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr), _db);
         if (ret) {
-            _db->registerStatement(this);
+            ptr->registerStatement(this);
             initParameters();
         }
         
@@ -77,7 +80,7 @@ namespace usql {
     Result Statement::reset() {
         clearColumnInfo();
         if (_stmt) {
-            return Result(sqlite3_reset(_stmt), _db->db());
+            return Result(sqlite3_reset(_stmt), _db);
         }
         else {
             return prepare();
@@ -90,7 +93,7 @@ namespace usql {
             return ret;
         }
         
-        return Result::step(sqlite3_step(_stmt), _db->db());
+        return Result::step(sqlite3_step(_stmt), _db);
     }
     
     Result Statement::query() {
@@ -98,7 +101,7 @@ namespace usql {
             return Result::error();
         }
         
-        Result ret = Result::query(sqlite3_step(_stmt), _db->db());
+        Result ret = Result::query(sqlite3_step(_stmt), _db);
         if (ret) {
             initColumnInfo();
         }

@@ -28,14 +28,13 @@
 #define DBConnection_hpp
 
 #include "StdCpp.hpp"
+#include "Database.hpp"
 #include "Result.hpp"
 #include "Query.hpp"
 #include "Cursor.hpp"
 #include "Function.hpp"
 
 namespace usql {
-    class Statement;
-    
     class DBConnection : public NoCopyable
     {
     public:
@@ -45,12 +44,12 @@ namespace usql {
         Result open();
         Result open(int flags);
         bool isOpenning() const {
-            return _db != nullptr;
+            return _db->isOpening();
         }
         
         Result close();
         
-        inline sqlite3 *db() {
+        _WeakDatabase database() {
             return _db;
         }
         
@@ -100,18 +99,9 @@ namespace usql {
         void unregisterFunction(const std::string name);
         void unregisterAllFunctions();
         
-    protected:
-        friend class Statement;
-        
-        void registerStatement(Statement *stmt);
-        void unregisterStatement(Statement *stmt);
-        void finilizeAllStatements(bool finilized);
-        
     private:
         std::string _filename;
-        sqlite3 *_db;
-        
-        std::list<Statement *> _statements;
+        _Database _db;
         
         std::list<std::string> _functions;
     };
