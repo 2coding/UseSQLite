@@ -28,6 +28,7 @@
 #define DBConnection_hpp
 
 #include "StdCpp.hpp"
+#include "Result.hpp"
 #include "Query.hpp"
 #include "Cursor.hpp"
 #include "Function.hpp"
@@ -41,36 +42,25 @@ namespace usql {
         DBConnection(const std::string &filename);
         virtual ~DBConnection();
         
-        bool open();
-        bool open(int flags);
+        Result open();
+        Result open(int flags);
         bool isOpenning() const {
             return _db != nullptr;
         }
         
-        bool close();
-        
-        inline void setLastErrorCode(int code) {
-            _errorCode = code;
-        }
-        inline int lastErrorCode() const {
-            return _errorCode;
-        }
-        
-        inline std::string lastErrorMessage() {
-            return _db ? sqlite3_errmsg(_db) : sqlite3_errstr(lastErrorCode());
-        }
+        Result close();
         
         inline sqlite3 *db() {
             return _db;
         }
         
     public:
-        bool exec(const std::string &cmd);
+        Result exec(const std::string &cmd);
         
-        bool beginTransaction(TransactionType type);
-        bool commit();
-        bool rollback();
-        bool transaction(TransactionType type, tr1::function<bool()> action);
+        Result beginTransaction(TransactionType type);
+        Result commit();
+        Result rollback();
+        Result transaction(TransactionType type, tr1::function<bool()> action);
         
         //tables
         struct ColumnInfo
@@ -100,12 +90,12 @@ namespace usql {
             
             DatabaseInfo(const std::string &n, const std::string &f) : name(n), filepath(f) {}
         };
-        bool attachDatabase(const std::string &filename, const std::string &schema);
+        Result attachDatabase(const std::string &filename, const std::string &schema);
         void detachDatabase(const std::string &schema);
         std::vector<DatabaseInfo> allDatabase();
         
     public:
-        bool registerFunction(Function *func);
+        Result registerFunction(Function *func);
         
         void unregisterFunction(const std::string name);
         void unregisterAllFunctions();
@@ -120,8 +110,6 @@ namespace usql {
     private:
         std::string _filename;
         sqlite3 *_db;
-        
-        int _errorCode;
         
         std::list<Statement *> _statements;
         

@@ -30,7 +30,6 @@
 namespace usql {
     DBConnection::DBConnection(const std::string &fn)
     : _filename(fn.empty() ? ":memory" : fn)
-    , _errorCode(SQLITE_OK)
     , _db(nullptr) {
         
     }
@@ -39,26 +38,25 @@ namespace usql {
         close();
     }
     
-    bool DBConnection::open() {
+    Result DBConnection::open() {
         return open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
     }
     
-    bool DBConnection::open(int flags) {
+    Result DBConnection::open(int flags) {
         if (_filename.empty()) {
-            return false;
+            return Result::error();
         }
         
         if (_db) {
-            return true;
+            return Result::success();
         }
         
-        _errorCode = sqlite3_open_v2(_filename.c_str(), &_db, flags, nullptr);
-        return _USQL_OK(_errorCode);
+        return Result(sqlite3_open_v2(_filename.c_str(), &_db, flags, nullptr), nullptr);
     }
     
-    bool DBConnection::close() {
+    Result DBConnection::close() {
         if (!_db) {
-            return true;
+            return Result::success();
         }
         
         unregisterAllFunctions();
@@ -74,8 +72,7 @@ namespace usql {
             _db = nullptr;
         }
         
-        _errorCode = code;
-        return _USQL_OK(_errorCode);
+        return Result(code, db());
     }
     
     void DBConnection::registerStatement(Statement *stmt) {
@@ -118,7 +115,7 @@ namespace usql {
         }
     }
     
-    bool DBConnection::exec(const std::string &cmd) {
+    Result DBConnection::exec(const std::string &cmd) {
         if (cmd.empty()) {
             return false;
         }
@@ -131,7 +128,7 @@ namespace usql {
         return stmt.step();
     }
     
-    bool DBConnection::beginTransaction(TransactionType type) {
+    Result DBConnection::beginTransaction(TransactionType type) {
         if (!isOpenning()) {
             return false;
         }
@@ -152,17 +149,18 @@ namespace usql {
         return this->exec(ss.str());
     }
     
-    bool DBConnection::commit() {
+    Result DBConnection::commit() {
         return this->exec("COMMIT");
     }
     
-    bool DBConnection::rollback() {
+    Result DBConnection::rollback() {
         return this->exec("ROLLBACK");
     }
     
-    bool DBConnection::transaction(TransactionType type, tr1::function<bool()> action) {        
-        if (!beginTransaction(type)) {
-            return false;
+    Result DBConnection::transaction(TransactionType type, tr1::function<bool()> action) {
+        Result ret = beginTransaction(type);
+        if (!ret) {
+            return ret;
         }
         
         if (action()) {
@@ -246,7 +244,7 @@ namespace usql {
         return table;
     }
     
-    bool DBConnection::attachDatabase(const std::string &filename, const std::string &schema) {
+    Result DBConnection::attachDatabase(const std::string &filename, const std::string &schema) {
         if (filename.empty() || schema.empty()) {
             return false;
         }
@@ -284,9 +282,9 @@ namespace usql {
         return dbs;
     }
     
-    bool DBConnection::registerFunction(Function *func) {
-        int argc = -1;
+    Result DBConnection::registerFunction(Function *func) {
         int opt = 0;
+        int code = SQLITE_OK;
         
         typedef void(*sqlite_func)(sqlite3_context*,int,sqlite3_value**);
         sqlite_func xfunc = nullptr, xstep = nullptr;
@@ -299,8 +297,6 @@ namespace usql {
         if (func->name.empty()) {
             goto failed;
         }
-        
-        argc = std::max(-1, func->argumentCount());
         
         opt |= static_cast<int>(func->encoding);
         if (func->deterministic) {
@@ -315,13 +311,14 @@ namespace usql {
             xfunc = Function::xFunc;
         }
         
-        _errorCode = sqlite3_create_function_v2(db(), func->name.c_str(), argc, opt, func, xfunc, xstep, xfinal, Function::xDestroy);
-        if (!_USQL_OK(_errorCode)) {
-            goto failed;
+        code = sqlite3_create_function_v2(db(), func->name.c_str(), func->argumentCount(), opt, func, xfunc, xstep, xfinal, Function::xDestroy);
+        if (!_USQL_OK(code)) {
+            delete func;
+            return Result(code, db());
         }
         
         _functions.push_back(func->name);
-        return true;
+        return Result(code, db());
         
     failed:
         delete func;

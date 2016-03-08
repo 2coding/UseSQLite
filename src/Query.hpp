@@ -30,6 +30,7 @@
 #include "StdCpp.hpp"
 #include "USQLDefs.hpp"
 #include "Object.hpp"
+#include "Result.hpp"
 
 namespace usql {
     class DBConnection;
@@ -40,8 +41,8 @@ namespace usql {
         Query(const std::string &cmd, DBConnection &con);
         virtual ~Query();
         
-        bool next();
-        bool reset();
+        Result next();
+        Result reset();
         
         int columnCount() const;
         bool availableIndex(int idx) const;

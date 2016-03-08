@@ -31,6 +31,7 @@
 #include "USQLDefs.hpp"
 #include "Utils.hpp"
 #include "Object.hpp"
+#include "Result.hpp"
 
 namespace usql {
     class DBConnection;
@@ -44,9 +45,9 @@ namespace usql {
             return _command;
         }
         
-        bool reset();
-        bool step();
-        bool query();
+        Result reset();
+        Result step();
+        Result query();
         void finilize();
         
         inline sqlite3_stmt *statement() {
@@ -75,23 +76,23 @@ namespace usql {
         int parameterIndexForName(const std::string &name) const;
         
         template<class... TArgs>
-        bool bindName(const std::string &name, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
+        Result bindName(const std::string &name, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
             int i = parameterIndexForName(name);
             return bindIndex(i, func, args...);
         }
         
         template<class... TArgs>
-        bool bindIndex(int i, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
-            if (i <= USQL_INVALID_PARAMETER_INDEX || i > _parametersCount) {
-                return false;
+        Result bindIndex(int i, int (*func)(sqlite3_stmt *, int, TArgs...), TArgs... args) {
+            if (i <= USQL_INVALID_PARAMETER_INDEX || i > _parametersCount || !_stmt) {
+                return Result::error();
             }
             
-            if (!_stmt && !reset()) {
-                return false;
+            Result ret = reset();
+            if (!ret) {
+                return ret;
             }
             
-            int code = func(_stmt, i, args...);
-            return _USQL_OK(code);
+            return Result(func(_stmt, i, args...), connection());
         }
         
     private:
@@ -113,7 +114,9 @@ namespace usql {
             return actual == expect;
         }
         
-        bool prepare();
+        Result prepare();
+        
+        sqlite3 *connection();
         
     private:
         const std::string _command;

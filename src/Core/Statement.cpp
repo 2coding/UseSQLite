@@ -53,62 +53,57 @@ namespace usql {
         clearParameters();
     }
     
-    bool Statement::prepare() {
+    sqlite3 *Statement::connection() {
+        return _db->db();
+    }
+    
+    Result Statement::prepare() {
         if (_stmt) {
-            return true;
+            return Result::success();
         }
         
         clearParameters();
         
         sqlite3 *db = _db->db();
-        int code = sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr);
-        if (!_USQL_OK(code)) {
-            _db->setLastErrorCode(code);
-        }
-        else {
+        Result ret(sqlite3_prepare_v2(db, _command.c_str(), static_cast<int>(_command.size() + 1), &_stmt, nullptr), db);
+        if (ret) {
             _db->registerStatement(this);
             initParameters();
         }
         
-        return _USQL_OK(code);
+        return ret;
     }
     
-    bool Statement::reset() {
+    Result Statement::reset() {
         clearColumnInfo();
         if (_stmt) {
-            sqlite3_reset(_stmt);
-            return true;
+            return Result(sqlite3_reset(_stmt), _db->db());
         }
         else {
             return prepare();
         }
     }
     
-    bool Statement::step() {
-        if (!reset()) {
-            return false;
+    Result Statement::step() {
+        Result ret = reset();
+        if (!ret) {
+            return ret;
         }
         
-        int code = sqlite3_step(_stmt);
-        if (!_USQL_STEP_OK(code)) {
-            _db->setLastErrorCode(code);
-        }
-        
-        return _USQL_STEP_OK(code);
+        return Result::step(sqlite3_step(_stmt), _db->db());
     }
     
-    bool Statement::query() {
+    Result Statement::query() {
         if (!_stmt) {
-            return false;
+            return Result::error();
         }
         
-        int code = sqlite3_step(_stmt);
-        if (!_USQL_STEP_OK(code)) {
-            _db->setLastErrorCode(code);
+        Result ret = Result::query(sqlite3_step(_stmt), _db->db());
+        if (ret) {
+            initColumnInfo();
         }
         
-        initColumnInfo();
-        return _USQL_QUERY_OK(code);
+        return ret;
     }
     
     int Statement::columnIndexForName(const std::string &name) const {

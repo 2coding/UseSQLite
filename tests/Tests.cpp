@@ -47,20 +47,12 @@ TEST(usqlite_tests, open_close_database)
     DBConnection connection(_db);
     EXPECT_TRUE(connection.open());
     EXPECT_TRUE(connection.isOpenning());
-    EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
-    connection.setLastErrorCode(SQLITE_BUSY);
     EXPECT_TRUE(connection.close());
     
     EXPECT_FALSE(connection.isOpenning());
-    EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
     
     connection.open();
     EXPECT_TRUE(connection.isOpenning());
-    connection.setLastErrorCode(SQLITE_BUSY);
-    
-    connection.close();
-    EXPECT_FALSE(connection.isOpenning());
-    EXPECT_EQ(SQLITE_OK, connection.lastErrorCode());
 }
 
 TEST(usqlite_tests, attach_detach_database)
@@ -258,17 +250,14 @@ TEST_F(USQLTests, fail_on_closed_database)
 TEST_F(USQLTests, fail_on_bad_statement)
 {
     EXPECT_FALSE(_connection.exec("bla bla bla"));
-    EXPECT_NE(SQLITE_OK, _connection.lastErrorCode());
 }
 
 TEST_F(USQLTests, success_exe_sql)
 {
     std::string cmd("select * from use_sqlite_table");
     EXPECT_TRUE(_connection.exec(cmd));
-    EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
     
     EXPECT_TRUE(_connection.exec(cmd));
-    EXPECT_EQ(SQLITE_OK, _connection.lastErrorCode());
 }
 
 TEST_F(USQLTests, query_on_closed_database)
@@ -645,7 +634,6 @@ TEST_F(USQLExtTests, insert_row)
     .expr("f", "julianday('now')");
     
     EXPECT_TRUE(_connection.exec(cmd.command()));
-//    EXPECT_EQ("", _connection.lastErrorMessage());
     
     Query query("select * from test_table_name", _connection);
     EXPECT_TRUE(query.next());

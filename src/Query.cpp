@@ -44,11 +44,11 @@ namespace usql {
         _stmt->finilize();
     }
     
-    bool Query::next() {
+    Result Query::next() {
         return _stmt->query();
     }
     
-    bool Query::reset() {
+    Result Query::reset() {
         return _stmt->reset();
     }
     

@@ -34,7 +34,6 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-//#include <functional>
 
 #ifdef USQL_STD_TR1
 #include <tr1/functional>

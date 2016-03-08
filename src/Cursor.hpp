@@ -37,19 +37,19 @@ namespace usql {
     public:
         Cursor(const std::string &cmd, DBConnection &con);
         
-        bool bind(const std::string &key, int value);
-        bool bind(const std::string &key, int64_t value);
-        bool bind(const std::string &key, double value);
-        bool bind(const std::string &key, const std::string &value, BindType opt = BindType::Copy);
-        bool bind(const std::string &key, const void *blob, int count, BindType opt = BindType::Copy);
+        Result bind(const std::string &key, int value);
+        Result bind(const std::string &key, int64_t value);
+        Result bind(const std::string &key, double value);
+        Result bind(const std::string &key, const std::string &value, BindType opt = BindType::Copy);
+        Result bind(const std::string &key, const void *blob, int count, BindType opt = BindType::Copy);
         
-        bool bind(int index, int value);
-        bool bind(int index, int64_t value);
-        bool bind(int index, double value);
-        bool bind(int index, const std::string &value, BindType opt = BindType::Copy);
-        bool bind(int index, const void *blob, int count, BindType opt = BindType::Copy);
+        Result bind(int index, int value);
+        Result bind(int index, int64_t value);
+        Result bind(int index, double value);
+        Result bind(int index, const std::string &value, BindType opt = BindType::Copy);
+        Result bind(int index, const void *blob, int count, BindType opt = BindType::Copy);
         
-        bool exec();
+        Result exec();
     };
 }
 
