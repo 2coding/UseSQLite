@@ -18,10 +18,6 @@
 		C3ADCA741C7FF9140034C7BA /* Cursor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA601C7FF9140034C7BA /* Cursor.cpp */; };
 		C3ADCA751C7FF9140034C7BA /* Cursor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA601C7FF9140034C7BA /* Cursor.cpp */; };
 		C3ADCA761C7FF9140034C7BA /* Cursor.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3ADCA611C7FF9140034C7BA /* Cursor.hpp */; };
-		C3ADCA771C7FF9140034C7BA /* DBConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA621C7FF9140034C7BA /* DBConnection.cpp */; };
-		C3ADCA781C7FF9140034C7BA /* DBConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA621C7FF9140034C7BA /* DBConnection.cpp */; };
-		C3ADCA791C7FF9140034C7BA /* DBConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA621C7FF9140034C7BA /* DBConnection.cpp */; };
-		C3ADCA7A1C7FF9140034C7BA /* DBConnection.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3ADCA631C7FF9140034C7BA /* DBConnection.hpp */; };
 		C3ADCA7B1C7FF9140034C7BA /* Command.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3ADCA651C7FF9140034C7BA /* Command.hpp */; };
 		C3ADCA7C1C7FF9140034C7BA /* TableCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA661C7FF9140034C7BA /* TableCommand.cpp */; };
 		C3ADCA7D1C7FF9140034C7BA /* TableCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3ADCA661C7FF9140034C7BA /* TableCommand.cpp */; };
@@ -59,6 +55,13 @@
 		C3DAA3A21C8EAA100020801D /* Database.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3DAA3A01C8EAA100020801D /* Database.hpp */; };
 		C3DAA3A31C8EB86C0020801D /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA39F1C8EAA100020801D /* Database.cpp */; };
 		C3DAA3A41C8EB86D0020801D /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA39F1C8EAA100020801D /* Database.cpp */; };
+		C3DAA3BC1C8ECDED0020801D /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA3BA1C8ECDED0020801D /* Connection.cpp */; };
+		C3DAA3BD1C8ECDED0020801D /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA3BA1C8ECDED0020801D /* Connection.cpp */; };
+		C3DAA3BE1C8ECDED0020801D /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA3BA1C8ECDED0020801D /* Connection.cpp */; };
+		C3DAA3C01C8ECDED0020801D /* Connection.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C3DAA3BB1C8ECDED0020801D /* Connection.hpp */; };
+		C3DAA3D11C8ED2C30020801D /* libUseSQL.OSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3ADC9A01C7FF2820034C7BA /* libUseSQL.OSX.a */; };
+		C3DAA3D21C8ED2C90020801D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C3ADCAA51C7FFAA00034C7BA /* libsqlite3.tbd */; };
+		C3DAA3D31C8ED2DA0020801D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3DAA3B71C8ECD3A0020801D /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +121,13 @@
 			remoteGlobalIDString = 8D07F2BC0486CC7A007CD1D0;
 			remoteInfo = "gtest-framework";
 		};
+		C3DAA3CF1C8ED2BC0020801D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3ADC9861C7FF2090034C7BA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3ADC99F1C7FF2820034C7BA;
+			remoteInfo = UseSQL.OSX;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -131,6 +141,15 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C3ADCA4C1C7FF8D60034C7BA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		C3DAA3C61C8ED2AD0020801D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -153,8 +172,6 @@
 		C3ADCA5F1C7FF9140034C7BA /* Utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
 		C3ADCA601C7FF9140034C7BA /* Cursor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cursor.cpp; sourceTree = "<group>"; };
 		C3ADCA611C7FF9140034C7BA /* Cursor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cursor.hpp; sourceTree = "<group>"; };
-		C3ADCA621C7FF9140034C7BA /* DBConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DBConnection.cpp; sourceTree = "<group>"; };
-		C3ADCA631C7FF9140034C7BA /* DBConnection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DBConnection.hpp; sourceTree = "<group>"; };
 		C3ADCA651C7FF9140034C7BA /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Command.hpp; sourceTree = "<group>"; };
 		C3ADCA661C7FF9140034C7BA /* TableCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TableCommand.cpp; sourceTree = "<group>"; };
 		C3ADCA671C7FF9140034C7BA /* TableCommand.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TableCommand.hpp; sourceTree = "<group>"; };
@@ -178,6 +195,10 @@
 		C3DAA39C1C8E746D0020801D /* Result.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Result.hpp; sourceTree = "<group>"; };
 		C3DAA39F1C8EAA100020801D /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Database.cpp; sourceTree = "<group>"; };
 		C3DAA3A01C8EAA100020801D /* Database.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Database.hpp; sourceTree = "<group>"; };
+		C3DAA3B71C8ECD3A0020801D /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		C3DAA3BA1C8ECDED0020801D /* Connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Connection.cpp; sourceTree = "<group>"; };
+		C3DAA3BB1C8ECDED0020801D /* Connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Connection.hpp; sourceTree = "<group>"; };
+		C3DAA3C81C8ED2AD0020801D /* Example.OSX */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Example.OSX; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +225,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C3DAA3C51C8ED2AD0020801D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3DAA3D21C8ED2C90020801D /* libsqlite3.tbd in Frameworks */,
+				C3DAA3D11C8ED2C30020801D /* libUseSQL.OSX.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -214,6 +244,7 @@
 				C3ADCA881C7FF92C0034C7BA /* gtest.xcodeproj */,
 				C3ADCA5B1C7FF9140034C7BA /* src */,
 				C3ADCA551C7FF8F70034C7BA /* tests */,
+				C3DAA3B61C8ECD090020801D /* examples */,
 				C3ADC98F1C7FF2090034C7BA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -224,6 +255,7 @@
 				C3ADC9A01C7FF2820034C7BA /* libUseSQL.OSX.a */,
 				C3ADC9AF1C7FF2E40034C7BA /* libUseSQL.IOS.a */,
 				C3ADCA4E1C7FF8D60034C7BA /* Tests.OSX */,
+				C3DAA3C81C8ED2AD0020801D /* Example.OSX */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -244,10 +276,10 @@
 			children = (
 				C3ADCA5C1C7FF9140034C7BA /* Core */,
 				C3ADCA641C7FF9140034C7BA /* Extension */,
+				C3DAA3BA1C8ECDED0020801D /* Connection.cpp */,
+				C3DAA3BB1C8ECDED0020801D /* Connection.hpp */,
 				C3ADCA601C7FF9140034C7BA /* Cursor.cpp */,
 				C3ADCA611C7FF9140034C7BA /* Cursor.hpp */,
-				C3ADCA621C7FF9140034C7BA /* DBConnection.cpp */,
-				C3ADCA631C7FF9140034C7BA /* DBConnection.hpp */,
 				C3ADCA681C7FF9140034C7BA /* Object.hpp */,
 				C3ADCA691C7FF9140034C7BA /* Query.cpp */,
 				C3ADCA6A1C7FF9140034C7BA /* Query.hpp */,
@@ -305,6 +337,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C3DAA3B61C8ECD090020801D /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				C3DAA3B71C8ECD3A0020801D /* main.cpp */,
+			);
+			name = examples;
+			path = ../../examples;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -312,7 +353,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3ADCA7A1C7FF9140034C7BA /* DBConnection.hpp in Headers */,
 				C3ADCAD31C8045D10034C7BA /* UpdateCommand.hpp in Headers */,
 				C3ADCA801C7FF9140034C7BA /* Object.hpp in Headers */,
 				C3ADCA721C7FF9140034C7BA /* Utils.hpp in Headers */,
@@ -323,6 +363,7 @@
 				C3ADCA851C7FF9140034C7BA /* StdCpp.hpp in Headers */,
 				C3DAA3921C8D5EF70020801D /* Function.hpp in Headers */,
 				C3ADCA761C7FF9140034C7BA /* Cursor.hpp in Headers */,
+				C3DAA3C01C8ECDED0020801D /* Connection.hpp in Headers */,
 				C3DAA3A21C8EAA100020801D /* Database.hpp in Headers */,
 				C3ADCA841C7FF9140034C7BA /* Query.hpp in Headers */,
 				C3ADCA7B1C7FF9140034C7BA /* Command.hpp in Headers */,
@@ -388,6 +429,24 @@
 			productReference = C3ADCA4E1C7FF8D60034C7BA /* Tests.OSX */;
 			productType = "com.apple.product-type.tool";
 		};
+		C3DAA3C71C8ED2AD0020801D /* Example.OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3DAA3CC1C8ED2AD0020801D /* Build configuration list for PBXNativeTarget "Example.OSX" */;
+			buildPhases = (
+				C3DAA3C41C8ED2AD0020801D /* Sources */,
+				C3DAA3C51C8ED2AD0020801D /* Frameworks */,
+				C3DAA3C61C8ED2AD0020801D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C3DAA3D01C8ED2BC0020801D /* PBXTargetDependency */,
+			);
+			name = Example.OSX;
+			productName = Example.OSX;
+			productReference = C3DAA3C81C8ED2AD0020801D /* Example.OSX */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -404,6 +463,9 @@
 						CreatedOnToolsVersion = 7.2;
 					};
 					C3ADCA4D1C7FF8D60034C7BA = {
+						CreatedOnToolsVersion = 7.2;
+					};
+					C3DAA3C71C8ED2AD0020801D = {
 						CreatedOnToolsVersion = 7.2;
 					};
 				};
@@ -429,6 +491,7 @@
 				C3ADC99F1C7FF2820034C7BA /* UseSQL.OSX */,
 				C3ADC9AE1C7FF2E40034C7BA /* UseSQL.IOS */,
 				C3ADCA4D1C7FF8D60034C7BA /* Tests.OSX */,
+				C3DAA3C71C8ED2AD0020801D /* Example.OSX */,
 			);
 		};
 /* End PBXProject section */
@@ -491,12 +554,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3ADCABC1C8015CB0034C7BA /* InsertCommand.cpp in Sources */,
+				C3DAA3BC1C8ECDED0020801D /* Connection.cpp in Sources */,
 				C3ADCAD01C8045D10034C7BA /* UpdateCommand.cpp in Sources */,
 				C3ADCA7C1C7FF9140034C7BA /* TableCommand.cpp in Sources */,
 				C3ADCAC51C802ADA0034C7BA /* Utils.cpp in Sources */,
 				C3ADCA6E1C7FF9140034C7BA /* Statement.cpp in Sources */,
 				C3ADCACA1C8041950034C7BA /* DeleteCommand.cpp in Sources */,
-				C3ADCA771C7FF9140034C7BA /* DBConnection.cpp in Sources */,
 				C3ADCA811C7FF9140034C7BA /* Query.cpp in Sources */,
 				C3DAA3A11C8EAA100020801D /* Database.cpp in Sources */,
 				C3ADCA731C7FF9140034C7BA /* Cursor.cpp in Sources */,
@@ -508,12 +571,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3ADCABE1C801E1D0034C7BA /* InsertCommand.cpp in Sources */,
+				C3DAA3BD1C8ECDED0020801D /* Connection.cpp in Sources */,
 				C3ADCAD11C8045D10034C7BA /* UpdateCommand.cpp in Sources */,
 				C3ADCA7D1C7FF9140034C7BA /* TableCommand.cpp in Sources */,
 				C3ADCAC61C802ADA0034C7BA /* Utils.cpp in Sources */,
 				C3ADCA6F1C7FF9140034C7BA /* Statement.cpp in Sources */,
 				C3ADCACB1C8041950034C7BA /* DeleteCommand.cpp in Sources */,
-				C3ADCA781C7FF9140034C7BA /* DBConnection.cpp in Sources */,
 				C3ADCA821C7FF9140034C7BA /* Query.cpp in Sources */,
 				C3DAA3A31C8EB86C0020801D /* Database.cpp in Sources */,
 				C3ADCA741C7FF9140034C7BA /* Cursor.cpp in Sources */,
@@ -527,8 +590,8 @@
 				C3ADCACC1C8041950034C7BA /* DeleteCommand.cpp in Sources */,
 				C3ADCA831C7FF9140034C7BA /* Query.cpp in Sources */,
 				C3ADCA701C7FF9140034C7BA /* Statement.cpp in Sources */,
+				C3DAA3BE1C8ECDED0020801D /* Connection.cpp in Sources */,
 				C3ADCAD21C8045D10034C7BA /* UpdateCommand.cpp in Sources */,
-				C3ADCA791C7FF9140034C7BA /* DBConnection.cpp in Sources */,
 				C3ADCA751C7FF9140034C7BA /* Cursor.cpp in Sources */,
 				C3ADCAC71C802ADA0034C7BA /* Utils.cpp in Sources */,
 				C3ADCA591C7FF8F70034C7BA /* main.cpp in Sources */,
@@ -539,6 +602,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C3DAA3C41C8ED2AD0020801D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3DAA3D31C8ED2DA0020801D /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -546,6 +617,11 @@
 			isa = PBXTargetDependency;
 			name = "gtest-framework";
 			targetProxy = C3ADCAA21C7FF94C0034C7BA /* PBXContainerItemProxy */;
+		};
+		C3DAA3D01C8ED2BC0020801D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3ADC99F1C7FF2820034C7BA /* UseSQL.OSX */;
+			targetProxy = C3DAA3CF1C8ED2BC0020801D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -694,6 +770,20 @@
 			};
 			name = Release;
 		};
+		C3DAA3CD1C8ED2AD0020801D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C3DAA3CE1C8ED2AD0020801D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -732,6 +822,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C3DAA3CC1C8ED2AD0020801D /* Build configuration list for PBXNativeTarget "Example.OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3DAA3CD1C8ED2AD0020801D /* Debug */,
+				C3DAA3CE1C8ED2AD0020801D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

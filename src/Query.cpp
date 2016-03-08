@@ -27,7 +27,7 @@
 #include "StdCpp.hpp"
 #include "Query.hpp"
 #include "Statement.hpp"
-#include "DBConnection.hpp"
+#include "Connection.hpp"
 
 namespace usql {
     Result Query::next() {

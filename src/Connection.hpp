@@ -24,8 +24,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#ifndef DBConnection_hpp
-#define DBConnection_hpp
+#ifndef Connection_hpp
+#define Connection_hpp
 
 #include "StdCpp.hpp"
 #include "Database.hpp"
@@ -33,11 +33,11 @@
 #include "Function.hpp"
 
 namespace usql {
-    class DBConnection : public NoCopyable
+    class Connection : public NoCopyable
     {
     public:
-        DBConnection(const std::string &filename);
-        virtual ~DBConnection();
+        Connection(const std::string &filename);
+        virtual ~Connection();
         
         Result open();
         Result open(int flags);
@@ -57,7 +57,7 @@ namespace usql {
         Result beginTransaction(TransactionType type);
         Result commit();
         Result rollback();
-        Result transaction(TransactionType type, tr1::function<bool()> action);
+        Result transaction(TransactionType type, tr1::function<bool(Connection &)> action);
         
         //tables
         struct ColumnInfo
@@ -105,4 +105,4 @@ namespace usql {
     };
 }
 
-#endif /* DBConnection_hpp */
+#endif /* Connection_hpp */

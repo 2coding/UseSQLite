@@ -33,12 +33,12 @@
 #include "Result.hpp"
 
 namespace usql {
-    class DBConnection;
+    class Connection;
     class Statement;
     class Cursor : public NoCopyable
     {
     public:
-        Cursor(const std::string &cmd, DBConnection &db);
+        Cursor(const std::string &cmd, Connection &db);
         
         virtual ~Cursor();
         

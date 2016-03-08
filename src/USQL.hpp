@@ -35,7 +35,7 @@
 #include "Query.hpp"
 #include "Cursor.hpp"
 #include "Function.hpp"
-#include "DBConnection.hpp"
+#include "Connection.hpp"
 
 #include "Command.hpp"
 #include "ExprCommand.hpp"

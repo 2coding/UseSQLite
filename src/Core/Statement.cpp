@@ -26,7 +26,7 @@
 
 #include "Statement.hpp"
 #include "Utils.hpp"
-#include "DBConnection.hpp"
+#include "Connection.hpp"
 
 namespace usql {
     Statement::Statement(const std::string &cmd, _WeakDatabase db)

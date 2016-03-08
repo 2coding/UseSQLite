@@ -44,7 +44,7 @@ int usqlite_test_run(int argc, const char **argv) {
 #pragma mark - global test
 TEST(usqlite_tests, open_close_database)
 {
-    DBConnection connection(_db);
+    Connection connection(_db);
     EXPECT_TRUE(connection.open());
     EXPECT_TRUE(connection.isOpenning());
     EXPECT_TRUE(connection.close());
@@ -57,7 +57,7 @@ TEST(usqlite_tests, open_close_database)
 
 TEST(usqlite_tests, attach_detach_database)
 {
-    DBConnection con(_test1);
+    Connection con(_test1);
     con.open();
     
     const std::string schema = "test2";
@@ -149,7 +149,7 @@ protected:
     }
     
 protected:
-    DBConnection _connection;
+    Connection _connection;
 };
 
 TEST_F(USQLTests, connection_tables)
@@ -193,7 +193,7 @@ TEST_F(USQLTests, connection_table_info)
     EXPECT_EQ(tablename, table.name);
     EXPECT_EQ(3, table.columndefs.size());
     
-    auto a = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const DBConnection::ColumnInfo &c){
+    auto a = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const Connection::ColumnInfo &c){
         return c.name == "a";
     });
     EXPECT_TRUE(a != table.columndefs.end());
@@ -202,7 +202,7 @@ TEST_F(USQLTests, connection_table_info)
     EXPECT_TRUE(a->nullable);
     EXPECT_EQ("11", a->defaultValue);
     
-    auto b = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const DBConnection::ColumnInfo &c){
+    auto b = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const Connection::ColumnInfo &c){
         return c.name == "b";
     });
     EXPECT_TRUE(a != table.columndefs.end());
@@ -211,7 +211,7 @@ TEST_F(USQLTests, connection_table_info)
     EXPECT_FALSE(b->nullable);
     EXPECT_EQ("'hello world'", b->defaultValue);
     
-    auto c = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const DBConnection::ColumnInfo &c){
+    auto c = std::find_if(table.columndefs.begin(), table.columndefs.end(), [](const Connection::ColumnInfo &c){
         return c.name == "c";
     });
     EXPECT_TRUE(a != table.columndefs.end());
@@ -411,7 +411,7 @@ TEST_F(USQLTests, connnection_transaction)
     query.close();
     
     _connection.transaction(TransactionType::Deferred
-                            , [this]()->bool{
+                            , [this](Connection &)->bool{
                                 this->insertRow("hello world", 10, 10.12);
                                 this->insertRow("row 2", 110, 12.22);
                                 return false;
@@ -422,7 +422,7 @@ TEST_F(USQLTests, connnection_transaction)
     query.close();
     
     _connection.transaction(TransactionType::Deferred
-                            , [this]()->bool{
+                            , [this](Connection &)->bool{
                                 this->insertRow("hello world", 10, 10.12);
                                 this->insertRow("row 2", 110, 12.22);
                                 return true;
@@ -506,7 +506,7 @@ protected:
         std::remove(_db);
     }
     
-    DBConnection _connection;
+    Connection _connection;
     std::string _testTablename = "test_table_name";
 };
 

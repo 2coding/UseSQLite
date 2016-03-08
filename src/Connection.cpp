@@ -24,29 +24,29 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
-#include "DBConnection.hpp"
+#include "Connection.hpp"
 #include "Query.hpp"
 #include "Cursor.hpp"
 
 namespace usql {
-    DBConnection::DBConnection(const std::string &fn)
+    Connection::Connection(const std::string &fn)
     : _filename(fn.empty() ? ":memory" : fn)
     , _db(Database::create()){
     }
     
-    DBConnection::~DBConnection() {
+    Connection::~Connection() {
         close();
     }
     
-    Result DBConnection::open() {
+    Result Connection::open() {
         return open(SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
     }
     
-    Result DBConnection::open(int flags) {
+    Result Connection::open(int flags) {
         return Result(_db->open(_filename, flags), _db);
     }
     
-    Result DBConnection::close() {
+    Result Connection::close() {
         Result ret(_db->close(), _db);
         if (ret) {
             _functions.clear();
@@ -55,7 +55,7 @@ namespace usql {
         return ret;
     }
     
-    Result DBConnection::exec(const std::string &cmd) {
+    Result Connection::exec(const std::string &cmd) {
         if (cmd.empty()) {
             return false;
         }
@@ -68,7 +68,7 @@ namespace usql {
         return cursor.exec();
     }
     
-    Result DBConnection::beginTransaction(TransactionType type) {
+    Result Connection::beginTransaction(TransactionType type) {
         if (!isOpenning()) {
             return false;
         }
@@ -89,21 +89,21 @@ namespace usql {
         return this->exec(ss.str());
     }
     
-    Result DBConnection::commit() {
+    Result Connection::commit() {
         return this->exec("COMMIT");
     }
     
-    Result DBConnection::rollback() {
+    Result Connection::rollback() {
         return this->exec("ROLLBACK");
     }
     
-    Result DBConnection::transaction(TransactionType type, tr1::function<bool()> action) {
+    Result Connection::transaction(TransactionType type, tr1::function<bool(Connection &)> action) {
         Result ret = beginTransaction(type);
         if (!ret) {
             return ret;
         }
         
-        if (action()) {
+        if (action(*this)) {
             return commit();
         }
         else {
@@ -111,7 +111,7 @@ namespace usql {
         }
     }
     
-    bool DBConnection::tableExists(const std::string &tablename, const std::string &schema) {
+    bool Connection::tableExists(const std::string &tablename, const std::string &schema) {
         if (tablename.empty() || !isOpenning()) {
             return false;
         }
@@ -130,7 +130,7 @@ namespace usql {
         return query.intForColumnIndex(0) > 0;
     }
     
-    std::vector<std::string> DBConnection::allTables(const std::string &schema) {
+    std::vector<std::string> Connection::allTables(const std::string &schema) {
         std::vector<std::string> tables;
         if (!isOpenning()) {
             return tables;
@@ -151,8 +151,8 @@ namespace usql {
         return tables;
     }
     
-    DBConnection::TableInfo DBConnection::tableInfo(const std::string &name, const std::string &schema) {
-        DBConnection::TableInfo table;
+    Connection::TableInfo Connection::tableInfo(const std::string &name, const std::string &schema) {
+        Connection::TableInfo table;
         if (name.empty()) {
             return table;
         }
@@ -184,7 +184,7 @@ namespace usql {
         return table;
     }
     
-    Result DBConnection::attachDatabase(const std::string &filename, const std::string &schema) {
+    Result Connection::attachDatabase(const std::string &filename, const std::string &schema) {
         if (filename.empty() || schema.empty()) {
             return false;
         }
@@ -194,7 +194,7 @@ namespace usql {
         return exec(buf.str());
     }
     
-    void DBConnection::detachDatabase(const std::string &schema) {
+    void Connection::detachDatabase(const std::string &schema) {
         if (schema.empty()) {
             return ;
         }
@@ -204,8 +204,8 @@ namespace usql {
         exec(buf.str());
     }
     
-    std::vector<DBConnection::DatabaseInfo> DBConnection::allDatabase() {
-        std::vector<DBConnection::DatabaseInfo> dbs;
+    std::vector<Connection::DatabaseInfo> Connection::allDatabase() {
+        std::vector<Connection::DatabaseInfo> dbs;
         
         Query query("PRAGMA database_list", *this);
         while (query.next()) {
@@ -222,7 +222,7 @@ namespace usql {
         return dbs;
     }
     
-    Result DBConnection::registerFunction(Function *func) {
+    Result Connection::registerFunction(Function *func) {
         int opt = 0;
         int code = SQLITE_OK;
         
@@ -265,7 +265,7 @@ namespace usql {
         return false;
     }
     
-    void DBConnection::unregisterFunction(const std::string name) {
+    void Connection::unregisterFunction(const std::string name) {
         if (!isOpenning()) {
             return;
         }
@@ -274,7 +274,7 @@ namespace usql {
         _functions.remove(name);
     }
     
-    void DBConnection::unregisterAllFunctions() {
+    void Connection::unregisterAllFunctions() {
         for (auto iter = _functions.begin(); iter != _functions.end(); ++iter) {
             sqlite3_create_function(_db->db(), iter->c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
         }
