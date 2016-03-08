@@ -49,7 +49,19 @@ namespace usql {
     }
     
     Cursor::Cursor(const std::string &cmd, DBConnection &db)
-    : Query(cmd, db) {}
+    : _stmt(nullptr) {
+        _stmt = new Statement(cmd, db.database());
+        _stmt->reset();
+    }
+    
+    Cursor::~Cursor() {
+        close();
+        delete _stmt;
+    }
+    
+    void Cursor::close() {
+        _stmt->finilize();
+    }
     
     Result Cursor::bind(const std::string &key, int value) {
         return _stmt->bindName<int>(key, sqlite3_bind_int, value);

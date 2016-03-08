@@ -30,8 +30,6 @@
 #include "StdCpp.hpp"
 #include "Database.hpp"
 #include "Result.hpp"
-#include "Query.hpp"
-#include "Cursor.hpp"
 #include "Function.hpp"
 
 namespace usql {

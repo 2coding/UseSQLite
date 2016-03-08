@@ -27,19 +27,13 @@
 #ifndef Query_hpp
 #define Query_hpp
 
-#include "StdCpp.hpp"
-#include "USQLDefs.hpp"
-#include "Object.hpp"
-#include "Result.hpp"
+#include "Cursor.hpp"
 
 namespace usql {
-    class DBConnection;
-    class Statement;
-    class Query : public NoCopyable
+    class Query : public Cursor
     {
     public:
-        Query(const std::string &cmd, DBConnection &db);
-        virtual ~Query();
+        using Cursor::Cursor;
         
         Result next();
         Result reset();
@@ -69,13 +63,8 @@ namespace usql {
         std::time_t datetimeForName(const std::string &name);
         std::time_t datetimeForColumnIndex(int idx);
         
-        void close();
-        
     protected:
         const unsigned char *cstrForColumnIndex(int idx);
-
-    protected:
-        Statement *_stmt;
     };
 }
 

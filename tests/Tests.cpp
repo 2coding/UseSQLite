@@ -395,7 +395,7 @@ TEST_F(USQLTests, cursor_bind)
     EXPECT_TRUE(stmt.bind(":d", bvalue.data(), (int)bvalue.size()));
     EXPECT_TRUE(stmt.exec());
     
-    Cursor query("select * from use_sqlite_table where a = ? and b = ? and c = ? and d = ?", _connection);
+    Query query("select * from use_sqlite_table where a = ? and b = ? and c = ? and d = ?", _connection);
     EXPECT_TRUE(query.bind(1, tvalue));
     EXPECT_TRUE(query.bind(2, ivalue));
     EXPECT_TRUE(query.bind(3, rvalue));
@@ -704,7 +704,7 @@ TEST_F(USQLExtTests, update_row)
     
     EXPECT_FALSE(query.next());
     
-    Cursor cursor("select * from test_table_name where a=:a", _connection);
+    Query cursor("select * from test_table_name where a=:a", _connection);
     cursor.bind(":a", 20);
     EXPECT_TRUE(cursor.next());
 }

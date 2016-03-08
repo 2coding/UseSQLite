@@ -27,13 +27,20 @@
 #ifndef USQLStatement_hpp
 #define USQLStatement_hpp
 
-#include "Query.hpp"
+#include "StdCpp.hpp"
+#include "USQLDefs.hpp"
+#include "Object.hpp"
+#include "Result.hpp"
 
 namespace usql {
-    class Cursor : public Query
+    class DBConnection;
+    class Statement;
+    class Cursor : public NoCopyable
     {
     public:
         Cursor(const std::string &cmd, DBConnection &db);
+        
+        virtual ~Cursor();
         
         Result bind(const std::string &key, int value);
         Result bind(const std::string &key, int64_t value);
@@ -48,6 +55,11 @@ namespace usql {
         Result bind(int index, const void *blob, int count, BindType opt = BindType::Copy);
         
         Result exec();
+        
+        void close();
+        
+    protected:
+        Statement *_stmt;
     };
 }
 

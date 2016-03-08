@@ -30,21 +30,6 @@
 #include "DBConnection.hpp"
 
 namespace usql {
-    Query::Query(const std::string &cmd, DBConnection &db)
-    : _stmt(nullptr) {
-        _stmt = new Statement(cmd, db.database());
-        _stmt->reset();
-    }
-    
-    Query::~Query() {
-        close();
-        delete _stmt;
-    }
-    
-    void Query::close() {
-        _stmt->finilize();
-    }
-    
     Result Query::next() {
         return _stmt->query();
     }

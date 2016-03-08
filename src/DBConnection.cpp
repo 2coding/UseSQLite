@@ -25,7 +25,8 @@
  **/
 
 #include "DBConnection.hpp"
-#include "Statement.hpp"
+#include "Query.hpp"
+#include "Cursor.hpp"
 
 namespace usql {
     DBConnection::DBConnection(const std::string &fn)
@@ -63,8 +64,8 @@ namespace usql {
             return false;
         }
         
-        Statement stmt(cmd, _db);
-        return stmt.step();
+        Cursor cursor(cmd, *this);
+        return cursor.exec();
     }
     
     Result DBConnection::beginTransaction(TransactionType type) {
