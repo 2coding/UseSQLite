@@ -285,7 +285,6 @@ namespace usql {
     }
     
     bool DBConnection::registerFunction(Function *func) {
-        std::string name;
         int argc = -1;
         int opt = 0;
         
@@ -297,32 +296,31 @@ namespace usql {
             goto failed;
         }
         
-        name = func->name();
-        if (name.empty()) {
+        if (func->name.empty()) {
             goto failed;
         }
         
-        argc = std::max(-1, func->argumentsCount());
+        argc = std::max(-1, func->argumentCount());
         
-        opt |= static_cast<int>(func->encoding());
-        if (func->deterministic()) {
+        opt |= static_cast<int>(func->encoding);
+        if (func->deterministic) {
             opt |= SQLITE_DETERMINISTIC;
         }
         
         if (dynamic_cast<AggregateFunction *>(func)) {
-            xstep = AggregateFunction::xStep;
+            xstep = Function::xFunc;
             xfinal = AggregateFunction::xFinal;
         }
         else {
             xfunc = Function::xFunc;
         }
         
-        _errorCode = sqlite3_create_function_v2(db(), name.c_str(), argc, opt, func, xfunc, xstep, xfinal, Function::xDestroy);
+        _errorCode = sqlite3_create_function_v2(db(), func->name.c_str(), argc, opt, func, xfunc, xstep, xfinal, Function::xDestroy);
         if (!_USQL_OK(_errorCode)) {
             goto failed;
         }
         
-        _functions.push_back(name);
+        _functions.push_back(func->name);
         return true;
         
     failed:
@@ -336,10 +334,13 @@ namespace usql {
         }
         
         sqlite3_create_function(db(), name.c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
+        _functions.remove(name);
     }
     
     void DBConnection::unregisterAllFunctions() {
-        std::for_each(_functions.begin(), _functions.end(), tr1::bind(&DBConnection::unregisterFunction, this, std::tr1::placeholders::_1));
+        for (auto iter = _functions.begin(); iter != _functions.end(); ++iter) {
+            sqlite3_create_function(db(), iter->c_str(), -1, 0, nullptr, nullptr, nullptr, nullptr);
+        }
         _functions.clear();
     }
 }
