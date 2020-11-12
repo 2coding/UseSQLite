@@ -33,7 +33,8 @@ namespace usql {
     class Query : public Cursor
     {
     public:
-        using Cursor::Cursor;
+        //using Cursor::Cursor;
+		Query(const std::string &cmd, Connection &db): Cursor(cmd, db) {}
         
         Result next();
         Result reset();

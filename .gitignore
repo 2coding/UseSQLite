@@ -27,3 +27,17 @@ DerivedData
 
 # OSX
 .DS_Store
+
+
+Debug
+ipch
+Release
+*.vcxproj.user
+*.opensdf
+*.sdf
+*.suo
+*.exe
+*.ilk
+*.pdb
+*.dll
+*.lib

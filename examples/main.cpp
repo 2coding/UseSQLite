@@ -28,15 +28,21 @@
 #include "USQL.hpp"
 using namespace usql;
 
+#ifdef _MSC_VER 
+static const char *bdfile = "example.db";
+#else
+static const char *bdfile = "/tmp/example.db";
+#endif
+
 int main(int argc, const char * argv[]) {
     //open connection
-    Connection db("/tmp/example.db");
+    Connection db(bdfile);
     db.open();
     db.exec("create table if not exists table_name(a int, b real, c text)");
     db.exec("insert into table_name (a, b, c) values (10, 11.2, 'hello world')");
     
     //Transaction
-    db.transaction(TransactionType::Deferred, [](Connection &con)->bool{
+    db.transaction(_USQL_ENUM_VALUE(TransactionType, Deferred), [](Connection &con)->bool{
         con.exec("insert into table_name (a, b, c) values (1, 1.1, 'step one')");
         con.exec("insert into table_name (a, b, c) values (2, 2.2, 'step two')");
         return true;
@@ -57,6 +63,7 @@ int main(int argc, const char * argv[]) {
     cursor.bind(":c", "hello world");
     cursor.exec();
     
+#if _USQL_SQLITE_CREATE_FUNCTION_V2_ENABLE
     //create function
     Function *obj = Function::create("usql_string_len");
     obj->setFunction([](sqlite3_context* context, std::vector<sqlite3_value *> &argv){
@@ -90,6 +97,7 @@ int main(int argc, const char * argv[]) {
         sqlite3_result_int(context, maxLen);
     });
     db.registerFunction(agg);
+#endif
     
     db.close();
     

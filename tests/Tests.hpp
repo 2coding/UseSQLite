@@ -27,7 +27,7 @@
 #ifndef Tests_hpp
 #define Tests_hpp
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 int usqlite_test_run(int argc, const char **argv);
 

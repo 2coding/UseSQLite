@@ -26,6 +26,7 @@
 
 #ifndef Object_hpp
 #define Object_hpp
+#include "StdCpp.hpp"
 
 namespace usql {
     class Object
@@ -40,8 +41,14 @@ namespace usql {
         NoCopyable() {}
         virtual ~NoCopyable() {}
         
+#if _USQL_MEMBER_FUNCTION_DELETE_ENABLE
         NoCopyable(const NoCopyable &other) = delete;
         NoCopyable &operator=(const NoCopyable &other) = delete;
+#else
+	private:
+		NoCopyable(const NoCopyable &other);
+		NoCopyable &operator=(const NoCopyable &other);
+#endif
     };
 }
 

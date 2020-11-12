@@ -52,7 +52,7 @@ namespace usql {
         
     protected:
         std::string _tablename;
-        std::string _schema = "";
+        std::string _schema;
     };
 }
 

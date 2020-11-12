@@ -73,14 +73,14 @@ namespace usql {
             return _argumentCount;
         }
         
-        std::string name = "";
-        Encoding encoding = Encoding::UTF8;
-        bool deterministic = false;
+        std::string name;
+        Encoding encoding;
+        bool deterministic;
         
     protected:
-        Function(const std::string &n) : name(n) {}
+        Function(const std::string &n) : name(n), encoding(_USQL_ENUM_VALUE(Encoding, UTF8)), deterministic(false), _argumentCount(-1) {}
         
-        int _argumentCount = -1;
+        int _argumentCount;
         sqlite_step_func _func;
     };
     
@@ -105,6 +105,9 @@ namespace usql {
                 obj->_final(context);
             }
         }
+
+	protected:
+		AggregateFunction(const std::string &name): Function(name) {}
         
     protected:
         using Function::Function;

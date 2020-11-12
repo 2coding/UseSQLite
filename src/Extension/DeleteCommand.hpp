@@ -33,7 +33,8 @@ namespace usql {
     class DeleteCommand : public ExprCommand<DeleteCommand>
     {
     public:
-        using ExprCommand::ExprCommand;
+        //using ExprCommand::ExprCommand;
+		DeleteCommand(const std::string &tablename): ExprCommand(tablename) {}
         
         virtual std::string command() const override;
     };

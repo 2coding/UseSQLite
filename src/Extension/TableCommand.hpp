@@ -36,9 +36,9 @@ namespace usql {
     private:
         struct _column
         {
-            std::string name = "";
-            std::string type = "";
-            std::string constraint = "";
+            std::string name;
+            std::string type;
+            std::string constraint;
             
             _column() {}
             _column(const std::string &n, const std::string &t, const std::string &c) :name(n), type(t), constraint(c) {}
@@ -71,7 +71,9 @@ namespace usql {
         class CreateTableCommand : public Command<CreateTableCommand>
         {
         public:
-            using Command::Command;
+            //using Command::Command;
+			CreateTableCommand(const std::string &tablename) 
+				: Command(tablename), _temp(false), _withoutRowId(false), _createIfNotExist(true) {}
             
             CreateTableCommand &createIfNotExist(bool b) {
                 _createIfNotExist = b;
@@ -115,9 +117,9 @@ namespace usql {
             }
             
         private:
-            bool _temp = false;
-            bool _withoutRowId = false;
-            bool _createIfNotExist = true;
+            bool _temp;
+            bool _withoutRowId;
+            bool _createIfNotExist;
             
             std::map<std::string, _column> _columnDef;
             std::map<ColumnConstraint, std::string> _tableConstraint;
@@ -127,7 +129,9 @@ namespace usql {
         class DropTableCommand : public Command<DropTableCommand>
         {
         public:
-            using Command::Command;
+            //using Command::Command;
+			DropTableCommand(const std::string &tablename) 
+				: Command(tablename), _ifExists(true) {}
             
             DropTableCommand &ifExists(bool b) {
                 _ifExists = b;
@@ -137,14 +141,15 @@ namespace usql {
             virtual std::string command() const override;
             
         private:
-            bool _ifExists = true;
+            bool _ifExists;
         };
         
 #pragma mark - ALTER TABLE
         class AlterTableCommand : public Command<AlterTableCommand>
         {
         public:
-            using Command::Command;
+            //using Command::Command;
+			AlterTableCommand(const std::string &tablename) : Command(tablename) {}
             
             AlterTableCommand &columnDef(const std::string &name, const std::string &type, const std::string &constraint = "") {
                 if (name.empty() || type.empty()) {

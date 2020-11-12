@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UseSQL">
+      <UniqueIdentifier>{19d3cb21-394e-4811-b970-dbaef5ef4300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UseSQL\Core">
+      <UniqueIdentifier>{45a79073-9d0d-431f-b718-6da7cae6ed6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UseSQL\Extension">
+      <UniqueIdentifier>{d2b4cf6d-2463-40c7-b6ff-18e39c8e7a96}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\Connection.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Cursor.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Function.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Object.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Query.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Result.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\StdCpp.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\USQL.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\USQLDefs.hpp">
+      <Filter>UseSQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Extension\Command.hpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Extension\DeleteCommand.hpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Extension\ExprCommand.hpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Extension\InsertCommand.hpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Extension\TableCommand.hpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Extension\UpdateCommand.hpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Core\Database.hpp">
+      <Filter>UseSQL\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Core\Statement.hpp">
+      <Filter>UseSQL\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Core\Utils.hpp">
+      <Filter>UseSQL\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\Connection.cpp">
+      <Filter>UseSQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Cursor.cpp">
+      <Filter>UseSQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Query.cpp">
+      <Filter>UseSQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Extension\DeleteCommand.cpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Extension\InsertCommand.cpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Extension\TableCommand.cpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Extension\UpdateCommand.cpp">
+      <Filter>UseSQL\Extension</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Core\Database.cpp">
+      <Filter>UseSQL\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Core\Statement.cpp">
+      <Filter>UseSQL\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Core\Utils.cpp">
+      <Filter>UseSQL\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

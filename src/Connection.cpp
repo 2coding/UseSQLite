@@ -49,7 +49,9 @@ namespace usql {
     Result Connection::close() {
         Result ret(_db->close(), _db);
         if (ret) {
+#if _USQL_SQLITE_CREATE_FUNCTION_V2_ENABLE
             _functions.clear();
+#endif
         }
         
         return ret;
@@ -75,10 +77,10 @@ namespace usql {
         
         std::stringstream ss;
         ss<<"BEGIN ";
-        if (type == TransactionType::Deferred) {
+        if (type == _USQL_ENUM_VALUE(TransactionType, Deferred)) {
             ss<<"DEFERRED";
         }
-        else if(type == TransactionType::Immediate) {
+        else if(type == _USQL_ENUM_VALUE(TransactionType, Immediate)) {
             ss<<"IMMEDIATE";
         }
         else {
@@ -222,6 +224,7 @@ namespace usql {
         return dbs;
     }
     
+#if _USQL_SQLITE_CREATE_FUNCTION_V2_ENABLE
     Result Connection::registerFunction(Function *func) {
         int opt = 0;
         int code = SQLITE_OK;
@@ -280,4 +283,5 @@ namespace usql {
         }
         _functions.clear();
     }
+#endif
 }

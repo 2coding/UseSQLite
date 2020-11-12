@@ -33,7 +33,8 @@ namespace usql {
     class InsertCommand : Command<InsertCommand>
     {
     public:
-        using Command::Command;
+        //using Command::Command;
+		InsertCommand(const std::string &tablename): Command(tablename) {}
         
         virtual std::string command() const override;
         

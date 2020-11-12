@@ -122,9 +122,9 @@ namespace usql {
         return iter->second;
     }
     
-    ColumnType Statement::typeForColumnIndex(int i) const {
-        if (i < 0 || i >= _columnTypes.size()) {
-            return ColumnType::InvalidType;
+    ColumnType Statement::typeForColumnIndex(size_t i) const {
+        if (i >= _columnTypes.size()) {
+            return _USQL_ENUM_VALUE(ColumnType, InvalidType);
         }
         
         return _columnTypes[i];
@@ -150,7 +150,7 @@ namespace usql {
             _columns[name] = i;
             
             ColumnType type = typeForColumn(i);
-            if (type == ColumnType::InvalidType) {
+            if (type == _USQL_ENUM_VALUE(ColumnType, InvalidType)) {
                 return;
             }
             _columnTypes.push_back(type);
@@ -158,27 +158,27 @@ namespace usql {
     }
     
     ColumnType Statement::typeForColumn(int i) {
-        ColumnType type = ColumnType::InvalidType;
+        ColumnType type = _USQL_ENUM_VALUE(ColumnType, InvalidType);
         int t = sqlite3_column_type(_stmt, i);
         switch (t) {
             case SQLITE_INTEGER:
-                type = ColumnType::Integer;
+                type = _USQL_ENUM_VALUE(ColumnType, Integer);
                 break;
                 
             case SQLITE_TEXT:
-                type = ColumnType::Text;
+                type = _USQL_ENUM_VALUE(ColumnType, Text);
                 break;
                 
             case SQLITE_FLOAT:
-                type = ColumnType::Float;
+                type = _USQL_ENUM_VALUE(ColumnType, Float);
                 break;
                 
             case SQLITE_BLOB:
-                type = ColumnType::Blob;
+                type = _USQL_ENUM_VALUE(ColumnType, Blob);
                 break;
                 
             case SQLITE_NULL:
-                type = ColumnType::Null;
+                type = _USQL_ENUM_VALUE(ColumnType, Null);
                 break;
         }
         

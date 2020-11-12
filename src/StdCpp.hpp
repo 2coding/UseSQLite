@@ -27,6 +27,18 @@
 #ifndef StdCpp_hpp
 #define StdCpp_hpp
 
+#if _MSC_VER > 1900 //Visual Studio 2015 (14.0)
+#define _USQL_MEMBER_FUNCTION_DELETE_ENABLE 1
+#define _USQL_ENUM_CLASS_DEF(name) enum class name
+#define _USQL_ENUM_VALUE(type, value) type::value
+
+#else
+#define _USQL_MEMBER_FUNCTION_DELETE_ENABLE 0
+#define _USQL_ENUM_CLASS_DEF(name) enum name
+#define _USQL_ENUM_VALUE(type, value) value
+#endif
+
+
 #include <string>
 #include <sstream>
 #include <list>
@@ -55,5 +67,7 @@ namespace tr1 = std;
 #include <cstdio>
 
 #include <sqlite3.h>
+#define _USQL_SQLITE_CREATE_FUNCTION_V2_ENABLE 1
+#define _USQL_SQLITE_ERRSTR(c) sqlite3_errstr((c)) 
 
 #endif /* StdCpp_hpp */

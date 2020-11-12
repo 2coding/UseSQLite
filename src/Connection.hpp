@@ -64,8 +64,10 @@ namespace usql {
         {
             std::string name;
             std::string type;
-            bool nullable = false;
+            bool nullable;
             std::string defaultValue;
+
+			ColumnInfo(): nullable(false) {}
         };
         
         struct TableInfo
@@ -92,16 +94,20 @@ namespace usql {
         std::vector<DatabaseInfo> allDatabase();
         
     public:
+#if _USQL_SQLITE_CREATE_FUNCTION_V2_ENABLE
         Result registerFunction(Function *func);
         
         void unregisterFunction(const std::string name);
         void unregisterAllFunctions();
+#endif
         
     private:
         std::string _filename;
         _Database _db;
         
+#if _USQL_SQLITE_CREATE_FUNCTION_V2_ENABLE
         std::list<std::string> _functions;
+#endif
     };
 }
 

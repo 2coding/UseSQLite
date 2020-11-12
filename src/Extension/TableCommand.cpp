@@ -72,49 +72,49 @@ namespace usql {
             
             auto type = iter->first;
             switch (type) {
-                case ColumnConstraint::PrimaryKey:
+                case _USQL_ENUM_VALUE(ColumnConstraint, PrimaryKey):
                     ss<<"PRIMARY KEY";
                     break;
                     
-                case ColumnConstraint::PrimaryKeyAsc:
+                case _USQL_ENUM_VALUE(ColumnConstraint, PrimaryKeyAsc):
                     ss<<"PRIMARY KEY ASC";
                     break;
                     
-                case ColumnConstraint::PrimaryKeyDesc:
+                case _USQL_ENUM_VALUE(ColumnConstraint, PrimaryKeyDesc):
                     ss<<"PRIMARY KEY DESC";
                     break;
                     
-                case ColumnConstraint::Autoincrement:
+                case _USQL_ENUM_VALUE(ColumnConstraint, Autoincrement):
                     ss<<"AUTOINCREMENT";
                     break;
                     
-                case ColumnConstraint::NotNull:
+                case _USQL_ENUM_VALUE(ColumnConstraint, NotNull):
                     ss<<"NOT NULL";
                     break;
                     
-                case ColumnConstraint::Unique:
+                case _USQL_ENUM_VALUE(ColumnConstraint, Unique):
                     ss<<"UNIQUE";
                     break;
                     
-                case ColumnConstraint::Check:
+                case _USQL_ENUM_VALUE(ColumnConstraint, Check):
                     if (!iter->second.empty()) {
                         ss<<"CHECK"<<iter->second;
                     }
                     break;
                     
-                case ColumnConstraint::Default:
+                case _USQL_ENUM_VALUE(ColumnConstraint, Default):
                     if (!iter->second.empty()) {
                         ss<<"DEFAULT "<<iter->second;
                     }
                     break;
                     
-                case ColumnConstraint::ForeignKey:
+                case _USQL_ENUM_VALUE(ColumnConstraint, ForeignKey):
                     if (!iter->second.empty()) {
                         ss<<"FOREIGN KEY "<<iter->second;
                     }
                     break;
                     
-                case ColumnConstraint::Collate:
+                case _USQL_ENUM_VALUE(ColumnConstraint, Collate):
                     if (!iter->second.empty()) {
                         ss<<"COLLATE "<<iter->second;
                     }
@@ -141,7 +141,7 @@ namespace usql {
     
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintPrimaryKey(const std::vector<std::string> columns) {
         if (!columns.empty()) {
-            _tableConstraint[ColumnConstraint::PrimaryKey] = "PRIMARY KEY " + joinString(columns);
+            _tableConstraint[_USQL_ENUM_VALUE(ColumnConstraint, PrimaryKey)] = "PRIMARY KEY " + joinString(columns);
         }
         
         return *this;
@@ -149,7 +149,7 @@ namespace usql {
     
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintUnique(const std::vector<std::string> columns) {
         if (!columns.empty()) {
-            _tableConstraint[ColumnConstraint::Unique] = "UNIQUE " + joinString(columns);
+            _tableConstraint[_USQL_ENUM_VALUE(ColumnConstraint, Unique)] = "UNIQUE " + joinString(columns);
         }
         
         return *this;
@@ -157,7 +157,7 @@ namespace usql {
     
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintCheck(const std::string &expr) {
         if (!expr.empty()) {
-            _tableConstraint[ColumnConstraint::Check] = "CHECK " + expr;
+            _tableConstraint[_USQL_ENUM_VALUE(ColumnConstraint, Check)] = "CHECK " + expr;
         }
         
         return *this;
@@ -166,7 +166,7 @@ namespace usql {
     TableCommand::CreateTableCommand &TableCommand::CreateTableCommand::tableConstraintForeignKey(const std::vector<std::string> columns, const std::string &clause) {
         if (!columns.empty()) {
             std::string cmd = "FOREIGN KEY " + joinString(columns) + " " + clause;
-            _tableConstraint[ColumnConstraint::ForeignKey] = cmd;
+            _tableConstraint[_USQL_ENUM_VALUE(ColumnConstraint, ForeignKey)] = cmd;
         }
         
         return *this;

@@ -34,7 +34,8 @@ namespace usql {
     class ExprCommand : public Command<T>
     {
     public:
-        using Command<T>::Command;
+        //using Command<T>::Command;
+		ExprCommand(const std::string &tablename): Command(tablename) {}
         
         T &where(const std::string &e) {
             if (e.empty()) {

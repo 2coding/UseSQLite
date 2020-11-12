@@ -38,14 +38,14 @@
 #define USQL_INVALID_PARAMETER_INDEX 0
 
 namespace usql {
-    enum class Encoding {
+    _USQL_ENUM_CLASS_DEF(Encoding) {
         UTF8 = SQLITE_UTF8,
         UTF16LE = SQLITE_UTF16LE,
         UTF16BE = SQLITE_UTF16BE,
         UTF16 = SQLITE_UTF16
     };
     
-    enum class ColumnType {
+    _USQL_ENUM_CLASS_DEF(ColumnType) {
         InvalidType,
         Integer,
         Text,
@@ -54,13 +54,13 @@ namespace usql {
         Null,
     };
     
-    enum class TransactionType {
+    _USQL_ENUM_CLASS_DEF(TransactionType) {
         Deferred,
         Immediate,
         Exclusive
     };
     
-    enum class ColumnConstraint {
+    _USQL_ENUM_CLASS_DEF(ColumnConstraint) {
         PrimaryKey,
         PrimaryKeyAsc,
         PrimaryKeyDesc,
@@ -73,7 +73,7 @@ namespace usql {
         Collate
     };
     
-    enum class BindType {
+    _USQL_ENUM_CLASS_DEF(BindType) {
         Copy,
         Static
     };

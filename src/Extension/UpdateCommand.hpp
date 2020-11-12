@@ -33,7 +33,8 @@ namespace usql {
     class UpdateCommand : public ExprCommand<UpdateCommand>
     {
     public:
-        using ExprCommand::ExprCommand;
+        //using ExprCommand::ExprCommand;
+		UpdateCommand(const std::string &tablename): ExprCommand(tablename) {}
         
         virtual std::string command() const override;
         

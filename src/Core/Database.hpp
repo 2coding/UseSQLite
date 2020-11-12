@@ -50,7 +50,7 @@ namespace usql {
         int close();
         
         bool isOpening() const {
-            return _db;
+            return _db != nullptr;
         }
         
         sqlite3 *db() {
@@ -63,9 +63,12 @@ namespace usql {
         void registerStatement(Statement *stmt);
         void unregisterStatement(Statement *stmt);
         void finilizeAllStatements(bool finilized);
+
+	private:
+		Database(): _db(nullptr) {}
         
     private:
-        sqlite3 *_db = nullptr;
+        sqlite3 *_db;
         
         std::list<Statement *> _statements;
     };

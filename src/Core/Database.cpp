@@ -65,7 +65,7 @@ namespace usql {
     
     std::string Database::errorDescription(int code) const {
         if (!isOpening()) {
-            return sqlite3_errstr(code);
+            return _USQL_SQLITE_ERRSTR(code);
         }
         
         return sqlite3_errmsg(_db);

@@ -36,7 +36,7 @@ namespace usql {
     class Result : public Object
     {
     protected:
-        enum class ResultType {
+        _USQL_ENUM_CLASS_DEF(ResultType) {
             Normal,
             Step,
             Query
@@ -52,24 +52,38 @@ namespace usql {
         }
         
         static Result step(int c, _WeakDatabase db) {
-            return Result(c, db, ResultType::Step);
+            return Result(c, db, _USQL_ENUM_VALUE(ResultType, Step));
         }
         
         static Result query(int c, _WeakDatabase db) {
-            return Result(c, db, ResultType::Query);
+            return Result(c, db, _USQL_ENUM_VALUE(ResultType, Query));
         }
         
-        Result(bool res) : Result(res ? SQLITE_OK : SQLITE_ERROR, nullptr) {}
+        Result(bool res) {
+			int code = res ? SQLITE_OK : SQLITE_ERROR;
+			init(code, _USQL_SQLITE_ERRSTR(code), _USQL_ENUM_VALUE(ResultType, Normal));
+		}
         
-        Result(int c, sqlite3 *db, ResultType type = ResultType::Normal) : Result(c, (db ? sqlite3_errmsg(db) : sqlite3_errstr(c)), type) {}
+        Result(int c, sqlite3 *db, ResultType type = _USQL_ENUM_VALUE(ResultType, Normal)) {
+			init(c, (db ? sqlite3_errmsg(db) : _USQL_SQLITE_ERRSTR(c)), type);
+		}
         
-        Result(int c, _WeakDatabase db, ResultType type = ResultType::Normal) : Result(c, db.expired() ? sqlite3_errstr(c) :  db.lock()->errorDescription(c), type) {}
+        Result(int c, _WeakDatabase db, ResultType type = _USQL_ENUM_VALUE(ResultType, Normal)) {
+			init(c, db.expired() ? _USQL_SQLITE_ERRSTR(c) :  db.lock()->errorDescription(c), type);
+		}
         
-        Result(int c, _Database db, ResultType type = ResultType::Normal) : Result(c, db->errorDescription(c), type) {}
+        Result(int c, _Database db, ResultType type = _USQL_ENUM_VALUE(ResultType, Normal)) {
+			init(c, db->errorDescription(c), type);
+		}
         
-        Result(int c, const std::string &msg, ResultType type = ResultType::Normal) : _code(c), _description(msg), _type(type) {}
+        Result(int c, const std::string &msg, ResultType type = _USQL_ENUM_VALUE(ResultType, Normal)) {
+			init(c, msg, type);
+		}
         
-        Result(const Result &other) : _code(other._code), _description(other._description), _type(other._type) {}
+        Result(const Result &other) {
+			init(other.code(), other.description(), other._type);
+		}
+
         const Result & operator=(const Result &other) {
             if (this == &other) {
                 return *this;
@@ -90,17 +104,25 @@ namespace usql {
         }
         
         bool isSuccess() const {
-            return _type == ResultType::Normal ? _USQL_OK(_code) : (_type == ResultType::Step ? _USQL_STEP_OK(_code) : _USQL_QUERY_OK(_code));
+            return _type == _USQL_ENUM_VALUE(ResultType, Normal) ? _USQL_OK(_code) 
+				: (_type == _USQL_ENUM_VALUE(ResultType, Step) ? _USQL_STEP_OK(_code) : _USQL_QUERY_OK(_code));
         }
         
         operator bool() const {
             return isSuccess();
         }
-        
+
+	private:
+		void init(int c, const std::string &msg, ResultType type) {
+			_code = c;
+			_description = msg;
+			_type = type;
+		}
+
     public:
-        int _code = SQLITE_OK;
-        std::string _description = "";
-        ResultType _type = ResultType::Normal;
+        int _code;
+        std::string _description;
+        ResultType _type;
     };
 }
 

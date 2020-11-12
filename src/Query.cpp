@@ -57,7 +57,7 @@ namespace usql {
     
     ColumnType Query::typeForColumn(int i) const {
         if (!availableIndex(i)) {
-            return ColumnType::InvalidType;
+            return _USQL_ENUM_VALUE(ColumnType, InvalidType);
         }
         
         return _stmt->typeForColumnIndex(i);
@@ -69,7 +69,7 @@ namespace usql {
     }
     
     int Query::intForColumnIndex(int idx) {
-        return _stmt->staticValueForColumnIndex<int>(idx, ColumnType::Integer, sqlite3_column_int, USQL_ERROR_INTEGER);
+        return _stmt->staticValueForColumnIndex<int>(idx, _USQL_ENUM_VALUE(ColumnType, Integer), sqlite3_column_int, USQL_ERROR_INTEGER);
     }
     
     bool Query::booleanForName(const std::string &name) {
@@ -87,7 +87,7 @@ namespace usql {
     }
     
     int64_t Query::int64ForColumnIndex(int idx) {
-        return _stmt->staticValueForColumnIndex<sqlite3_int64>(idx, ColumnType::Integer, sqlite3_column_int64, USQL_ERROR_INTEGER);
+        return _stmt->staticValueForColumnIndex<sqlite3_int64>(idx, _USQL_ENUM_VALUE(ColumnType, Integer), sqlite3_column_int64, USQL_ERROR_INTEGER);
     }
     
     std::string Query::textForName(const std::string &name) {
@@ -101,7 +101,7 @@ namespace usql {
     }
     
     const unsigned char *Query::cstrForColumnIndex(int idx) {
-        return _stmt->staticValueForColumnIndex<const unsigned char *>(idx, ColumnType::Text, sqlite3_column_text, nullptr);
+        return _stmt->staticValueForColumnIndex<const unsigned char *>(idx, _USQL_ENUM_VALUE(ColumnType, Text), sqlite3_column_text, nullptr);
     }
     
     double Query::floatForName(const std::string &name) {
@@ -110,7 +110,7 @@ namespace usql {
     }
     
     double Query::floatForColumnIndex(int idx) {
-        return _stmt->staticValueForColumnIndex<double>(idx, ColumnType::Float, sqlite3_column_double, USQL_ERROR_FLOAT);
+        return _stmt->staticValueForColumnIndex<double>(idx, _USQL_ENUM_VALUE(ColumnType, Float), sqlite3_column_double, USQL_ERROR_FLOAT);
     }
     
     std::time_t Query::datetimeForName(const std::string &name) {
@@ -121,14 +121,14 @@ namespace usql {
     std::time_t Query::datetimeForColumnIndex(int idx) {
         auto type = typeForColumn(idx);
         std::time_t ts = -1;
-        if (type == ColumnType::Integer) {
+        if (type == _USQL_ENUM_VALUE(ColumnType, Integer)) {
             ts = intForColumnIndex(idx);
         }
-        else if (type == ColumnType::Text) {
+        else if (type == _USQL_ENUM_VALUE(ColumnType, Text)) {
             std::string str = textForColumnIndex(idx);
             ts = Utils::str2tm(str);
         }
-        else if (type == ColumnType::Float) {
+        else if (type == _USQL_ENUM_VALUE(ColumnType, Float)) {
             double day = floatForColumnIndex(idx);
             double t = (day - 2440587.5) * 86400.0;
             ts = static_cast<std::time_t>(t);

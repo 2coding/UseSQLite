@@ -31,10 +31,15 @@
 
 using namespace usql;
 
+#ifdef _MSC_VER
+static const char *_db = "usqlite.db";
+static const char *_test1 = "usqlite_test1.db";
+static const char *_test2 = "usqlite_test2.db";
+#else
 static const char *_db = "/tmp/usqlite.db";
-
 static const char *_test1 = "/tmp/usqlite_test1.db";
 static const char *_test2 = "/tmp/usqlite_test2.db";
+#endif
 
 int usqlite_test_run(int argc, const char **argv) {
     testing::InitGoogleTest(&argc, const_cast<char **>(argv));
@@ -310,12 +315,12 @@ TEST_F(USQLTests, query_column_type)
     
     EXPECT_TRUE(query.next());
     
-    EXPECT_EQ(ColumnType::Text, query.typeForName("a"));
-    EXPECT_EQ(ColumnType::Integer, query.typeForName("b"));
-    EXPECT_EQ(ColumnType::Float, query.typeForName("c"));
-    EXPECT_EQ(ColumnType::Null, query.typeForName("d"));
-    EXPECT_EQ(ColumnType::Integer, query.typeForName("e"));
-    EXPECT_EQ(ColumnType::InvalidType, query.typeForName("A"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, Text), query.typeForName("a"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, Integer), query.typeForName("b"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, Float), query.typeForName("c"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, Null), query.typeForName("d"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, Integer), query.typeForName("e"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, InvalidType), query.typeForName("A"));
 }
 
 TEST_F(USQLTests, query_int)
@@ -337,7 +342,7 @@ TEST_F(USQLTests, query_boolean)
     
     Query query("select * from use_sqlite_table", _connection);
     EXPECT_TRUE(query.next());
-    EXPECT_EQ(ColumnType::Integer, query.typeForName("e"));
+    EXPECT_EQ(_USQL_ENUM_VALUE(ColumnType, Integer), query.typeForName("e"));
     EXPECT_EQ(true, query.booleanForName("e"));
     EXPECT_EQ(true, query.booleanForColumnIndex(4));
 }
@@ -410,7 +415,7 @@ TEST_F(USQLTests, connnection_transaction)
     EXPECT_EQ(0, query.intForColumnIndex(0));
     query.close();
     
-    _connection.transaction(TransactionType::Deferred
+    _connection.transaction(_USQL_ENUM_VALUE(TransactionType, Deferred)
                             , [this](Connection &)->bool{
                                 this->insertRow("hello world", 10, 10.12);
                                 this->insertRow("row 2", 110, 12.22);
@@ -421,7 +426,7 @@ TEST_F(USQLTests, connnection_transaction)
     EXPECT_EQ(0, query.intForColumnIndex(0));
     query.close();
     
-    _connection.transaction(TransactionType::Deferred
+    _connection.transaction(_USQL_ENUM_VALUE(TransactionType, Deferred)
                             , [this](Connection &)->bool{
                                 this->insertRow("hello world", 10, 10.12);
                                 this->insertRow("row 2", 110, 12.22);
@@ -490,7 +495,7 @@ TEST_F(USQLTests, connection_aggregate_function)
 class USQLExtTests : public testing::Test
 {
 public:
-    USQLExtTests() : _connection(_db) {}
+    USQLExtTests() : _connection(_db), _testTablename("test_table_name") {}
     
 protected:
     virtual void SetUp() {
@@ -507,7 +512,7 @@ protected:
     }
     
     Connection _connection;
-    std::string _testTablename = "test_table_name";
+    std::string _testTablename;
 };
 
 TEST_F(USQLExtTests, tablename_check)
@@ -519,17 +524,17 @@ TEST_F(USQLExtTests, tablename_check)
 TEST_F(USQLExtTests, create_table)
 {
     std::map<ColumnConstraint, std::string> opta;
-    opta[ColumnConstraint::PrimaryKey] = "";
+    opta[_USQL_ENUM_VALUE(ColumnConstraint, PrimaryKey)] = "";
     
     std::map<ColumnConstraint, std::string> optb;
-    optb[ColumnConstraint::NotNull] = "";
-    optb[ColumnConstraint::Unique] = "";
-    optb[ColumnConstraint::Check] = "(b > 100)";
+    optb[_USQL_ENUM_VALUE(ColumnConstraint, NotNull)] = "";
+    optb[_USQL_ENUM_VALUE(ColumnConstraint, Unique)] = "";
+    optb[_USQL_ENUM_VALUE(ColumnConstraint, Check)] = "(b > 100)";
     
     std::map<ColumnConstraint, std::string> optc;
-    optc[ColumnConstraint::NotNull] = "";
-    optc[ColumnConstraint::Default] = "'hello world'";
-    optc[ColumnConstraint::Collate] = "NOCASE";
+    optc[_USQL_ENUM_VALUE(ColumnConstraint, NotNull)] = "";
+    optc[_USQL_ENUM_VALUE(ColumnConstraint, Default)] = "'hello world'";
+    optc[_USQL_ENUM_VALUE(ColumnConstraint, Collate)] = "NOCASE";
     
     std::vector<std::string> unique;
     unique.push_back("a");

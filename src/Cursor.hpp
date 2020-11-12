@@ -43,17 +43,17 @@ namespace usql {
         virtual ~Cursor();
         
         Result bind(const std::string &key, int value);
-        Result bind(const std::string &key, int64_t value);
+        Result bind(const std::string &key, sqlite3_int64 value);
         Result bind(const std::string &key, double value);
-        Result bind(const std::string &key, const std::string &value, BindType opt = BindType::Copy);
-        Result bind(const std::string &key, const void *blob, int count, BindType opt = BindType::Copy);
+        Result bind(const std::string &key, const std::string &value, BindType opt = _USQL_ENUM_VALUE(BindType, Copy));
+        Result bind(const std::string &key, const void *blob, int count, BindType opt = _USQL_ENUM_VALUE(BindType, Copy));
         
         Result bind(int index, int value);
-        Result bind(int index, int64_t value);
+        Result bind(int index, sqlite3_int64 value);
         Result bind(int index, double value);
-        Result bind(int index, const std::string &value, BindType opt = BindType::Copy);
-        Result bind(int index, const void *blob, int count, BindType opt = BindType::Copy);
-        
+        Result bind(int index, const std::string &value, BindType opt = _USQL_ENUM_VALUE(BindType, Copy));
+        Result bind(int index, const void *blob, int count, BindType opt = _USQL_ENUM_VALUE(BindType, Copy));
+
         Result exec();
         
         void close();
